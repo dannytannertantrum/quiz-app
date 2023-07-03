@@ -1,0 +1,16 @@
+version: '3.8'
+
+services:
+  web:
+    build: ./project
+    # --workers provides a single worker process
+    # the host defines the address to host the server on and port defines the port to hose the server on
+    command: uvicorn app.main:app --reload --workers 1 --host 0.0.0.0 --port 8000
+    volumes:
+      - ./project:/code
+    ports:
+      # Reminder: <host-port>:<container-port>
+      - 8004:8000
+    environment:
+      - ENVIRONMENT=dev
+      - TESTING=0
