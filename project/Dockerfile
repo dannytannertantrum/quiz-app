@@ -23,3 +23,14 @@ RUN pip install -r requirements.txt
 
 # add app and put this COPY command at bottom to not reinstall packages every time
 COPY . .
+
+# `+x` sets the executable permission for a file, allowing it to be executed as a program or script.
+# The `+x` option, where `+` indicates adding permissions and `x` indicates the executable permission.
+COPY ./entrypoint.sh .
+RUN chmod +x /code/entrypoint.sh
+
+# An ENTRYPOINT allows us to configure a container that will run as an executable.
+# It's like CMD, but a key difference is that the ENTRYPOINT command is not easily overridden.
+# When a container is started, any command-line arguments provided are appended to the ENTRYPOINT command,
+# rather than replacing it. 
+ENTRYPOINT [ "/code/entrypoint.sh" ]

@@ -7,6 +7,7 @@ services:
     # the host defines the address to host the server on and port defines the port to hose the server on
     command: uvicorn app.main:app --reload --workers 1 --host 0.0.0.0 --port 8000
     volumes:
+      # Reminder: <host-directory>:<container-directory>
       - ./project:/code
     ports:
       # Reminder: <host-port>:<container-port>
@@ -14,3 +15,17 @@ services:
     environment:
       - ENVIRONMENT=dev
       - TESTING=0
+      - DATABASE_URL=postgres://postgres:postgres@web-database:5432/web_dev
+      - DATABASE_TEST_URL=postgres://postgres:postgres@web-database:5432/web_test
+    depends_on:
+      - web-database
+
+  web-database:
+    build:
+      context: ./project/database
+      dockerfile: Dockerfile
+    expose:
+      - 5432
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
