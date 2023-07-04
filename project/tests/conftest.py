@@ -3,7 +3,7 @@ import os
 import pytest
 from fastapi.testclient import TestClient
 
-from app import main
+from app.main import app
 from app.config import get_settings, Settings
 
 
@@ -17,8 +17,8 @@ def get_settings_override():
 def test_app():
     # set up - if we drill into dependency_overrides, we can see it's a dict of key/value pairs
     # The key is the dependency name and value is what we'd like to override it with
-    main.app.dependency_overrides[get_settings] = get_settings_override
-    with TestClient(main.app) as test_client:
+    app.dependency_overrides[get_settings] = get_settings_override
+    with TestClient(app) as test_client:
         # testing
         yield test_client
 
