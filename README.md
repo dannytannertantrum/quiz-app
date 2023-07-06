@@ -1,21 +1,26 @@
 # quiz-app
 
-This is a [FastAPI](https://fastapi.tiangolo.com/) app. We'll eventually use Docker/Docker Compose and other tools, but one thing at a time 😊
+A quiz app built with the following tech:
+
+- [FastAPI](https://fastapi.tiangolo.com/)
+- [Docker with Docker Compose](https://docs.docker.com/compose/)
+- [PostgreSQL](https://www.postgresql.org/)
+- [SQLAlchemy](https://docs.sqlalchemy.org/en/20/) with [Alembic](https://alembic.sqlalchemy.org/en/latest/)
 
 ## Getting Started
 
-To work within an isolated Python environment, activate a virtual environment first. From your terminal in the `project` directory:
+1. **Clone the repo**
+2. **Downloads |** Make sure you have the following installed on your machine:
+
+- [Docker Desktop](https://docs.docker.com/get-docker/)
+- [Postgres](https://www.postgresql.org/download/)
+
+3. **Create an isolated Python environment and activate it |** From your terminal in the `project` directory:
 
 ```
 python3 -m venv .venv
 source .venv/bin/activate
-(.venv) $ pip install -r requirements.txt
+(.venv) $ docker-compose up -d --build
 ```
 
-After your virtual environment is running, run this command from the `project` directory to start the application:
-
-```
-(.venv) $ uvicorn app.main:app --reload
-```
-
-Your app should now by live at [http://127.0.0.1:8000](http://127.0.0.1:8000)!
+Your app should now by live at [http://127.0.0.1:8004](http://127.0.0.1:8004)!
