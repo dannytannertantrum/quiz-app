@@ -6,7 +6,7 @@ from pydantic import BaseModel, UUID4
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
-from app.database import SessionLocal
+from app.database import get_db
 from app.models.topic import Topic
 
 
@@ -15,14 +15,6 @@ router = APIRouter(
     tags=["topics"],
     responses={404: {"description": "Topic not found"}},
 )
-
-
-def get_db():
-    db = SessionLocal()
-    try:
-        yield db
-    finally:
-        db.close()
 
 
 class TopicBase(BaseModel):
