@@ -1,12 +1,11 @@
-from datetime import datetime
 from typing import Optional
 
 from fastapi import APIRouter, Depends, HTTPException, status
 from pydantic import BaseModel, UUID4
 from sqlalchemy.orm import Session
 
-from app.database import get_db
 from app.crud import crud_topics
+from app.database import get_db
 
 
 router = APIRouter(
@@ -29,7 +28,7 @@ class TopicWithDescription(TopicBase):
 @router.get(
     "/", response_model=list[TopicWithDescription], status_code=status.HTTP_200_OK
 )
-def read_primary_topics(db: Session = Depends(get_db)):
+def read_primary_topics(db: Session = Depends(get_db)) -> list[TopicWithDescription]:
     topics = crud_topics.get_primary_topics(db)
     if not topics:
         raise HTTPException(
