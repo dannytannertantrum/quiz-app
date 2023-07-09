@@ -24,7 +24,7 @@ class TopicWithDescription(TopicBase):
     description: Optional[str]
 
 
-# homepage will display all primary topics
+# Homepage will display all primary topics
 @router.get(
     "/", response_model=list[TopicWithDescription], status_code=status.HTTP_200_OK
 )
@@ -36,3 +36,22 @@ def read_primary_topics(db: Session = Depends(get_db)) -> list[TopicWithDescript
         )
 
     return topics
+
+
+# After selecting a primary topic, user will see subtopics for quiz selection
+@router.get(
+    "/{topic_id}",
+    response_model=list[TopicWithDescription],
+    status_code=status.HTTP_200_OK,
+)
+def read_subtopics(
+    topic_id: UUID4, db: Session = Depends(get_db)
+) -> list[TopicWithDescription]:
+    subtopics = crud_topics.get_subtopics(db, topic_id)
+    if not subtopics:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=f"No subtopics associated with topic id: {topic_id}",
+        )
+
+    return subtopics

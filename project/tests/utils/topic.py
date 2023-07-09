@@ -13,8 +13,9 @@ def create_test_topic(
     db: Session,
     title: str,
     description: Optional[str] = None,
+    is_deleted: Optional[bool] = False,
     topic_id: Optional[UUID4] = None,
-) -> UUID4:
+) -> Topic:
     result = db.execute(
         insert(Topic)
         .values(
@@ -22,15 +23,15 @@ def create_test_topic(
             created_at=datetime.utcnow(),
             last_modified_at=None,
             description=description,
-            is_deleted=False,
+            is_deleted=is_deleted,
             title=title,
             topic_id=topic_id,
         )
-        .returning(Topic.id)
+        .returning(Topic.id, Topic.title, Topic.description, Topic.topic_id)
     )
 
     db.commit()
-    return result.scalar()
+    return result.first()
 
 
 def delete_test_topics(db: Session) -> None:
