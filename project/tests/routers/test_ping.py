@@ -5,4 +5,4 @@ def test_ping(client: TestClient):
     response = client.get("/ping")
 
     assert response.status_code == 200
-    assert response.json() == {"environment": "dev", "ping": "pong!", "testing": True}
+    assert response.json() == {"environment": "test", "ping": "pong!", "testing": True}

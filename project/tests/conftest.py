@@ -12,7 +12,9 @@ from app.config import get_settings, Settings
 
 
 def get_settings_override():
-    return Settings(testing=1, database_url=os.environ.get("DATABASE_TEST_URL"))
+    return Settings(
+        testing=1, database_url=os.environ.get("DATABASE_TEST_URL"), environment="test"
+    )
 
 
 # Remdiner: scope="module" means the fixture will be invoked once per test module

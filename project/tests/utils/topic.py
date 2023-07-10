@@ -16,6 +16,9 @@ def create_test_topic(
     is_deleted: Optional[bool] = False,
     topic_id: Optional[UUID4] = None,
 ) -> Topic:
+    """
+    For creating subtopics, the topic_id should be the primary topic id
+    """
     result = db.execute(
         insert(Topic)
         .values(
