@@ -1,5 +1,6 @@
 import os
 from typing import Generator
+from uuid import uuid4
 
 import pytest
 from fastapi.testclient import TestClient
@@ -11,6 +12,9 @@ from app.database import Base
 from app.main import app
 from app.models.topic import Topic
 from tests.utils.topic import create_test_topic, delete_test_topics
+
+
+TOPIC_1_UUID = uuid4()
 
 
 def get_settings_override():
@@ -35,7 +39,7 @@ def db() -> Generator:
     app.dependency_overrides[get_settings] = get_settings_override
     engine = create_engine(os.environ.get("DATABASE_TEST_URL"))
 
-    SessionTest = sessionmaker(autocommit=False, autoflush=False, bind=engine)
+    SessionTest = sessionmaker(autoflush=False, bind=engine)
 
     # For local, we use alembic to migrate and keep records of database changes
     # But for tests, our migrations/versions should reflect our models,
@@ -46,14 +50,14 @@ def db() -> Generator:
 
 @pytest.fixture(scope="module")
 def create_test_topics(db: Session) -> list[Topic]:
-    topic1 = create_test_topic(db, title="Movies")
+    topic1 = create_test_topic(db, title="Movies", id=TOPIC_1_UUID)
     topic2 = create_test_topic(
         db, title="Sportsball", description="homeruns are classic"
     )
-    subtopic1 = create_test_topic(db, topic_id=topic1.id, title="horror")
-    subtopic2 = create_test_topic(db, topic_id=topic1.id, title="sci-fi")
-    subtopic3 = create_test_topic(db, topic_id=topic1.id, title="drama")
-    subtopic4 = create_test_topic(db, topic_id=topic1.id, title="comedy")
+    subtopic1 = create_test_topic(db, topic_id=TOPIC_1_UUID, title="horror")
+    subtopic2 = create_test_topic(db, topic_id=TOPIC_1_UUID, title="sci-fi")
+    subtopic3 = create_test_topic(db, topic_id=TOPIC_1_UUID, title="drama")
+    subtopic4 = create_test_topic(db, topic_id=TOPIC_1_UUID, title="comedy")
 
     yield [topic1, topic2, subtopic1, subtopic2, subtopic3, subtopic4]
     delete_test_topics(db)

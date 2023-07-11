@@ -12,6 +12,7 @@ from app.models.topic import Topic
 def create_test_topic(
     db: Session,
     title: str,
+    id: Optional[UUID4] = None,
     description: Optional[str] = None,
     is_deleted: Optional[bool] = False,
     topic_id: Optional[UUID4] = None,
@@ -19,10 +20,13 @@ def create_test_topic(
     """
     For creating subtopics, the topic_id should be the primary topic id
     """
+    if not id:
+        id = uuid4()
+
     result = db.execute(
         insert(Topic)
         .values(
-            id=uuid4(),
+            id=id,
             created_at=datetime.utcnow(),
             last_modified_at=None,
             description=description,
