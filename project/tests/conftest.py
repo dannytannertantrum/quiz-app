@@ -4,11 +4,13 @@ from typing import Generator
 import pytest
 from fastapi.testclient import TestClient
 from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker
+from sqlalchemy.orm import Session, sessionmaker
 
+from app.config import get_settings, Settings
 from app.database import Base
 from app.main import app
-from app.config import get_settings, Settings
+from app.models.topic import Topic
+from tests.utils.topic import create_test_topic, delete_test_topics
 
 
 def get_settings_override():
@@ -40,3 +42,18 @@ def db() -> Generator:
     # so it's easier to create the tables with Base.metadata.create_all(engine)
     Base.metadata.create_all(engine)
     yield SessionTest()
+
+
+@pytest.fixture(scope="module")
+def create_test_topics(db: Session) -> list[Topic]:
+    topic1 = create_test_topic(db, title="Movies")
+    topic2 = create_test_topic(
+        db, title="Sportsball", description="homeruns are classic"
+    )
+    subtopic1 = create_test_topic(db, topic_id=topic1.id, title="horror")
+    subtopic2 = create_test_topic(db, topic_id=topic1.id, title="sci-fi")
+    subtopic3 = create_test_topic(db, topic_id=topic1.id, title="drama")
+    subtopic4 = create_test_topic(db, topic_id=topic1.id, title="comedy")
+
+    yield [topic1, topic2, subtopic1, subtopic2, subtopic3, subtopic4]
+    delete_test_topics(db)

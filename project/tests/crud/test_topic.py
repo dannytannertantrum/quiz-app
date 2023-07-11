@@ -1,6 +1,5 @@
 from uuid import uuid4
 
-import pytest
 from sqlalchemy.orm import Session
 
 from app.models.topic import Topic
@@ -35,20 +34,6 @@ class TestCrudTopicNotReturningData:
 
 
 class TestCrudTopicReturningData:
-    @pytest.fixture(scope="class")
-    def create_test_topics(self, db: Session) -> list[Topic]:
-        topic1 = create_test_topic(db, title="Movies")
-        topic2 = create_test_topic(
-            db, title="Sportsball", description="homeruns are classic"
-        )
-        subtopic1 = create_test_topic(db, topic_id=topic1.id, title="horror")
-        subtopic2 = create_test_topic(db, topic_id=topic1.id, title="sci-fi")
-        subtopic3 = create_test_topic(db, topic_id=topic1.id, title="drama")
-        subtopic4 = create_test_topic(db, topic_id=topic1.id, title="comedy")
-
-        yield [topic1, topic2, subtopic1, subtopic2, subtopic3, subtopic4]
-        delete_test_topics(db)
-
     def test_read_primary_topics(
         self, db: Session, create_test_topics: list[Topic]
     ) -> None:
