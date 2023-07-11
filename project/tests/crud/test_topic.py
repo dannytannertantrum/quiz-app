@@ -53,6 +53,7 @@ class TestCrudTopicReturningData:
         self, db: Session, create_test_topics: list[Topic]
     ) -> None:
         topic1, topic2 = create_test_topics[0], create_test_topics[1]
+
         result: list[Topic] = crud_topics.get_primary_topics(db)
 
         # This shows us that only the primary topics were returned
