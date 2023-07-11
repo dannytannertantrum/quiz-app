@@ -41,3 +41,4 @@ class Topic(Base):
 
     # https://docs.sqlalchemy.org/en/20/orm/self_referential.html
     sub_topic = relationship("Topic")
+    questions = relationship("Question", back_populates="topics")
