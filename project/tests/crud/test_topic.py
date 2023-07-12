@@ -14,14 +14,14 @@ class TestCrudTopicNotReturningData:
         result = crud_topics.get_primary_topics(db)
 
         assert result == []
-        assert len(result) == 0
 
-    def test_read_subtopics_with_empty_list_returns_no_error(self, db: Session) -> None:
+    def test_read_subtopics_with_random_uuid_returns_no_error(
+        self, db: Session
+    ) -> None:
         random_uuid = uuid4()
         result = crud_topics.get_subtopics(db, random_uuid)
 
         assert result == []
-        assert len(result) == 0
 
     def test_topics_marked_is_deleted_return_no_results(self, db: Session) -> None:
         try:

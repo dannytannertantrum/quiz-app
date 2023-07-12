@@ -32,7 +32,7 @@ class Question(Base):
         - is_deleted (bool)
         - question (str)
         - question_type (str "multiple choice" or "tf")
-        - topic_id (FK to topics)
+        - topic_id (FK to topics.id)
     """
 
     __tablename__ = "questions"
