@@ -7,7 +7,7 @@ from app.models.question import Question
 from app.models.topic import Topic
 
 
-def get_questions_by_topic_id(db: Session, subtopic_id: UUID4) -> list[Question]:
+def get_questions_by_subtopic_id(db: Session, subtopic_id: UUID4) -> list[Question]:
     """
     Returns a list of questions associated with a subtopic,
     provided that subtopic and its parent are active

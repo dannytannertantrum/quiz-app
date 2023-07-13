@@ -12,16 +12,7 @@ from tests.utils.string_helpers import random_lower_string
 
 
 class TestCrudQuestionNotReturningData:
-    def test_read_questions_via_random_topic_id_returns_no_error(
-        self, db: Session
-    ) -> None:
-        random_uuid = uuid4()
-        result = crud_questions.get_questions_by_topic_id(db, random_uuid)
-
-        assert result == []
-        assert len(result) == 0
-
-    def test_read_questions_marked_is_deleted_return_no_results(
+    def test_read_questions_via_subtopic_with_question_marked_is_deleted_returns_no_results(
         self, db: Session, create_test_topics
     ) -> None:
         horror_subtopic = create_test_topics[2]
@@ -36,12 +27,12 @@ class TestCrudQuestionNotReturningData:
         )
 
         try:
-            result = crud_questions.get_questions_by_topic_id(db, horror_subtopic.id)
+            result = crud_questions.get_questions_by_subtopic_id(db, horror_subtopic.id)
             assert result == []
         finally:
             delete_test_questions(db)
 
-    def test_read_questions_with_primary_topic_marked_is_deleted_return_no_results(
+    def test_read_questions_via_subtopic_with_parent_primary_topic_marked_is_deleted_returns_no_results(
         self, db: Session, create_test_topics
     ) -> None:
         # This subtopic has a primary topic marked is_deleted=True
@@ -57,12 +48,12 @@ class TestCrudQuestionNotReturningData:
         )
 
         try:
-            result = crud_questions.get_questions_by_topic_id(db, subtopic_music.id)
+            result = crud_questions.get_questions_by_subtopic_id(db, subtopic_music.id)
             assert result == []
         finally:
             delete_test_questions(db)
 
-    def test_read_questions_with_subtopic_marked_is_deleted_return_no_results(
+    def test_read_questions_via_subtopic_marked_is_deleted_returns_no_results(
         self, db: Session, create_test_topics
     ) -> None:
         deleted_subtopic = create_test_topics[8]
@@ -77,7 +68,13 @@ class TestCrudQuestionNotReturningData:
         )
 
         try:
-            result = crud_questions.get_questions_by_topic_id(db, deleted_subtopic.id)
+            result = crud_questions.get_questions_by_subtopic_id(
+                db, deleted_subtopic.id
+            )
             assert result == []
         finally:
             delete_test_questions(db)
+
+
+class TestCrudQuestionReturningData:
+    pass

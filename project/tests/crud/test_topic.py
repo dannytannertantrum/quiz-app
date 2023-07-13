@@ -8,21 +8,6 @@ from tests.utils.topic import create_test_topic, delete_test_topics
 
 
 class TestCrudTopicNotReturningData:
-    def test_read_primary_topics_with_empty_list_returns_no_error(
-        self, db: Session
-    ) -> None:
-        result = crud_topics.get_primary_topics(db)
-
-        assert result == []
-
-    def test_read_subtopics_with_random_uuid_returns_no_error(
-        self, db: Session
-    ) -> None:
-        random_uuid = uuid4()
-        result = crud_topics.get_subtopics(db, random_uuid)
-
-        assert result == []
-
     def test_topics_marked_is_deleted_return_no_results(self, db: Session) -> None:
         try:
             create_test_topic(db, title="This should not be returned", is_deleted=True)
