@@ -25,17 +25,25 @@ def get_primary_topics(db: Session) -> list[Topic]:
     ).all()
 
 
-def get_subtopics(db: Session, topic_id: UUID4) -> list[Topic]:
+def get_subtopics(db: Session, primary_topic_id: UUID4) -> list[Topic]:
     """
     This only returns id, title and description
     - The topic_id passed in is the primary topic id
     """
-    primary_topic = get_topic_by_id(db, topic_id)
+    primary_topic = get_topic_by_id(db, primary_topic_id)
     if not primary_topic:
         return []
 
     return db.execute(
         select(Topic.id, Topic.title, Topic.description, Topic.topic_id).filter(
-            Topic.topic_id == topic_id, Topic.is_deleted == False
+            Topic.topic_id == primary_topic_id, Topic.is_deleted == False
         )
     ).all()
+
+
+def get_primary_topic_id_by_subtopic_ids(
+    db: Session, subtopic_ids: list[UUID4]
+) -> Topic:
+    return db.execute(
+        select(Topic.topic_id).filter(Topic.id.in_(subtopic_ids))
+    ).scalar()

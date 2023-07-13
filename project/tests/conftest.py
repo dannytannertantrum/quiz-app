@@ -22,8 +22,12 @@ from tests.utils.topic import create_test_topic, delete_test_topics
 
 DELETED_PRIMARY_TOPIC_SPORTS_UUID = uuid4()
 PRIMARY_TOPIC_MOVIES_UUID = uuid4()
-PRIMARY_TOPIC_SPORTSBALL_UUID = uuid4()
 PRIMARY_TOPIC_MUSIC_UUID = uuid4()
+PRIMARY_TOPIC_SPORTSBALL_UUID = uuid4()
+SUBTOPIC_COMEDY_UUID = uuid4()
+SUBTOPIC_DRAMA_UUID = uuid4()
+SUBTOPIC_HORROR_UUID = uuid4()
+SUBTOPIC_SCIFI_UUID = uuid4()
 
 
 def get_settings_override():
@@ -93,24 +97,24 @@ def create_test_subtopics_movies(
     db: Session, create_test_primary_topics
 ) -> list[topic.Topic]:
     primary_topic_movies: topic.Topic = create_test_primary_topics[0]
-    subtopic_movies1 = create_test_topic(
-        db, topic_id=primary_topic_movies.id, title="horror"
+    subtopic_horror = create_test_topic(
+        db, id=SUBTOPIC_HORROR_UUID, topic_id=primary_topic_movies.id, title="horror"
     )
-    subtopic_movies2 = create_test_topic(
-        db, topic_id=primary_topic_movies.id, title="sci-fi"
+    subtopic_scifi = create_test_topic(
+        db, id=SUBTOPIC_SCIFI_UUID, topic_id=primary_topic_movies.id, title="sci-fi"
     )
-    subtopic_movies3 = create_test_topic(
-        db, topic_id=primary_topic_movies.id, title="drama"
+    subtopic_drama = create_test_topic(
+        db, id=SUBTOPIC_DRAMA_UUID, topic_id=primary_topic_movies.id, title="drama"
     )
-    subtopic_movies4 = create_test_topic(
-        db, topic_id=primary_topic_movies.id, title="comedy"
+    subtopic_comedy = create_test_topic(
+        db, id=SUBTOPIC_COMEDY_UUID, topic_id=primary_topic_movies.id, title="comedy"
     )
 
     yield [
-        subtopic_movies1,
-        subtopic_movies2,
-        subtopic_movies3,
-        subtopic_movies4,
+        subtopic_horror,
+        subtopic_scifi,
+        subtopic_drama,
+        subtopic_comedy,
     ]
     delete_test_topics(db)
 

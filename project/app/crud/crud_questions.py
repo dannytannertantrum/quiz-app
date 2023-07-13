@@ -36,26 +36,39 @@ def get_question_by_id(db: Session, question_id: UUID4) -> Question:
     ).first()
 
 
-def get_questions_by_subtopic_id(db: Session, subtopic_id: UUID4) -> list[Question]:
+def get_questions_by_primary_topic_id(
+    db: Session, primary_topic_id: UUID4
+) -> list[Question]:
+    subtopics = crud_topics.get_subtopics(db, primary_topic_id)
+    subtopic_ids: list[UUID4] = list(map(lambda x: x[0], subtopics))
+
+    return get_questions_by_subtopic_ids(db, subtopic_ids)
+
+
+def get_questions_by_subtopic_ids(
+    db: Session, subtopic_ids: list[UUID4]
+) -> list[Question]:
     """
     Returns a list of questions associated with a subtopic,
     provided that subtopic and its parent are active
     """
 
     # If parent topic is deleted, don't even both running the query for the subtopic
-    parent_topic_id = db.execute(
-        select(Topic.topic_id).filter(Topic.id == subtopic_id)
-    ).scalar()
+    parent_topic_id = crud_topics.get_primary_topic_id_by_subtopic_ids(db, subtopic_ids)
     result = crud_topics.get_topic_by_id(db, parent_topic_id)
     if not result:
         return []
 
-    return db.execute(
-        select(Question)
-        .join(Topic, Question.topic_id == Topic.id)
-        .where(
-            Topic.id == subtopic_id,
-            Topic.is_deleted == False,
-            Question.is_deleted == False,
+    return (
+        db.execute(
+            select(Question)
+            .join(Topic, Question.topic_id == Topic.id)
+            .where(
+                Topic.id.in_(subtopic_ids),
+                Topic.is_deleted == False,
+                Question.is_deleted == False,
+            )
         )
-    ).all()
+        .scalars()
+        .all()
+    )

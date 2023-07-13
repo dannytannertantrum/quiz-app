@@ -26,13 +26,17 @@ class TestCrudQuestionNotReturningData:
         )
 
         try:
-            result = crud_questions.get_questions_by_subtopic_id(db, horror_subtopic.id)
+            result = crud_questions.get_questions_by_subtopic_ids(
+                db, [horror_subtopic.id]
+            )
             assert result == []
         finally:
             delete_test_questions(db)
 
     def test_read_questions_via_subtopic_with_parent_primary_topic_marked_is_deleted_returns_no_results(
-        self, db: Session, create_test_subtopic_with_deleted_parent_topic: Topic
+        self,
+        db: Session,
+        create_test_subtopic_with_deleted_parent_topic: Topic,
     ) -> None:
         # This subtopic has a primary topic marked is_deleted=True
         subtopic_with_deleted_parent = create_test_subtopic_with_deleted_parent_topic
@@ -47,8 +51,8 @@ class TestCrudQuestionNotReturningData:
         )
 
         try:
-            result = crud_questions.get_questions_by_subtopic_id(
-                db, subtopic_with_deleted_parent.id
+            result = crud_questions.get_questions_by_subtopic_ids(
+                db, [subtopic_with_deleted_parent.id]
             )
             assert result == []
         finally:
@@ -69,8 +73,8 @@ class TestCrudQuestionNotReturningData:
         )
 
         try:
-            result = crud_questions.get_questions_by_subtopic_id(
-                db, deleted_subtopic.id
+            result = crud_questions.get_questions_by_subtopic_ids(
+                db, [deleted_subtopic.id]
             )
             assert result == []
         finally:
@@ -78,7 +82,9 @@ class TestCrudQuestionNotReturningData:
 
 
 class TestCrudQuestionReturningData:
-    def test_read_questions(self, db: Session, create_test_questions) -> None:
+    def test_read_all_questions(
+        self, db: Session, create_test_questions: list[Question]
+    ) -> None:
         comedy_question: Question = create_test_questions[0]
         result: list[Question] = crud_questions.get_questions(db)
 
@@ -91,7 +97,9 @@ class TestCrudQuestionReturningData:
         assert result[0].question_type == comedy_question.question_type
         assert result[0].topic_id == comedy_question.topic_id
 
-    def test_read_questions_by_id(self, db: Session, create_test_questions) -> None:
+    def test_read_questions_by_id(
+        self, db: Session, create_test_questions: list[Question]
+    ) -> None:
         comedy_question: Question = create_test_questions[0]
         result: Question = crud_questions.get_question_by_id(db, comedy_question.id)
 
@@ -101,3 +109,42 @@ class TestCrudQuestionReturningData:
         assert result.question == comedy_question.question
         assert result.question_type == comedy_question.question_type
         assert result.topic_id == comedy_question.topic_id
+
+    def test_read_questions_by_primary_topic_id(
+        self,
+        db: Session,
+        create_test_primary_topics: list[Topic],
+        create_test_subtopics_movies: list[Topic],
+    ) -> None:
+        primary_topic_movies: Topic = create_test_primary_topics[0]
+        subtopic_comedy: Topic = create_test_subtopics_movies[3]
+        result: list[Question] = crud_questions.get_questions_by_primary_topic_id(
+            db, primary_topic_movies.id
+        )
+
+        assert len(result) == len(create_test_subtopics_movies)
+        assert result[0].topic_id == subtopic_comedy.id
+        assert isinstance(result[0].question, str)
+        assert isinstance(result[0].answer_options, list)
+        assert isinstance(result[0].correct_answer, int)
+
+    def test_read_questions_by_list_of_subtopic_ids(
+        self,
+        db: Session,
+        create_test_questions: list[Question],
+        create_test_subtopics_movies: list[Topic],
+    ) -> None:
+        subtopic_drama, subtopic_comedy = create_test_subtopics_movies[2:]
+        comedy_question1 = create_test_questions[0]
+        result: list[Question] = crud_questions.get_questions_by_subtopic_ids(
+            db, [subtopic_drama.id, subtopic_comedy.id]
+        )
+
+        # There are 4 questions total, 2 are associated with comedy and 1 with drama
+        assert len(result) == 3
+        assert result[0].topic_id == subtopic_comedy.id
+        assert result[0].topic_id == comedy_question1.topic_id
+        assert result[2].topic_id == subtopic_drama.id
+        assert isinstance(result[0].question, str)
+        assert isinstance(result[0].answer_options, list)
+        assert isinstance(result[0].correct_answer, int)
