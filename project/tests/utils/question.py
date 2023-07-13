@@ -41,6 +41,7 @@ def create_test_question(
             Question.answer_options,
             Question.correct_answer,
             Question.question,
+            Question.question_type,
             Question.topic_id,
         )
     )

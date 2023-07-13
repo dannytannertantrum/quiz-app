@@ -20,6 +20,7 @@ from tests.utils.string_helpers import random_lower_string
 from tests.utils.topic import create_test_topic, delete_test_topics
 
 
+DELETED_PRIMARY_TOPIC_SPORTS_UUID = uuid4()
 PRIMARY_TOPIC_MOVIES_UUID = uuid4()
 PRIMARY_TOPIC_SPORTSBALL_UUID = uuid4()
 PRIMARY_TOPIC_MUSIC_UUID = uuid4()
@@ -57,7 +58,7 @@ def db() -> Generator:
 
 
 @pytest.fixture(scope="module")
-def create_test_topics(db: Session) -> list[topic.Topic]:
+def create_test_primary_topics(db: Session) -> list[topic.Topic]:
     primary_topic_movies = create_test_topic(
         db, title="Movies", id=PRIMARY_TOPIC_MOVIES_UUID
     )
@@ -67,47 +68,84 @@ def create_test_topics(db: Session) -> list[topic.Topic]:
         id=PRIMARY_TOPIC_SPORTSBALL_UUID,
         description="homeruns are classic",
     )
+    primary_topic_music = create_test_topic(
+        db, title="Music", id=PRIMARY_TOPIC_MUSIC_UUID
+    )
+
+    yield [primary_topic_movies, primary_topic_sportsball, primary_topic_music]
+
+    delete_test_topics(db)
+
+
+@pytest.fixture(scope="module")
+def create_deleted_test_primary_topic(db: Session) -> topic.Topic:
+    deleted_primary_topic = create_test_topic(
+        db, title="Movies", id=DELETED_PRIMARY_TOPIC_SPORTS_UUID, is_deleted=True
+    )
+
+    yield deleted_primary_topic
+
+    delete_test_topics(db)
+
+
+@pytest.fixture(scope="module")
+def create_test_subtopics_movies(
+    db: Session, create_test_primary_topics
+) -> list[topic.Topic]:
+    primary_topic_movies: topic.Topic = create_test_primary_topics[0]
     subtopic_movies1 = create_test_topic(
-        db, topic_id=PRIMARY_TOPIC_MOVIES_UUID, title="horror"
+        db, topic_id=primary_topic_movies.id, title="horror"
     )
     subtopic_movies2 = create_test_topic(
-        db, topic_id=PRIMARY_TOPIC_MOVIES_UUID, title="sci-fi"
+        db, topic_id=primary_topic_movies.id, title="sci-fi"
     )
     subtopic_movies3 = create_test_topic(
-        db, topic_id=PRIMARY_TOPIC_MOVIES_UUID, title="drama"
+        db, topic_id=primary_topic_movies.id, title="drama"
     )
     subtopic_movies4 = create_test_topic(
-        db, topic_id=PRIMARY_TOPIC_MOVIES_UUID, title="comedy"
-    )
-    primary_topic_music_is_deleted = create_test_topic(
-        db, title="Music", id=PRIMARY_TOPIC_MUSIC_UUID, is_deleted=True
-    )
-    subtopic_music = create_test_topic(
-        db, topic_id=PRIMARY_TOPIC_MUSIC_UUID, title="metal"
-    )
-    subtopic_deleted = create_test_topic(
-        db, topic_id=PRIMARY_TOPIC_SPORTSBALL_UUID, title="baseball", is_deleted=True
+        db, topic_id=primary_topic_movies.id, title="comedy"
     )
 
     yield [
-        primary_topic_movies,
-        primary_topic_sportsball,
         subtopic_movies1,
         subtopic_movies2,
         subtopic_movies3,
         subtopic_movies4,
-        primary_topic_music_is_deleted,
-        subtopic_music,
-        subtopic_deleted,
     ]
     delete_test_topics(db)
 
 
 @pytest.fixture(scope="module")
+def create_deleted_test_subtopic(
+    db: Session, create_test_primary_topics
+) -> topic.Topic:
+    primary_topic: topic.Topic = create_test_primary_topics[0]
+    deleted_subtopic = create_test_topic(
+        db, topic_id=primary_topic.id, title="horror", is_deleted=True
+    )
+
+    yield deleted_subtopic
+    delete_test_topics(db)
+
+
+@pytest.fixture(scope="module")
+def create_test_subtopic_with_deleted_parent_topic(
+    db: Session, create_deleted_test_primary_topic
+) -> topic.Topic:
+    deleted_primary_topic = create_deleted_test_primary_topic
+    subtopic_with_deleted_parent = create_test_topic(
+        db, topic_id=deleted_primary_topic.id, title="horror", is_deleted=False
+    )
+
+    yield subtopic_with_deleted_parent
+    delete_test_topics(db)
+
+
+@pytest.fixture(scope="module")
 def create_test_questions(
-    db: Session, create_test_topics: list[topic.Topic]
+    db: Session, create_test_subtopics_movies: list[topic.Topic]
 ) -> list[question.Question]:
-    _movies, _sportsball, horror, _sci_fi, drama, comedy = create_test_topics
+    horror, sci_fi, drama, comedy = create_test_subtopics_movies
     comedy_question1 = create_test_question(
         db,
         answer_options=random_answer_options,
@@ -124,7 +162,7 @@ def create_test_questions(
         question_type="multiple choice",
         topic_id=comedy.id,
     )
-    drama_question1 = create_test_question(
+    drama_question = create_test_question(
         db,
         answer_options=random_answer_options,
         correct_answer=2,
@@ -132,23 +170,7 @@ def create_test_questions(
         question_type="multiple choice",
         topic_id=drama.id,
     )
-    drama_question2 = create_test_question(
-        db,
-        answer_options=random_answer_options,
-        correct_answer=4,
-        question=random_lower_string(),
-        question_type="multiple choice",
-        topic_id=drama.id,
-    )
-    horror_question1 = create_test_question(
-        db,
-        answer_options=random_answer_options,
-        correct_answer=2,
-        question=random_lower_string(),
-        question_type="multiple choice",
-        topic_id=horror.id,
-    )
-    horror_question2 = create_test_question(
+    horror_question = create_test_question(
         db,
         answer_options=random_answer_options,
         correct_answer=3,
@@ -160,9 +182,7 @@ def create_test_questions(
     yield [
         comedy_question1,
         comedy_question2,
-        drama_question1,
-        drama_question2,
-        horror_question1,
-        horror_question2,
+        drama_question,
+        horror_question,
     ]
     delete_test_questions(db)

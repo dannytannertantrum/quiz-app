@@ -82,28 +82,31 @@ class TestTopicRoutesNotReturningData:
 
 class TestTopicRoutesReturningData:
     def test_read_primary_topics_returns_topics(
-        self, client: TestClient, create_test_topics: list[Topic]
+        self, client: TestClient, create_test_primary_topics: list[Topic]
     ) -> None:
         response = client.get("/topics/")
         topics: list[Topic] = response.json()
 
         assert response.status_code == 200
-        assert len(topics) == 2
+        assert len(topics) == len(create_test_primary_topics)
 
         assert topics[0]["id"] is not None
         assert topics[0]["title"] == "Movies"
         assert topics[0]["description"] == None
 
     def test_read_subtopics_returns_subtopics(
-        self, client: TestClient, create_test_topics: list[Topic]
+        self,
+        client: TestClient,
+        create_test_primary_topics: list[Topic],
+        create_test_subtopics_movies: list[Topic],
     ) -> None:
-        topic1 = create_test_topics[0]
+        primary_topic_movies: Topic = create_test_primary_topics[0]
 
-        response = client.get(f"/topics/{topic1.id}")
+        response = client.get(f"/topics/{primary_topic_movies.id}")
         subtopics: list[Topic] = response.json()
 
         assert response.status_code == 200
-        assert len(subtopics) == 4
+        assert len(subtopics) == len(create_test_subtopics_movies)
 
         assert subtopics[0]["id"] is not None
         assert subtopics[0]["title"] == "horror"

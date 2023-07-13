@@ -35,7 +35,7 @@ def get_subtopics(db: Session, topic_id: UUID4) -> list[Topic]:
         return []
 
     return db.execute(
-        select(Topic.id, Topic.title, Topic.description).filter(
+        select(Topic.id, Topic.title, Topic.description, Topic.topic_id).filter(
             Topic.topic_id == topic_id, Topic.is_deleted == False
         )
     ).all()

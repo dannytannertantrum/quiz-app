@@ -1,5 +1,3 @@
-from uuid import uuid4
-
 from sqlalchemy.orm import Session
 
 from app.models.topic import Topic
@@ -20,30 +18,38 @@ class TestCrudTopicNotReturningData:
 
 class TestCrudTopicReturningData:
     def test_read_primary_topics(
-        self, db: Session, create_test_topics: list[Topic]
+        self, db: Session, create_test_primary_topics: list[Topic]
     ) -> None:
-        topic1, topic2 = create_test_topics[0], create_test_topics[1]
+        topic1_movies, topic2_sportsball, topic3_music = create_test_primary_topics
 
         result: list[Topic] = crud_topics.get_primary_topics(db)
 
         # This shows us that only the primary topics were returned
-        assert len(result) == 2
+        assert len(result) == len(create_test_primary_topics)
 
-        assert result[0].id == topic1.id
+        assert result[0].id == topic1_movies.id
         assert result[0].title == "Movies"
         assert result[0].description is None
 
-        assert result[1].id == topic2.id
+        assert result[1].id == topic2_sportsball.id
         assert result[1].description == "homeruns are classic"
 
-    def test_read_subtopics(self, db: Session, create_test_topics: list[Topic]) -> None:
-        topic, subtopic = create_test_topics[0], create_test_topics[2]
-        result: list[Topic] = crud_topics.get_subtopics(db, topic.id)
+        assert result[2].title == topic3_music.title
+
+    def test_read_subtopics(
+        self,
+        db: Session,
+        create_test_primary_topics: list[Topic],
+        create_test_subtopics_movies: list[Topic],
+    ) -> None:
+        primary_topic_movies = create_test_primary_topics[0]
+        subtopics_movies = create_test_subtopics_movies
+        result: list[Topic] = crud_topics.get_subtopics(db, primary_topic_movies.id)
 
         # Only return the subtopics
-        assert len(result) == 4
+        assert len(result) == len(subtopics_movies)
 
-        assert result[0].topic_id == topic.id
+        assert result[0].topic_id == primary_topic_movies.id
         assert result[0].title is not None
         assert result[0].description is None
-        assert result[0].id == subtopic.id
+        assert result[0].id == subtopics_movies[0].id
