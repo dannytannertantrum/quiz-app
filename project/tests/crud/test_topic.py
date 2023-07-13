@@ -43,6 +43,7 @@ class TestCrudTopicReturningData:
         # Only return the subtopics
         assert len(result) == 4
 
-        assert subtopic.topic_id == topic.id
-        assert subtopic.title is not None
-        assert subtopic.description is None
+        assert result[0].topic_id == topic.id
+        assert result[0].title is not None
+        assert result[0].description is None
+        assert result[0].id == subtopic.id
