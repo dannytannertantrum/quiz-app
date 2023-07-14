@@ -2,3 +2,4 @@
 from app.database import Base
 from .question import Question
 from .topic import Topic
+from .user import User
