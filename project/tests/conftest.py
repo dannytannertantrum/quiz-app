@@ -61,7 +61,7 @@ def db() -> Generator:
     yield SessionTest()
 
 
-@pytest.fixture(scope="module")
+@pytest.fixture(scope="class")
 def create_test_primary_topics(db: Session) -> list[topic.Topic]:
     primary_topic_movies = create_test_topic(
         db, title="Movies", id=PRIMARY_TOPIC_MOVIES_UUID
@@ -81,7 +81,7 @@ def create_test_primary_topics(db: Session) -> list[topic.Topic]:
     delete_test_topics(db)
 
 
-@pytest.fixture(scope="module")
+@pytest.fixture(scope="class")
 def create_deleted_test_primary_topic(db: Session) -> topic.Topic:
     deleted_primary_topic = create_test_topic(
         db, title="Movies", id=DELETED_PRIMARY_TOPIC_SPORTS_UUID, is_deleted=True
@@ -92,7 +92,7 @@ def create_deleted_test_primary_topic(db: Session) -> topic.Topic:
     delete_test_topics(db)
 
 
-@pytest.fixture(scope="module")
+@pytest.fixture(scope="class")
 def create_test_subtopics_movies(
     db: Session, create_test_primary_topics
 ) -> list[topic.Topic]:
@@ -119,7 +119,7 @@ def create_test_subtopics_movies(
     delete_test_topics(db)
 
 
-@pytest.fixture(scope="module")
+@pytest.fixture(scope="class")
 def create_deleted_test_subtopic(
     db: Session, create_test_primary_topics
 ) -> topic.Topic:
@@ -132,7 +132,7 @@ def create_deleted_test_subtopic(
     delete_test_topics(db)
 
 
-@pytest.fixture(scope="module")
+@pytest.fixture(scope="class")
 def create_test_subtopic_with_deleted_parent_topic(
     db: Session, create_deleted_test_primary_topic
 ) -> topic.Topic:
@@ -145,7 +145,7 @@ def create_test_subtopic_with_deleted_parent_topic(
     delete_test_topics(db)
 
 
-@pytest.fixture(scope="module")
+@pytest.fixture(scope="class")
 def create_test_questions(
     db: Session, create_test_subtopics_movies: list[topic.Topic]
 ) -> list[question.Question]:

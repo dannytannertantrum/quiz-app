@@ -6,7 +6,7 @@ from tests.utils.topic import create_test_topic, delete_test_topics
 
 
 class TestCrudTopicNotReturningData:
-    def test_topics_marked_is_deleted_return_no_results(self, db: Session) -> None:
+    def test_get_topics_marked_is_deleted_return_no_results(self, db: Session) -> None:
         try:
             create_test_topic(db, title="This should not be returned", is_deleted=True)
             result = crud_topics.get_primary_topics(db)
@@ -17,7 +17,7 @@ class TestCrudTopicNotReturningData:
 
 
 class TestCrudTopicReturningData:
-    def test_read_primary_topics(
+    def test_get_primary_topics(
         self, db: Session, create_test_primary_topics: list[Topic]
     ) -> None:
         topic1_movies, topic2_sportsball, topic3_music = create_test_primary_topics
@@ -36,7 +36,7 @@ class TestCrudTopicReturningData:
 
         assert result[2].title == topic3_music.title
 
-    def test_read_subtopics(
+    def test_get_subtopics(
         self,
         db: Session,
         create_test_primary_topics: list[Topic],
