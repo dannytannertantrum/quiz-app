@@ -19,9 +19,12 @@ class Settings(BaseSettings):
         - AnyUrl is a pydantic URL validator
     """
 
-    environment: str = "dev"
-    testing: bool = bool(0)
-    database_url: AnyUrl = None
+    ACCESS_TOKEN_EXPIRE_MINUTES: int = 60
+    ALGORITHM: str = "HS256"
+    ENVIRONMENT: str = "dev"
+    TESTING: bool = bool(0)
+    DATABASE_URL: AnyUrl = None
+    SECRET_KEY: str = "7041b2de450fca0fe128fb5897098945f6daafb1155f83643b4b1fe99f838c25"
 
 
 @lru_cache

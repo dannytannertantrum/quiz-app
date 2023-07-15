@@ -32,7 +32,7 @@ SUBTOPIC_SCIFI_UUID = uuid4()
 
 def get_settings_override():
     return Settings(
-        testing=1, database_url=os.environ.get("DATABASE_TEST_URL"), environment="test"
+        TESTING=1, DATABASE_URL=os.environ.get("DATABASE_TEST_URL"), ENVIRONMENT="test"
     )
 
 
