@@ -1,11 +1,10 @@
-from typing import Optional
-
 from fastapi import APIRouter, Depends, HTTPException, status
-from pydantic import BaseModel, UUID4
+from pydantic import UUID4
 from sqlalchemy.orm import Session
 
 from app.crud import crud_topics
 from app.database import get_db
+from app.schemas.topic import TopicWithDescription
 
 
 router = APIRouter(
@@ -13,15 +12,6 @@ router = APIRouter(
     tags=["topics"],
     responses={404: {"description": "Topic not found"}},
 )
-
-
-class TopicBase(BaseModel):
-    id: UUID4
-    title: str
-
-
-class TopicWithDescription(TopicBase):
-    description: Optional[str]
 
 
 # Homepage will display all primary topics

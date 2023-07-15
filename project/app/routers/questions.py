@@ -1,11 +1,12 @@
 from typing import Annotated
 
 from fastapi import APIRouter, Depends, HTTPException, Query, status
-from pydantic import BaseModel, UUID4
+from pydantic import UUID4
 from sqlalchemy.orm import Session
 
 from app.crud import crud_questions
 from app.database import get_db
+from app.schemas.question import QuestionBase
 
 
 router = APIRouter(
@@ -13,15 +14,6 @@ router = APIRouter(
     tags=["questions"],
     responses={404: {"description": "Question not found"}},
 )
-
-
-class QuestionBase(BaseModel):
-    id: UUID4
-    answer_options: list
-    correct_answer: int
-    question: str
-    question_type: str
-    topic_id: UUID4
 
 
 @router.get("/", response_model=list[QuestionBase], status_code=status.HTTP_200_OK)
