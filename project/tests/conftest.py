@@ -10,7 +10,7 @@ from sqlalchemy.orm import Session, sessionmaker
 from app.config import get_settings, Settings
 from app.database import Base
 from app.main import app
-from app.models import topic, question
+from app.models import topic, question, user
 from tests.utils.question import (
     create_test_question,
     delete_test_questions,
@@ -18,6 +18,7 @@ from tests.utils.question import (
 )
 from tests.utils.string_helpers import random_lower_string
 from tests.utils.topic import create_test_topic, delete_test_topics
+from tests.utils.user import create_test_user, delete_test_users
 
 
 DELETED_PRIMARY_TOPIC_SPORTS_UUID = uuid4()
@@ -59,6 +60,19 @@ def db() -> Generator:
     # so it's easier to create the tables with Base.metadata.create_all(engine)
     Base.metadata.create_all(engine)
     yield SessionTest()
+
+
+@pytest.fixture(scope="function")
+def generate_test_user(db: Session) -> user.User:
+    user = create_test_user(
+        db,
+        email="user@example.com",
+        password="Welcome123",
+    )
+
+    yield user
+
+    delete_test_users(db)
 
 
 @pytest.fixture(scope="class")

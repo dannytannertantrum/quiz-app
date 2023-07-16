@@ -1,3 +1,4 @@
+from typing import Optional
 from uuid import uuid4
 
 from pydantic import EmailStr, UUID4
@@ -9,12 +10,19 @@ from app.schemas.user import UserCreate, UserInDB, UserUpdate
 from app.security import get_password_hash, verify_password
 
 
-def get_user_by_id(db: Session, user_id: UUID4) -> UserInDB:
-    return db.execute(
-        select(User.id, User.email, User.hashed_password).filter(
-            User.id == user_id, User.is_deleted == False
-        )
-    ).first()
+def get_user_by_id(
+    db: Session, user_id: UUID4, check_for_deleted_users: Optional[bool] = False
+) -> UserInDB:
+    if check_for_deleted_users:
+        return db.execute(
+            select(User.id, User.email, User.hashed_password).filter(User.id == user_id)
+        ).first()
+    else:
+        return db.execute(
+            select(User.id, User.email, User.hashed_password).filter(
+                User.id == user_id, User.is_deleted == False
+            )
+        ).first()
 
 
 def get_user_by_email(db: Session, email: EmailStr) -> UserInDB:
