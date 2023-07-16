@@ -65,7 +65,9 @@ class TestCrudUserNotReturningData:
                 email=email,
                 password=current_password,
             )
-            result = crud_users.update_user(db, user_id=user_id, user_input=user_input)
+            result = crud_users.update_user_in_db(
+                db, user_id=user_id, user_input=user_input
+            )
 
             assert result is False
         finally:
@@ -90,7 +92,9 @@ class TestCrudUserNotReturningData:
                 email=email,
                 password=current_password,
             )
-            result = crud_users.update_user(db, user_id=user_id, user_input=user_input)
+            result = crud_users.update_user_in_db(
+                db, user_id=user_id, user_input=user_input
+            )
 
             assert result is False
         finally:
@@ -178,7 +182,7 @@ class TestCrudUserNotReturningData:
             user_exists = crud_users.get_user_by_id(db, user_id=user_id)
             assert user_exists is not None
 
-            crud_users.delete_user(db, user_id=user_id, is_hard_delete=True)
+            crud_users.delete_user_in_db(db, user_id=user_id, is_hard_delete=True)
             user_still_exists = crud_users.get_user_by_id(db, user_id=user_id)
 
             assert user_still_exists is None
@@ -199,7 +203,7 @@ class TestCrudUserNotReturningData:
             user_exists = crud_users.get_user_by_id(db, user_id=user_id)
             assert user_exists is not None
 
-            crud_users.delete_user(db, user_id=user_id, is_hard_delete=False)
+            crud_users.delete_user_in_db(db, user_id=user_id, is_hard_delete=False)
             user_still_exists = crud_users.get_user_by_id(
                 db, user_id=user_id, check_for_deleted_users=True
             )
@@ -226,7 +230,7 @@ class TestCrudUserReturningData:
 
     def test_create_user(self, db: Session) -> None:
         user_input = UserCreate(email="myNewUser@example.com", password="myPassword")
-        result = crud_users.create_user(db, user_input=user_input)
+        result = crud_users.create_user_in_db(db, user_input=user_input)
 
         assert result.id is not None
         assert result.email == "myNewUser@example.com"
@@ -242,7 +246,7 @@ class TestCrudUserReturningData:
             new_password=plain_password,
             confirm_new_password=plain_password,
         )
-        result = crud_users.update_user(
+        result = crud_users.update_user_in_db(
             db, generate_test_user.id, user_input=user_input
         )
 

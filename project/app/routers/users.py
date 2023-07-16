@@ -25,7 +25,7 @@ def create_user(user_input: UserCreate, db: Session = Depends(get_db)) -> UserIn
             status_code=status.HTTP_400_BAD_REQUEST,
             detail="A user with this email already exists in the system.",
         )
-    new_user = crud_users.create_user(db, user_input=user_input)
+    new_user = crud_users.create_user_in_db(db, user_input=user_input)
     return new_user
 
 
@@ -47,7 +47,7 @@ def update_user(
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND, detail="User not found"
         )
-    successfully_updated_user = crud_users.update_user(db, user_id, user_input)
+    successfully_updated_user = crud_users.update_user_in_db(db, user_id, user_input)
     if not successfully_updated_user:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
@@ -72,7 +72,7 @@ def delete_user(
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND, detail="User not found"
         )
-    crud_users.delete_user(db, user_id, is_hard_delete)
+    crud_users.delete_user_in_db(db, user_id, is_hard_delete)
     message = (
         f"Account with email {current_user['email']} has been fully dropped from our database records"
         if is_hard_delete

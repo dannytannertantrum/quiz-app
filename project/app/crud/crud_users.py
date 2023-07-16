@@ -36,7 +36,7 @@ def get_user_by_email(db: Session, email: EmailStr) -> UserInDB:
     ).first()
 
 
-def create_user(db: Session, user_input: UserCreate) -> User:
+def create_user_in_db(db: Session, user_input: UserCreate) -> User:
     new_user_id = uuid4()
     new_user = User(
         id=new_user_id,
@@ -51,7 +51,7 @@ def create_user(db: Session, user_input: UserCreate) -> User:
     return new_user
 
 
-def delete_user(db: Session, user_id: UUID4, is_hard_delete: bool) -> None:
+def delete_user_in_db(db: Session, user_id: UUID4, is_hard_delete: bool) -> None:
     if is_hard_delete:
         db.execute(delete(User).where(User.id == user_id))
     else:
@@ -59,7 +59,7 @@ def delete_user(db: Session, user_id: UUID4, is_hard_delete: bool) -> None:
     db.commit()
 
 
-def update_user(db: Session, user_id: UUID4, user_input: UserUpdate) -> UserInDB:
+def update_user_in_db(db: Session, user_id: UUID4, user_input: UserUpdate) -> UserInDB:
     """
     For right now, a user on the front-end can only update their password
     This returns a full User object
