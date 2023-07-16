@@ -11,7 +11,7 @@ from tests.utils.string_helpers import random_lower_string
 
 
 class TestCrudQuestionNotReturningData:
-    def test_get_questions_via_subtopic_with_question_marked_is_deleted_returns_no_results(
+    def test_get_questions_with_question_marked_is_deleted_returns_no_results(
         self, db: Session, create_test_subtopics_movies: list[Topic]
     ) -> None:
         horror_subtopic = create_test_subtopics_movies[0]
