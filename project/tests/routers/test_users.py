@@ -3,10 +3,14 @@ from uuid import uuid4
 from fastapi.testclient import TestClient
 from sqlalchemy.orm import Session
 
+from app.config import get_settings, Settings
 from app.crud import crud_users
 from app.models.user import User
 from app.security import verify_password
 from tests.utils.user import delete_test_users
+
+
+app_config: Settings = get_settings()
 
 
 class TestUserRoutesFailure:
@@ -46,7 +50,7 @@ class TestUserRoutesFailure:
         user_id = generate_test_user.id
         user_input = {
             "email": generate_test_user.email,
-            "current_password": "Welcome123",
+            "current_password": app_config.TEST_USER_PLAIN_TEXT_PASSWORD,
             "new_password": "Hello",
             "confirm_new_password": "Hello",
         }
@@ -89,7 +93,7 @@ class TestUserRoutesFailure:
         user_id = generate_test_user.id
         user_input = {
             "email": generate_test_user.email,
-            "current_password": "Welcome123",
+            "current_password": app_config.TEST_USER_PLAIN_TEXT_PASSWORD,
             "new_password": "ThisPassword",
             "confirm_new_password": "DoesNotMatchThisOne",
         }
@@ -157,7 +161,7 @@ class TestUserRoutesSuccess:
         new_password = "MatchingNewPassword"
         user_input = {
             "email": generate_test_user.email,
-            "current_password": "Welcome123",
+            "current_password": app_config.TEST_USER_PLAIN_TEXT_PASSWORD,
             "new_password": new_password,
             "confirm_new_password": new_password,
         }

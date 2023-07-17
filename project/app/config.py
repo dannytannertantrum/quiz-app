@@ -1,7 +1,7 @@
 import logging
 from functools import lru_cache
 
-from pydantic import AnyUrl
+from pydantic import AnyUrl, EmailStr
 from pydantic_settings import BaseSettings
 
 log = logging.getLogger("uvicorn")
@@ -21,10 +21,12 @@ class Settings(BaseSettings):
 
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 60
     ALGORITHM: str = "HS256"
-    ENVIRONMENT: str = "dev"
-    TESTING: bool = bool(0)
     DATABASE_URL: AnyUrl = None
+    ENVIRONMENT: str = "dev"
     SECRET_KEY: str = "7041b2de450fca0fe128fb5897098945f6daafb1155f83643b4b1fe99f838c25"
+    TESTING: bool = bool(0)
+    TEST_USER_EMAIL: EmailStr = "user@example.com"
+    TEST_USER_PLAIN_TEXT_PASSWORD: str = "Welcome123"
 
 
 @lru_cache

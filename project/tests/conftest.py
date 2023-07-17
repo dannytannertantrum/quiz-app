@@ -21,6 +21,8 @@ from tests.utils.topic import create_test_topic, delete_test_topics
 from tests.utils.user import create_test_user, delete_test_users
 
 
+app_config: Settings = get_settings()
+
 DELETED_PRIMARY_TOPIC_SPORTS_UUID = uuid4()
 PRIMARY_TOPIC_MOVIES_UUID = uuid4()
 PRIMARY_TOPIC_MUSIC_UUID = uuid4()
@@ -29,8 +31,8 @@ SUBTOPIC_COMEDY_UUID = uuid4()
 SUBTOPIC_DRAMA_UUID = uuid4()
 SUBTOPIC_HORROR_UUID = uuid4()
 SUBTOPIC_SCIFI_UUID = uuid4()
-USER_EMAIL = "user@example.com"
-USER_PASSWORD = "Welcome123"
+USER_EMAIL = app_config.TEST_USER_EMAIL
+USER_PASSWORD = app_config.TEST_USER_PLAIN_TEXT_PASSWORD
 USER_UUID = uuid4()
 
 

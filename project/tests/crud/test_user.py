@@ -2,12 +2,16 @@ from uuid import uuid4
 
 from sqlalchemy.orm import Session
 
+from app.config import get_settings, Settings
 from app.crud import crud_users
 from app.models import User
 from app.schemas.user import UserCreate, UserUpdate
 from app.security import verify_password
 
 from tests.utils.user import create_test_user, delete_test_users
+
+
+app_config: Settings = get_settings()
 
 
 class TestCrudUserNotReturningData:
@@ -19,8 +23,8 @@ class TestCrudUserNotReturningData:
             create_test_user(
                 db,
                 id=user_id,
-                email="user@example.com",
-                password="Welcome123",
+                email="random@example.com",
+                password="MyPassword",
                 is_deleted=True,
             )
             result = crud_users.get_user_by_id(db, user_id)
@@ -32,12 +36,12 @@ class TestCrudUserNotReturningData:
     def test_get_user_by_email_marked_is_deleted_returns_no_result(
         self, db: Session
     ) -> None:
-        user_email = "user@example.com"
+        user_email = "random@example.com"
         try:
             create_test_user(
                 db,
                 email=user_email,
-                password="Welcome123",
+                password="MyPassword",
                 is_deleted=True,
             )
             result = crud_users.get_user_by_email(db, user_email)
@@ -50,8 +54,8 @@ class TestCrudUserNotReturningData:
         self, db: Session
     ) -> None:
         user_id = uuid4()
-        email = "user@example.com"
-        current_password = "Welcome123"
+        email = "random@example.com"
+        current_password = "MyPassword"
         user_input = UserUpdate(
             email=email,
             current_password="thisIsDifferent",
@@ -77,8 +81,8 @@ class TestCrudUserNotReturningData:
         self, db: Session
     ) -> None:
         user_id = uuid4()
-        email = "user@example.com"
-        current_password = "Welcome123"
+        email = "random@example.com"
+        current_password = "MyPassword"
         user_input = UserUpdate(
             email=email,
             current_password=current_password,
@@ -104,8 +108,8 @@ class TestCrudUserNotReturningData:
         self, db: Session
     ) -> None:
         user_id = uuid4()
-        user_email = "user@example.com"
-        user_password = "Welcome123"
+        user_email = "random@example.com"
+        user_password = "MyPassword"
         wrong_email = "this@wontwork.net"
         try:
             create_test_user(
@@ -127,8 +131,8 @@ class TestCrudUserNotReturningData:
         self, db: Session
     ) -> None:
         user_id = uuid4()
-        user_email = "user@example.com"
-        user_password = "Welcome123"
+        user_email = "random@example.com"
+        user_password = "MyPassword"
         try:
             create_test_user(
                 db,
@@ -148,8 +152,8 @@ class TestCrudUserNotReturningData:
     def test_authenticate_user_returns_False_if_password_does_not_match_hashed_version_of_password(
         self, db: Session
     ) -> None:
-        user_email = "user@example.com"
-        user_password = "Welcome123"
+        user_email = "random@example.com"
+        user_password = "MyPassword"
         wrong_password = "wrong!!!!"
         try:
             create_test_user(
@@ -242,7 +246,7 @@ class TestCrudUserReturningData:
         plain_password = "ThisIsANewPassword"
         user_input = UserUpdate(
             email=generate_test_user.email,
-            current_password="Welcome123",
+            current_password=app_config.TEST_USER_PLAIN_TEXT_PASSWORD,
             new_password=plain_password,
             confirm_new_password=plain_password,
         )
@@ -255,11 +259,10 @@ class TestCrudUserReturningData:
         )
 
     def test_authenticate_user(self, db: Session, generate_test_user: User) -> None:
-        plain_text_password_of_generated_user = "Welcome123"
         result = crud_users.authenticate_user(
             db,
             email=generate_test_user.email,
-            password=plain_text_password_of_generated_user,
+            password=app_config.TEST_USER_PLAIN_TEXT_PASSWORD,
         )
 
         assert result.id == generate_test_user.id

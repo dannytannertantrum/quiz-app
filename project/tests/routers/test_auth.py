@@ -1,6 +1,10 @@
 from fastapi.testclient import TestClient
 
+from app.config import get_settings, Settings
 from app.models.user import User
+
+
+app_config: Settings = get_settings()
 
 
 class TestAuthRouteFails:
@@ -19,7 +23,7 @@ class TestAuthRoutesSuccess:
     ) -> None:
         login_data = {
             "username": generate_test_user.email,
-            "password": "Welcome123",
+            "password": app_config.TEST_USER_PLAIN_TEXT_PASSWORD,
         }
         response = client.post("/auth/token", data=login_data)
         tokens = response.json()
