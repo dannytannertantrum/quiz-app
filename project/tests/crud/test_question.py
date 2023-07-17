@@ -115,6 +115,7 @@ class TestCrudQuestionReturningData:
         db: Session,
         create_test_primary_topics: list[Topic],
         create_test_subtopics_movies: list[Topic],
+        create_test_questions: list[Question],
     ) -> None:
         primary_topic_movies: Topic = create_test_primary_topics[0]
         subtopic_comedy: Topic = create_test_subtopics_movies[3]

@@ -144,6 +144,7 @@ class TestQuestionRoutesReturningData:
         client: TestClient,
         create_test_primary_topics: list[Topic],
         create_test_subtopics_movies: list[Topic],
+        create_test_questions: list[Question],
     ) -> None:
         response = client.get(f"/questions/topic/{create_test_primary_topics[0].id}")
         questions: list[Question] = response.json()
@@ -162,6 +163,7 @@ class TestQuestionRoutesReturningData:
         client: TestClient,
         create_test_primary_topics: list[Topic],
         create_test_subtopics_movies: list[Topic],
+        create_test_questions: list[Question],
     ) -> None:
         horror, scifi_empty, drama, comedy = create_test_subtopics_movies
         response = client.get(
