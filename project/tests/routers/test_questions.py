@@ -16,18 +16,18 @@ from tests.utils.kitchen_sink import random_lower_string
 
 class TestQuestionRoutesNotReturningData:
     def test_read_all_questions_returning_empty_list_returns_not_found_error(
-        self, client: TestClient
+        self, client: TestClient, token_headers: dict[str, str]
     ):
-        response = client.get("/questions/")
+        response = client.get("/questions/", headers=token_headers)
 
         assert response.status_code == 404
         assert response.json() == {"detail": "No questions found"}
 
     def test_read_question_by_id_returning_empty_list_returns_not_found_error(
-        self, client: TestClient
+        self, client: TestClient, token_headers: dict[str, str]
     ) -> None:
         random_uuid = uuid4()
-        response = client.get(f"/questions/{random_uuid}")
+        response = client.get(f"/questions/{random_uuid}", headers=token_headers)
 
         assert response.status_code == 404
         assert response.json() == {
@@ -35,7 +35,11 @@ class TestQuestionRoutesNotReturningData:
         }
 
     def test_read_question_marked_is_deleted_returns_no_results(
-        self, client: TestClient, db: Session, create_test_subtopics_movies: list[Topic]
+        self,
+        client: TestClient,
+        db: Session,
+        create_test_subtopics_movies: list[Topic],
+        token_headers: dict[str, str],
     ) -> None:
         horror_subtopic = create_test_subtopics_movies[0]
         try:
@@ -49,7 +53,7 @@ class TestQuestionRoutesNotReturningData:
                 topic_id=horror_subtopic.id,
             )
 
-            response = client.get("/questions/")
+            response = client.get("/questions/", headers=token_headers)
 
             assert response.status_code == 404
             assert response.json() == {"detail": "No questions found"}
@@ -57,7 +61,11 @@ class TestQuestionRoutesNotReturningData:
             delete_test_questions(db)
 
     def test_read_question_with_subtopics_marked_is_deleted_returns_no_results(
-        self, client: TestClient, db: Session, create_deleted_test_subtopic: Topic
+        self,
+        client: TestClient,
+        db: Session,
+        create_deleted_test_subtopic: Topic,
+        token_headers: dict[str, str],
     ) -> None:
         deleted_subtopic = create_deleted_test_subtopic
         try:
@@ -71,7 +79,7 @@ class TestQuestionRoutesNotReturningData:
                 topic_id=deleted_subtopic.id,
             )
 
-            response = client.get("/questions/")
+            response = client.get("/questions/", headers=token_headers)
 
             assert response.status_code == 404
             assert response.json() == {"detail": "No questions found"}
@@ -79,7 +87,11 @@ class TestQuestionRoutesNotReturningData:
             delete_test_questions(db)
 
     def test_read_question_with_primary_topic_marked_is_deleted_returns_no_results(
-        self, client: TestClient, db: Session, create_deleted_test_primary_topic: Topic
+        self,
+        client: TestClient,
+        db: Session,
+        create_deleted_test_primary_topic: Topic,
+        token_headers: dict[str, str],
     ) -> None:
         subtopic_with_deleted_primary_topic = create_test_topic(
             db,
@@ -99,7 +111,7 @@ class TestQuestionRoutesNotReturningData:
                 topic_id=subtopic_with_deleted_primary_topic.id,
             )
 
-            response = client.get("/questions/")
+            response = client.get("/questions/", headers=token_headers)
 
             assert response.status_code == 404
             assert response.json() == {"detail": "No questions found"}
@@ -114,8 +126,9 @@ class TestQuestionRoutesReturningData:
         db: Session,
         client: TestClient,
         create_test_questions: list[Question],
+        token_headers: dict[str, str],
     ) -> None:
-        response = client.get("/questions/")
+        response = client.get("/questions/", headers=token_headers)
         questions: list[Question] = response.json()
 
         assert response.status_code == 200
@@ -126,9 +139,14 @@ class TestQuestionRoutesReturningData:
         assert questions[0]["question"] is not None
 
     def test_read_questions_by_id_returns_one_question(
-        self, client: TestClient, create_test_questions: list[Question]
+        self,
+        client: TestClient,
+        create_test_questions: list[Question],
+        token_headers: dict[str, str],
     ) -> None:
-        response = client.get(f"/questions/{create_test_questions[0].id}")
+        response = client.get(
+            f"/questions/{create_test_questions[0].id}", headers=token_headers
+        )
         question: Question = response.json()
 
         assert response.status_code == 200
@@ -145,8 +163,12 @@ class TestQuestionRoutesReturningData:
         create_test_primary_topics: list[Topic],
         create_test_subtopics_movies: list[Topic],
         create_test_questions: list[Question],
+        token_headers: dict[str, str],
     ) -> None:
-        response = client.get(f"/questions/topic/{create_test_primary_topics[0].id}")
+        response = client.get(
+            f"/questions/topic/{create_test_primary_topics[0].id}",
+            headers=token_headers,
+        )
         questions: list[Question] = response.json()
 
         assert response.status_code == 200
@@ -164,10 +186,12 @@ class TestQuestionRoutesReturningData:
         create_test_primary_topics: list[Topic],
         create_test_subtopics_movies: list[Topic],
         create_test_questions: list[Question],
+        token_headers: dict[str, str],
     ) -> None:
         horror, scifi_empty, drama, comedy = create_test_subtopics_movies
         response = client.get(
-            f"/questions/topic/{create_test_primary_topics[0].id}?subtopic_ids={horror.id},{drama.id}"
+            f"/questions/topic/{create_test_primary_topics[0].id}?subtopic_ids={horror.id},{drama.id}",
+            headers=token_headers,
         )
         questions: list[Question] = response.json()
 

@@ -6,7 +6,9 @@ from sqlalchemy.orm import Session
 
 from app.crud import crud_questions
 from app.database import get_db
+from app.dependencies import get_current_user
 from app.schemas.question import QuestionBase
+from app.schemas.user import UserCurrent
 
 
 router = APIRouter(
@@ -17,7 +19,9 @@ router = APIRouter(
 
 
 @router.get("/", response_model=list[QuestionBase], status_code=status.HTTP_200_OK)
-def read_all_questions(db: Session = Depends(get_db)) -> list[QuestionBase]:
+def read_all_questions(
+    db: Session = Depends(get_db), current_user: UserCurrent = Depends(get_current_user)
+) -> list[QuestionBase]:
     questions = crud_questions.get_questions(db)
     if not questions:
         raise HTTPException(
@@ -31,7 +35,9 @@ def read_all_questions(db: Session = Depends(get_db)) -> list[QuestionBase]:
     "/{question_id}", response_model=QuestionBase, status_code=status.HTTP_200_OK
 )
 def read_question_by_id(
-    question_id: UUID4, db: Session = Depends(get_db)
+    question_id: UUID4,
+    db: Session = Depends(get_db),
+    current_user: UserCurrent = Depends(get_current_user),
 ) -> QuestionBase:
     question = crud_questions.get_question_by_id(db, question_id)
     if not question:
@@ -51,6 +57,7 @@ def read_question_by_id(
 def read_questions_by_primary_topic_id_or_subtopic_ids(
     primary_topic_id: UUID4,
     db: Session = Depends(get_db),
+    current_user: UserCurrent = Depends(get_current_user),
     subtopic_ids: Annotated[str | None, Query()] = None,
 ) -> list[QuestionBase]:
     if subtopic_ids:

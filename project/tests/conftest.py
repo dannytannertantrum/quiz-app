@@ -31,8 +31,6 @@ SUBTOPIC_COMEDY_UUID = uuid4()
 SUBTOPIC_DRAMA_UUID = uuid4()
 SUBTOPIC_HORROR_UUID = uuid4()
 SUBTOPIC_SCIFI_UUID = uuid4()
-USER_EMAIL = app_config.TEST_USER_EMAIL
-USER_PASSWORD = app_config.TEST_USER_PLAIN_TEXT_PASSWORD
 USER_UUID = uuid4()
 
 
@@ -68,8 +66,8 @@ def generate_test_user(db: Session) -> user.User:
     user = create_test_user(
         db,
         id=USER_UUID,
-        email=USER_EMAIL,
-        password=USER_PASSWORD,
+        email=app_config.TEST_USER_EMAIL,
+        password=app_config.TEST_USER_PLAIN_TEXT_PASSWORD,
     )
 
     yield user
@@ -78,8 +76,12 @@ def generate_test_user(db: Session) -> user.User:
 
 
 @pytest.fixture(scope="function")
-def token_headers(client: TestClient) -> dict[str, str]:
-    return get_token_headers(client=client, email=USER_EMAIL, password=USER_PASSWORD)
+def token_headers(client: TestClient, generate_test_user: user.User) -> dict[str, str]:
+    return get_token_headers(
+        client=client,
+        email=app_config.TEST_USER_EMAIL,
+        password=app_config.TEST_USER_PLAIN_TEXT_PASSWORD,
+    )
 
 
 @pytest.fixture(scope="class")

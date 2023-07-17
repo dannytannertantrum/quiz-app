@@ -4,24 +4,25 @@ from fastapi.testclient import TestClient
 from sqlalchemy.orm import Session
 
 from app.models.topic import Topic
+from app.models.user import User
 from tests.utils.topic import create_test_topic, delete_test_topics
 
 
 class TestTopicRoutesNotReturningData:
     def test_read_primary_topics_with_empty_list_returns_not_found_error(
-        self, client: TestClient
+        self, client: TestClient, token_headers: dict[str, str]
     ):
-        response = client.get("/topics/")
+        response = client.get("/topics/", headers=token_headers)
 
         assert response.status_code == 404
         assert response.json() == {"detail": "No topics found"}
 
     def test_read_subtopics_with_empty_list_returns_not_found_error(
-        self, client: TestClient
+        self, client: TestClient, token_headers: dict[str, str]
     ) -> None:
         random_uuid = uuid4()
 
-        response = client.get(f"/topics/{random_uuid}")
+        response = client.get(f"/topics/{random_uuid}", headers=token_headers)
 
         assert response.status_code == 404
         assert response.json() == {
@@ -29,12 +30,12 @@ class TestTopicRoutesNotReturningData:
         }
 
     def test_read_primary_topics_marked_is_deleted_return_no_results(
-        self, client: TestClient, db: Session
+        self, client: TestClient, db: Session, token_headers: dict[str, str]
     ) -> None:
         try:
             create_test_topic(db, title="This should not be returned", is_deleted=True)
 
-            response = client.get("/topics/")
+            response = client.get("/topics/", headers=token_headers)
 
             assert response.status_code == 404
             assert response.json() == {"detail": "No topics found"}
@@ -42,7 +43,7 @@ class TestTopicRoutesNotReturningData:
             delete_test_topics(db)
 
     def test_read_subtopics_with_primary_marked_is_deleted_returns_no_results(
-        self, client: TestClient, db: Session
+        self, client: TestClient, db: Session, token_headers: dict[str, str]
     ) -> None:
         try:
             primary_topic = create_test_topic(
@@ -51,7 +52,7 @@ class TestTopicRoutesNotReturningData:
             # create subtopic
             create_test_topic(db, title="My subtopic", topic_id=primary_topic.id)
 
-            response = client.get(f"/topics/{primary_topic.id}")
+            response = client.get(f"/topics/{primary_topic.id}", headers=token_headers)
 
             assert response.status_code == 404
             assert response.json() == {
@@ -61,7 +62,7 @@ class TestTopicRoutesNotReturningData:
             delete_test_topics(db)
 
     def test_read_subtopics_with_subtopic_marked_is_deleted_returns_no_results(
-        self, client: TestClient, db: Session
+        self, client: TestClient, db: Session, token_headers: dict[str, str]
     ) -> None:
         try:
             primary_topic = create_test_topic(db, title="My primary topic")
@@ -70,7 +71,7 @@ class TestTopicRoutesNotReturningData:
                 db, title="My subtopic", topic_id=primary_topic.id, is_deleted=True
             )
 
-            response = client.get(f"/topics/{primary_topic.id}")
+            response = client.get(f"/topics/{primary_topic.id}", headers=token_headers)
 
             assert response.status_code == 404
             assert response.json() == {
@@ -82,9 +83,12 @@ class TestTopicRoutesNotReturningData:
 
 class TestTopicRoutesReturningData:
     def test_read_primary_topics_returns_topics(
-        self, client: TestClient, create_test_primary_topics: list[Topic]
+        self,
+        client: TestClient,
+        create_test_primary_topics: list[Topic],
+        token_headers: dict[str, str],
     ) -> None:
-        response = client.get("/topics/")
+        response = client.get("/topics/", headers=token_headers)
         topics: list[Topic] = response.json()
 
         assert response.status_code == 200
@@ -99,10 +103,13 @@ class TestTopicRoutesReturningData:
         client: TestClient,
         create_test_primary_topics: list[Topic],
         create_test_subtopics_movies: list[Topic],
+        token_headers: dict[str, str],
     ) -> None:
         primary_topic_movies: Topic = create_test_primary_topics[0]
 
-        response = client.get(f"/topics/{primary_topic_movies.id}")
+        response = client.get(
+            f"/topics/{primary_topic_movies.id}", headers=token_headers
+        )
         subtopics: list[Topic] = response.json()
 
         assert response.status_code == 200

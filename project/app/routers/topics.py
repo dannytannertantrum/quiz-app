@@ -4,7 +4,9 @@ from sqlalchemy.orm import Session
 
 from app.crud import crud_topics
 from app.database import get_db
+from app.dependencies import get_current_user
 from app.schemas.topic import TopicWithDescription
+from app.schemas.user import UserCurrent
 
 
 router = APIRouter(
@@ -18,7 +20,10 @@ router = APIRouter(
 @router.get(
     "/", response_model=list[TopicWithDescription], status_code=status.HTTP_200_OK
 )
-def read_primary_topics(db: Session = Depends(get_db)) -> list[TopicWithDescription]:
+def read_primary_topics(
+    db: Session = Depends(get_db),
+    current_user: UserCurrent = Depends(get_current_user),
+) -> list[TopicWithDescription]:
     topics = crud_topics.get_primary_topics(db)
     if not topics:
         raise HTTPException(
@@ -35,7 +40,9 @@ def read_primary_topics(db: Session = Depends(get_db)) -> list[TopicWithDescript
     status_code=status.HTTP_200_OK,
 )
 def read_subtopics(
-    topic_id: UUID4, db: Session = Depends(get_db)
+    topic_id: UUID4,
+    db: Session = Depends(get_db),
+    current_user: UserCurrent = Depends(get_current_user),
 ) -> list[TopicWithDescription]:
     subtopics = crud_topics.get_subtopics(db, topic_id)
     if not subtopics:
