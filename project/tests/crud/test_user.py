@@ -55,8 +55,8 @@ class TestCrudUserNotReturningData:
         user_input = UserUpdate(
             email=email,
             current_password="thisIsDifferent",
-            new_password="same",
-            confirm_new_password="same",
+            new_password="samePassword",
+            confirm_new_password="samePassword",
         )
         try:
             create_test_user(
@@ -82,7 +82,7 @@ class TestCrudUserNotReturningData:
         user_input = UserUpdate(
             email=email,
             current_password=current_password,
-            new_password="thisOne",
+            new_password="thisPassword",
             confirm_new_password="doesNotMatchThisOne",
         )
         try:

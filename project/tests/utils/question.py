@@ -7,7 +7,7 @@ from sqlalchemy import delete, insert
 from sqlalchemy.orm import Session
 
 from app.models.question import Question
-from tests.utils.string_helpers import random_lower_string
+from tests.utils.kitchen_sink import random_lower_string
 
 
 def create_test_question(

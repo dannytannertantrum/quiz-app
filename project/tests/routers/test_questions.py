@@ -11,7 +11,7 @@ from tests.utils.question import (
     delete_test_questions,
     random_answer_options,
 )
-from tests.utils.string_helpers import random_lower_string
+from tests.utils.kitchen_sink import random_lower_string
 
 
 class TestQuestionRoutesNotReturningData:

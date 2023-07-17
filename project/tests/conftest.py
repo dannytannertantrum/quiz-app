@@ -16,7 +16,7 @@ from tests.utils.question import (
     delete_test_questions,
     random_answer_options,
 )
-from tests.utils.string_helpers import random_lower_string
+from tests.utils.kitchen_sink import random_lower_string, get_token_headers
 from tests.utils.topic import create_test_topic, delete_test_topics
 from tests.utils.user import create_test_user, delete_test_users
 
@@ -29,6 +29,9 @@ SUBTOPIC_COMEDY_UUID = uuid4()
 SUBTOPIC_DRAMA_UUID = uuid4()
 SUBTOPIC_HORROR_UUID = uuid4()
 SUBTOPIC_SCIFI_UUID = uuid4()
+USER_EMAIL = "user@example.com"
+USER_PASSWORD = "Welcome123"
+USER_UUID = uuid4()
 
 
 def get_settings_override():
@@ -66,13 +69,19 @@ def db() -> Generator:
 def generate_test_user(db: Session) -> user.User:
     user = create_test_user(
         db,
-        email="user@example.com",
-        password="Welcome123",
+        id=USER_UUID,
+        email=USER_EMAIL,
+        password=USER_PASSWORD,
     )
 
     yield user
 
     delete_test_users(db)
+
+
+@pytest.fixture(scope="function")
+def token_headers(client: TestClient) -> dict[str, str]:
+    return get_token_headers(client=client, email=USER_EMAIL, password=USER_PASSWORD)
 
 
 @pytest.fixture(scope="class")
