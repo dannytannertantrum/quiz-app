@@ -15,7 +15,7 @@ def create_test_topic(
     id: Optional[UUID4] = None,
     description: Optional[str] = None,
     is_deleted: Optional[bool] = False,
-    topic_id: Optional[UUID4] = None,
+    parent_topic_id: Optional[UUID4] = None,
 ) -> Topic:
     """
     For creating subtopics, the topic_id should be the primary topic id
@@ -32,9 +32,9 @@ def create_test_topic(
             description=description,
             is_deleted=is_deleted,
             title=title,
-            topic_id=topic_id,
+            parent_topic_id=parent_topic_id,
         )
-        .returning(Topic.id, Topic.title, Topic.description, Topic.topic_id)
+        .returning(Topic.id, Topic.title, Topic.description, Topic.parent_topic_id)
     )
 
     db.commit()

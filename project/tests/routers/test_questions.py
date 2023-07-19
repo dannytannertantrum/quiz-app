@@ -97,7 +97,7 @@ class TestQuestionRoutesNotReturningData:
             db,
             title="This is deleted",
             description="So it shouldn't return",
-            topic_id=create_deleted_test_primary_topic.id,
+            parent_topic_id=create_deleted_test_primary_topic.id,
         )
 
         try:

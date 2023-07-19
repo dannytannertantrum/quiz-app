@@ -49,7 +49,7 @@ class TestCrudTopicReturningData:
         # Only return the subtopics
         assert len(result) == len(subtopics_movies)
 
-        assert result[0].topic_id == primary_topic_movies.id
+        assert result[0].parent_topic_id == primary_topic_movies.id
         assert result[0].title is not None
         assert result[0].description is None
         assert result[0].id == subtopics_movies[0].id

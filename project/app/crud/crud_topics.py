@@ -20,7 +20,7 @@ def get_primary_topics(db: Session) -> list[Topic]:
     """
     return db.execute(
         select(Topic.id, Topic.title, Topic.description).filter(
-            Topic.topic_id == None, Topic.is_deleted == False
+            Topic.parent_topic_id == None, Topic.is_deleted == False
         )
     ).all()
 
@@ -35,8 +35,8 @@ def get_subtopics(db: Session, primary_topic_id: UUID4) -> list[Topic]:
         return []
 
     return db.execute(
-        select(Topic.id, Topic.title, Topic.description, Topic.topic_id).filter(
-            Topic.topic_id == primary_topic_id, Topic.is_deleted == False
+        select(Topic.id, Topic.title, Topic.description, Topic.parent_topic_id).filter(
+            Topic.parent_topic_id == primary_topic_id, Topic.is_deleted == False
         )
     ).all()
 
@@ -45,5 +45,5 @@ def get_primary_topic_id_by_subtopic_ids(
     db: Session, subtopic_ids: list[UUID4]
 ) -> Topic:
     return db.execute(
-        select(Topic.topic_id).filter(Topic.id.in_(subtopic_ids))
+        select(Topic.parent_topic_id).filter(Topic.id.in_(subtopic_ids))
     ).scalar()

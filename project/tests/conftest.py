@@ -121,16 +121,28 @@ def create_test_subtopics_movies(
 ) -> list[topic.Topic]:
     primary_topic_movies: topic.Topic = create_test_primary_topics[0]
     subtopic_horror = create_test_topic(
-        db, id=SUBTOPIC_HORROR_UUID, topic_id=primary_topic_movies.id, title="horror"
+        db,
+        id=SUBTOPIC_HORROR_UUID,
+        parent_topic_id=primary_topic_movies.id,
+        title="horror",
     )
     subtopic_scifi = create_test_topic(
-        db, id=SUBTOPIC_SCIFI_UUID, topic_id=primary_topic_movies.id, title="sci-fi"
+        db,
+        id=SUBTOPIC_SCIFI_UUID,
+        parent_topic_id=primary_topic_movies.id,
+        title="sci-fi",
     )
     subtopic_drama = create_test_topic(
-        db, id=SUBTOPIC_DRAMA_UUID, topic_id=primary_topic_movies.id, title="drama"
+        db,
+        id=SUBTOPIC_DRAMA_UUID,
+        parent_topic_id=primary_topic_movies.id,
+        title="drama",
     )
     subtopic_comedy = create_test_topic(
-        db, id=SUBTOPIC_COMEDY_UUID, topic_id=primary_topic_movies.id, title="comedy"
+        db,
+        id=SUBTOPIC_COMEDY_UUID,
+        parent_topic_id=primary_topic_movies.id,
+        title="comedy",
     )
 
     yield [
@@ -148,7 +160,7 @@ def create_deleted_test_subtopic(
 ) -> topic.Topic:
     primary_topic: topic.Topic = create_test_primary_topics[0]
     deleted_subtopic = create_test_topic(
-        db, topic_id=primary_topic.id, title="horror", is_deleted=True
+        db, parent_topic_id=primary_topic.id, title="horror", is_deleted=True
     )
 
     yield deleted_subtopic
@@ -161,7 +173,7 @@ def create_test_subtopic_with_deleted_parent_topic(
 ) -> topic.Topic:
     deleted_primary_topic = create_deleted_test_primary_topic
     subtopic_with_deleted_parent = create_test_topic(
-        db, topic_id=deleted_primary_topic.id, title="horror", is_deleted=False
+        db, parent_topic_id=deleted_primary_topic.id, title="horror", is_deleted=False
     )
 
     yield subtopic_with_deleted_parent

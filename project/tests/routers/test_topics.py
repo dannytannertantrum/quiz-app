@@ -50,7 +50,7 @@ class TestTopicRoutesNotReturningData:
                 db, title="This should not be returned", is_deleted=True
             )
             # create subtopic
-            create_test_topic(db, title="My subtopic", topic_id=primary_topic.id)
+            create_test_topic(db, title="My subtopic", parent_topic_id=primary_topic.id)
 
             response = client.get(f"/topics/{primary_topic.id}", headers=token_headers)
 
@@ -68,7 +68,10 @@ class TestTopicRoutesNotReturningData:
             primary_topic = create_test_topic(db, title="My primary topic")
             # create subtopic
             create_test_topic(
-                db, title="My subtopic", topic_id=primary_topic.id, is_deleted=True
+                db,
+                title="My subtopic",
+                parent_topic_id=primary_topic.id,
+                is_deleted=True,
             )
 
             response = client.get(f"/topics/{primary_topic.id}", headers=token_headers)
