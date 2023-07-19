@@ -16,7 +16,7 @@ def get_questions(db: Session) -> list[Question]:
             Question.question,
             Question.question_type,
             Question.topic_id,
-        ).filter(Question.is_deleted == False)
+        ).where(Question.is_deleted == False)
     ).all()
 
 
@@ -32,7 +32,7 @@ def get_question_by_id(db: Session, question_id: UUID4) -> Question:
             Question.question,
             Question.question_type,
             Question.topic_id,
-        ).filter(Question.id == question_id, Question.is_deleted == False)
+        ).where(Question.id == question_id, Question.is_deleted == False)
     ).first()
 
 
