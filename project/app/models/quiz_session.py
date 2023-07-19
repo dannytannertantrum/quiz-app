@@ -1,24 +1,32 @@
 from datetime import datetime
 
-from sqlalchemy import Boolean, Column, DateTime, String, UUID, sql
-
+from sqlalchemy import (
+    Boolean,
+    Column,
+    DateTime,
+    ForeignKey,
+    Integer,
+    UUID,
+    sql,
+)
 from sqlalchemy.orm import relationship
 
 from app.database import Base
 
 
-class User(Base):
+class QuizSession(Base):
     """
+    Quiz Sessions are created once a user selects subtopics
     Fields:
         - id (PK UUID)
         - created_at (datetime)
         - last_modified_at (datetime)
-        - is_deleted (bool)
-        - email (str)
-        - hashed_password (str)
+        - completed_at (datetime)
+        - score (int)
+        - user_id (FK)
     """
 
-    __tablename__ = "users"
+    __tablename__ = "quiz_sessions"
 
     id = Column(UUID, primary_key=True, index=True)
     created_at = Column(
@@ -32,8 +40,8 @@ class User(Base):
         onupdate=datetime.utcnow,
         server_onupdate=sql.func.now(),
     )
-    is_deleted = Column(Boolean, nullable=False)
-    email = Column(String(128), nullable=False)
-    hashed_password = Column(String(256), nullable=False)
+    completed_at = Column(DateTime(timezone=True), nullable=True)
+    score = Column(Integer, nullable=True)
+    user_id = Column(UUID, ForeignKey("users.id"), nullable=False)
 
-    quiz_sessions = relationship("QuizSession", back_populates="quiz_session_owner")
+    quiz_session_owner = relationship("User", back_populates="quiz_sessions")
