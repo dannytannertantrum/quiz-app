@@ -152,7 +152,9 @@ class TestQuestionRoutesReturningData:
         assert response.status_code == 200
 
         assert question["answer_options"] is not None
-        assert isinstance(question["correct_answer"], int)
+        # Ensure correct answer is not being returned because
+        # we don't want users finding the correct answer in the response
+        assert "correct_answer" not in question
         assert isinstance(question["question"], str)
         assert question["question_type"] == "multiple choice"
         assert question["topic_id"] is not None
@@ -175,7 +177,6 @@ class TestQuestionRoutesReturningData:
         assert len(questions) == len(create_test_subtopics_movies)
 
         assert questions[0]["answer_options"] is not None
-        assert isinstance(questions[0]["correct_answer"], int)
         assert isinstance(questions[0]["question"], str)
         assert questions[0]["question_type"] == "multiple choice"
         assert questions[0]["topic_id"] is not None
@@ -199,7 +200,6 @@ class TestQuestionRoutesReturningData:
         assert len(questions) == 2  # horror and drama each have one question
 
         assert questions[0]["answer_options"] is not None
-        assert isinstance(questions[0]["correct_answer"], int)
         assert isinstance(questions[0]["question"], str)
         assert questions[0]["question_type"] == "multiple choice"
         assert questions[0]["topic_id"] is not None
