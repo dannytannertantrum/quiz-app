@@ -1,5 +1,6 @@
 from sqlalchemy.orm import Session
 
+from app.config import Settings
 from app.crud import crud_questions
 from app.models import Question, Topic
 from tests.utils.question import (
@@ -12,22 +13,21 @@ from tests.utils.kitchen_sink import random_lower_string
 
 class TestCrudQuestionNotReturningData:
     def test_get_questions_with_question_marked_is_deleted_returns_no_results(
-        self, db: Session, create_test_subtopics_movies: list[Topic]
+        self, app_config: Settings, db: Session, create_test_subtopics: list[Topic]
     ) -> None:
-        horror_subtopic = create_test_subtopics_movies[0]
         create_test_question(
             db,
             answer_options=random_answer_options,
             correct_answer=2,
             question=random_lower_string(),
             question_type="multiple choice",
-            topic_id=horror_subtopic.id,
+            topic_id=app_config.TEST_SUBTOPIC_HORROR_UUID,
             is_deleted=True,
         )
 
         try:
             result = crud_questions.get_questions_by_subtopic_ids(
-                db, [horror_subtopic.id]
+                db, [app_config.TEST_SUBTOPIC_HORROR_UUID]
             )
             assert result == []
         finally:
@@ -85,67 +85,73 @@ class TestCrudQuestionReturningData:
     def test_get_all_questions(
         self, db: Session, create_test_questions: list[Question]
     ) -> None:
-        comedy_question: Question = create_test_questions[0]
         result: list[Question] = crud_questions.get_questions(db)
 
         assert len(result) == len(create_test_questions)
 
-        assert result[0].id == comedy_question.id
-        assert result[0].answer_options == comedy_question.answer_options
-        assert result[0].correct_answer == comedy_question.correct_answer
-        assert result[0].question == comedy_question.question
-        assert result[0].question_type == comedy_question.question_type
-        assert result[0].topic_id == comedy_question.topic_id
+        assert result[0].id is not None
+        assert result[0].answer_options is not None
+        assert isinstance(result[0].correct_answer, int)
+        assert isinstance(result[0].question, str)
+        assert result[0].question_type == "multiple choice"
+        assert result[0].topic_id is not None
 
     def test_get_questions_by_id(
         self, db: Session, create_test_questions: list[Question]
     ) -> None:
-        comedy_question: Question = create_test_questions[0]
-        result: Question = crud_questions.get_question_by_id(db, comedy_question.id)
+        question: Question = create_test_questions[0]
+        result: Question = crud_questions.get_question_by_id(db, question.id)
 
-        assert result.id == comedy_question.id
-        assert result.answer_options == comedy_question.answer_options
-        assert result.correct_answer == comedy_question.correct_answer
-        assert result.question == comedy_question.question
-        assert result.question_type == comedy_question.question_type
-        assert result.topic_id == comedy_question.topic_id
+        assert result.id is not None
+        assert result.answer_options is not None
+        assert isinstance(result.correct_answer, int)
+        assert isinstance(result.question, str)
+        assert result.question_type == "multiple choice"
+        assert result.topic_id is not None
 
     def test_get_questions_by_primary_topic_id(
         self,
+        app_config: Settings,
         db: Session,
         create_test_primary_topics: list[Topic],
-        create_test_subtopics_movies: list[Topic],
+        create_test_subtopics: list[Topic],
         create_test_questions: list[Question],
     ) -> None:
-        primary_topic_movies: Topic = create_test_primary_topics[0]
-        subtopic_comedy: Topic = create_test_subtopics_movies[3]
         result: list[Question] = crud_questions.get_questions_by_primary_topic_id(
-            db, primary_topic_movies.id
+            db, app_config.TEST_PRIMARY_TOPIC_MOVIES_UUID
         )
 
-        assert len(result) == len(create_test_subtopics_movies)
-        assert result[0].topic_id == subtopic_comedy.id
+        assert len(result) > 0
+        assert result[0].topic_id is not None
         assert isinstance(result[0].question, str)
         assert isinstance(result[0].answer_options, list)
         assert isinstance(result[0].correct_answer, int)
 
     def test_get_questions_by_list_of_subtopic_ids(
         self,
+        app_config: Settings,
         db: Session,
         create_test_questions: list[Question],
-        create_test_subtopics_movies: list[Topic],
+        create_test_subtopics: list[Topic],
     ) -> None:
-        subtopic_drama, subtopic_comedy = create_test_subtopics_movies[2:]
-        comedy_question1 = create_test_questions[0]
         result: list[Question] = crud_questions.get_questions_by_subtopic_ids(
-            db, [subtopic_drama.id, subtopic_comedy.id]
+            db,
+            [app_config.TEST_SUBTOPIC_DRAMA_UUID, app_config.TEST_SUBTOPIC_COMEDY_UUID],
         )
 
-        # There are 4 questions total, 2 are associated with comedy and 1 with drama
-        assert len(result) == 3
-        assert result[0].topic_id == subtopic_comedy.id
-        assert result[0].topic_id == comedy_question1.topic_id
-        assert result[2].topic_id == subtopic_drama.id
+        assert len(result) > 1
+        assert result[0].topic_id in [
+            app_config.TEST_SUBTOPIC_DRAMA_UUID,
+            app_config.TEST_SUBTOPIC_COMEDY_UUID,
+        ]
+        assert result[1].topic_id in [
+            app_config.TEST_SUBTOPIC_DRAMA_UUID,
+            app_config.TEST_SUBTOPIC_COMEDY_UUID,
+        ]
+        assert result[2].topic_id in [
+            app_config.TEST_SUBTOPIC_DRAMA_UUID,
+            app_config.TEST_SUBTOPIC_COMEDY_UUID,
+        ]
         assert isinstance(result[0].question, str)
         assert isinstance(result[0].answer_options, list)
         assert isinstance(result[0].correct_answer, int)

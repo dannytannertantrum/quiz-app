@@ -1,7 +1,8 @@
 import logging
 from functools import lru_cache
+from uuid import uuid4
 
-from pydantic import AnyUrl, EmailStr
+from pydantic import AnyUrl, EmailStr, UUID4
 from pydantic_settings import BaseSettings
 
 log = logging.getLogger("uvicorn")
@@ -25,6 +26,22 @@ class Settings(BaseSettings):
     ENVIRONMENT: str = "dev"
     SECRET_KEY: str = "7041b2de450fca0fe128fb5897098945f6daafb1155f83643b4b1fe99f838c25"
     TESTING: bool = bool(0)
+
+    # Used for testing purposes
+    TEST_DELETED_PRIMARY_TOPIC_SPORTS_UUID: UUID4 = uuid4()
+    TEST_PRIMARY_TOPIC_MOVIES_UUID: UUID4 = uuid4()
+    TEST_PRIMARY_TOPIC_MUSIC_UUID: UUID4 = uuid4()
+    TEST_PRIMARY_TOPIC_SPORTSBALL_UUID: UUID4 = uuid4()
+    TEST_SUBTOPIC_COMEDY_UUID: UUID4 = uuid4()
+    TEST_SUBTOPIC_DRAMA_UUID: UUID4 = uuid4()
+    TEST_SUBTOPIC_FOOTBALL_UUID: UUID4 = uuid4()
+    TEST_SUBTOPIC_HOCKEY_UUID: UUID4 = uuid4()
+    TEST_SUBTOPIC_HORROR_UUID: UUID4 = uuid4()
+    TEST_SUBTOPIC_METAL_UUID: UUID4 = uuid4()
+    TEST_SUBTOPIC_SCIFI_UUID: UUID4 = uuid4()
+    TEST_SUBTOPIC_TECHNO_UUID: UUID4 = uuid4()
+    TEST_USER_UUID: UUID4 = uuid4()
+
     TEST_USER_EMAIL: EmailStr = "user@example.com"
     TEST_USER_PLAIN_TEXT_PASSWORD: str = "Welcome123"
 

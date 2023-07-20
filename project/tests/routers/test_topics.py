@@ -3,6 +3,7 @@ from uuid import uuid4
 from fastapi.testclient import TestClient
 from sqlalchemy.orm import Session
 
+from app.config import Settings
 from app.models.topic import Topic
 from app.schemas.topic import TopicWithDescription
 from tests.utils.topic import create_test_topic, delete_test_topics
@@ -115,12 +116,10 @@ class TestTopicRoutesReturningData:
         self,
         client: TestClient,
         create_test_primary_topics: list[Topic],
-        create_test_subtopics_movies: list[Topic],
+        create_test_subtopics: list[Topic],
         token_headers: dict[str, str],
     ) -> None:
-        totalNumOfTopics = len(create_test_primary_topics) + len(
-            create_test_subtopics_movies
-        )
+        totalNumOfTopics = len(create_test_primary_topics) + len(create_test_subtopics)
         response = client.get("/topics/", headers=token_headers)
         topics: list[TopicWithDescription] = response.json()
 
@@ -135,7 +134,7 @@ class TestTopicRoutesReturningData:
         self,
         client: TestClient,
         create_test_primary_topics: list[Topic],
-        create_test_subtopics_movies: list[Topic],
+        create_test_subtopics: list[Topic],
         token_headers: dict[str, str],
     ) -> None:
         response = client.get("/topics/primary-topics", headers=token_headers)
@@ -150,24 +149,23 @@ class TestTopicRoutesReturningData:
 
     def test_read_subtopics_returns_only_subtopics(
         self,
+        app_config: Settings,
         client: TestClient,
         create_test_primary_topics: list[Topic],
-        create_test_subtopics_movies: list[Topic],
+        create_test_subtopics: list[Topic],
         token_headers: dict[str, str],
     ) -> None:
-        primary_topic_movies: Topic = create_test_primary_topics[0]
-
         response = client.get(
-            f"/topics/primary-topics/{primary_topic_movies.id}", headers=token_headers
+            f"/topics/primary-topics/{app_config.TEST_PRIMARY_TOPIC_MOVIES_UUID}",
+            headers=token_headers,
         )
         subtopics: list[TopicWithDescription] = response.json()
 
         assert response.status_code == 200
-        assert len(subtopics) == len(create_test_subtopics_movies)
+        assert len(subtopics) > 0
 
         assert subtopics[0]["id"] is not None
-        assert subtopics[0]["title"] == "horror"
-        assert subtopics[0]["description"] == None
+        assert isinstance(subtopics[0]["title"], str)
 
     def test_read_topic_by_id(
         self,

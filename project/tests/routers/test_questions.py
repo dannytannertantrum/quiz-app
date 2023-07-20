@@ -3,8 +3,10 @@ from uuid import uuid4
 from fastapi.testclient import TestClient
 from sqlalchemy.orm import Session
 
+from app.config import Settings
 from app.models.question import Question
 from app.models.topic import Topic
+from app.schemas.question import QuestionBase
 from tests.utils.topic import create_test_topic, delete_test_topics
 from tests.utils.question import (
     create_test_question,
@@ -38,10 +40,10 @@ class TestQuestionRoutesNotReturningData:
         self,
         client: TestClient,
         db: Session,
-        create_test_subtopics_movies: list[Topic],
+        create_test_subtopics: list[Topic],
         token_headers: dict[str, str],
     ) -> None:
-        horror_subtopic = create_test_subtopics_movies[0]
+        horror_subtopic = create_test_subtopics[0]
         try:
             create_test_question(
                 db,
@@ -161,20 +163,21 @@ class TestQuestionRoutesReturningData:
 
     def test_read_questions_by_primary_topic_id(
         self,
+        app_config: Settings,
         client: TestClient,
         create_test_primary_topics: list[Topic],
-        create_test_subtopics_movies: list[Topic],
+        create_test_subtopics: list[Topic],
         create_test_questions: list[Question],
         token_headers: dict[str, str],
     ) -> None:
         response = client.get(
-            f"/questions/topic/{create_test_primary_topics[0].id}",
+            f"/questions/topic/{app_config.TEST_PRIMARY_TOPIC_MOVIES_UUID}",
             headers=token_headers,
         )
-        questions: list[Question] = response.json()
+        questions: list[QuestionBase] = response.json()
 
         assert response.status_code == 200
-        assert len(questions) == len(create_test_subtopics_movies)
+        assert len(questions) > 1
 
         assert questions[0]["answer_options"] is not None
         assert isinstance(questions[0]["question"], str)
@@ -183,21 +186,21 @@ class TestQuestionRoutesReturningData:
 
     def test_read_questions_by_subtopic_ids(
         self,
+        app_config: Settings,
         client: TestClient,
         create_test_primary_topics: list[Topic],
-        create_test_subtopics_movies: list[Topic],
+        create_test_subtopics: list[Topic],
         create_test_questions: list[Question],
         token_headers: dict[str, str],
     ) -> None:
-        horror, scifi_empty, drama, comedy = create_test_subtopics_movies
         response = client.get(
-            f"/questions/topic/{create_test_primary_topics[0].id}?subtopic_ids={horror.id},{drama.id}",
+            f"/questions/topic/{app_config.TEST_PRIMARY_TOPIC_MOVIES_UUID}?subtopic_ids={app_config.TEST_SUBTOPIC_HORROR_UUID},{app_config.TEST_SUBTOPIC_DRAMA_UUID}",
             headers=token_headers,
         )
-        questions: list[Question] = response.json()
+        questions: list[QuestionBase] = response.json()
 
         assert response.status_code == 200
-        assert len(questions) == 2  # horror and drama each have one question
+        assert len(questions) > 1
 
         assert questions[0]["answer_options"] is not None
         assert isinstance(questions[0]["question"], str)

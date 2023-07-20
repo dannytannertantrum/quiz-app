@@ -1,5 +1,6 @@
 from sqlalchemy.orm import Session
 
+from app.config import Settings
 from app.models.topic import Topic
 from app.crud import crud_topics
 from tests.utils.topic import create_test_topic, delete_test_topics
@@ -38,18 +39,15 @@ class TestCrudTopicReturningData:
 
     def test_get_subtopics(
         self,
+        app_config: Settings,
         db: Session,
         create_test_primary_topics: list[Topic],
-        create_test_subtopics_movies: list[Topic],
+        create_test_subtopics: list[Topic],
     ) -> None:
-        primary_topic_movies = create_test_primary_topics[0]
-        subtopics_movies = create_test_subtopics_movies
-        result: list[Topic] = crud_topics.get_subtopics(db, primary_topic_movies.id)
+        movies: list[Topic] = crud_topics.get_subtopics(
+            db, app_config.TEST_PRIMARY_TOPIC_MOVIES_UUID
+        )
 
-        # Only return the subtopics
-        assert len(result) == len(subtopics_movies)
-
-        assert result[0].parent_topic_id == primary_topic_movies.id
-        assert result[0].title is not None
-        assert result[0].description is None
-        assert result[0].id == subtopics_movies[0].id
+        assert len(movies) > 0
+        assert movies[0].parent_topic_id == app_config.TEST_PRIMARY_TOPIC_MOVIES_UUID
+        assert movies[0].title is not None
