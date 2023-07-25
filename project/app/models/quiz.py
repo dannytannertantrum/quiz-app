@@ -1,7 +1,6 @@
 from datetime import datetime
 
 from sqlalchemy import (
-    Boolean,
     Column,
     DateTime,
     ForeignKey,
@@ -14,9 +13,9 @@ from sqlalchemy.orm import relationship
 from app.database import Base
 
 
-class QuizSession(Base):
+class Quiz(Base):
     """
-    Quiz Sessions are created once a user selects subtopics
+    Quizzes are created once a user selects subtopics
     Fields:
         - id (PK UUID)
         - created_at (datetime)
@@ -26,7 +25,7 @@ class QuizSession(Base):
         - user_id (FK)
     """
 
-    __tablename__ = "quiz_sessions"
+    __tablename__ = "quizzes"
 
     id = Column(UUID, primary_key=True, index=True)
     created_at = Column(
@@ -44,4 +43,4 @@ class QuizSession(Base):
     score = Column(Integer, nullable=True)
     user_id = Column(UUID, ForeignKey("users.id"), nullable=False)
 
-    quiz_session_owner = relationship("User", back_populates="quiz_sessions")
+    quiz_owner = relationship("User", back_populates="quizzes")

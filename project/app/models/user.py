@@ -36,4 +36,4 @@ class User(Base):
     email = Column(String(128), nullable=False)
     hashed_password = Column(String(256), nullable=False)
 
-    quiz_sessions = relationship("QuizSession", back_populates="quiz_session_owner")
+    quizzes = relationship("Quiz", back_populates="quiz_owner")
