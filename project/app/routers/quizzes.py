@@ -1,13 +1,10 @@
-import random
-
 from fastapi import APIRouter, Depends, HTTPException, status
-from pydantic import UUID4
 from sqlalchemy.orm import Session
 
 from app.crud import crud_questions, crud_quizzes, crud_quiz_questions
 from app.database import get_db
 from app.dependencies import get_current_user
-from app.models.question import Question
+from app.helper_functions import choose_random_questions
 from app.schemas.quiz import QuizCreate
 from app.schemas.quiz_question import QuizQuestionBase
 from app.schemas.user import UserCurrent
@@ -18,19 +15,6 @@ router = APIRouter(
     tags=["quizzes"],
     responses={404: {"description": "Quiz not found"}},
 )
-
-
-def choose_random_questions(
-    questions: list[Question], picked_questions=[]
-) -> list[UUID4]:
-    if len(picked_questions) == 5:
-        return picked_questions
-
-    question = random.choice(questions)
-    if question.id not in picked_questions:
-        picked_questions.append(question.id)
-
-    return choose_random_questions(questions, picked_questions)
 
 
 @router.post(
