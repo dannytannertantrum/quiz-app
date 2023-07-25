@@ -41,6 +41,6 @@ class Quiz(Base):
     )
     completed_at = Column(DateTime(timezone=True), nullable=True)
     score = Column(Integer, nullable=True)
-    user_id = Column(UUID, ForeignKey("users.id"), nullable=False)
+    user_id = Column(UUID, ForeignKey("users.id", ondelete="CASCADE"), nullable=False)
 
     quiz_owner = relationship("User", back_populates="quizzes")

@@ -20,7 +20,7 @@ router = APIRouter(
 @router.post(
     "/",
     response_model=list[QuizQuestionBase],
-    status_code=status.HTTP_200_OK,
+    status_code=status.HTTP_201_CREATED,
     description="User input is a list of subtopic ids",
 )
 def create_quiz(
@@ -37,7 +37,7 @@ def create_quiz(
             status_code=status.HTTP_400_BAD_REQUEST, detail="Not enough questions found"
         )
 
-    question_ids = choose_random_questions(questions)
+    question_ids = choose_random_questions(questions, picked_questions=[])
     quiz_question_ids = crud_quiz_questions.create_quiz_question_in_db(
         db, question_ids, quiz_id
     )
