@@ -1,5 +1,5 @@
 from pydantic import BaseModel, UUID4
 
 
-class QuizQuestionBase(BaseModel):
+class QuizQuestionId(BaseModel):
     id: UUID4

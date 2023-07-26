@@ -3,19 +3,24 @@ from typing import Generator
 
 import pytest
 from fastapi.testclient import TestClient
+from pydantic import UUID4
 from sqlalchemy import create_engine
 from sqlalchemy.orm import Session, sessionmaker
 
 from app.config import get_settings, Settings
+from app.crud import crud_quizzes, crud_quiz_questions
 from app.database import Base
 from app.main import app
 from app.models import topic, question, user
+from app.schemas import quiz, quiz_question
 from tests.utils.question import (
     create_test_question,
     delete_test_questions,
     random_answer_options,
 )
 from tests.utils.kitchen_sink import random_lower_string, get_token_headers
+from tests.utils.quiz import delete_test_quizzes
+from tests.utils.quiz_question import delete_test_quiz_questions
 from tests.utils.topic import create_test_topic, delete_test_topics
 from tests.utils.user import create_test_user, delete_test_users
 
@@ -231,3 +236,25 @@ def create_test_questions(
 
     yield questionsToYield
     delete_test_questions(db)
+
+
+@pytest.fixture(scope="function")
+def create_test_quiz(db: Session, generate_test_user: user.User) -> quiz.QuizId:
+    yield crud_quizzes.create_quiz_in_db(db, user_id=generate_test_user.id)
+    delete_test_quizzes(db)
+
+
+@pytest.fixture(scope="function")
+def create_test_quiz_question(
+    db: Session,
+    create_test_questions: list[question.Question],
+    create_test_quiz: quiz.QuizId,
+) -> list[quiz_question.QuizQuestionId]:
+    questions = create_test_questions[:5]
+    question_ids: list[UUID4] = list(map(lambda x: x[0], questions))
+    quiz_question_ids = crud_quiz_questions.create_quiz_question_in_db(
+        db, question_ids=question_ids, quiz_id=create_test_quiz
+    )
+
+    yield quiz_question_ids
+    delete_test_quiz_questions(db)
