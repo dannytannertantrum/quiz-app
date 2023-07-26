@@ -37,7 +37,6 @@ class TestCrudQuizQuestionSuccess:
         result = crud_quiz_questions.get_quiz_questions_by_quiz_id(
             db, quiz_id=create_test_quiz
         )
-        first_id = result[0][0]
 
         assert len(result) == 5
-        assert isinstance(first_id, UUID)
+        assert isinstance(result[0], UUID)

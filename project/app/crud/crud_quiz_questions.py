@@ -5,18 +5,19 @@ from sqlalchemy import select
 from sqlalchemy.orm import Session
 
 from app.models.quiz_question import QuizQuestion
-from app.schemas.quiz_question import QuizQuestionId
 
 
-def get_quiz_questions_by_quiz_id(db: Session, quiz_id: UUID4) -> list[QuizQuestionId]:
-    return db.execute(
-        select(QuizQuestion.id).where(QuizQuestion.quiz_id == quiz_id)
-    ).all()
+def get_quiz_questions_by_quiz_id(db: Session, quiz_id: UUID4) -> list[UUID4]:
+    return (
+        db.execute(select(QuizQuestion.id).where(QuizQuestion.quiz_id == quiz_id))
+        .scalars()
+        .all()
+    )
 
 
 def create_quiz_question_in_db(
     db: Session, question_ids: list[UUID4], quiz_id: UUID4
-) -> list[QuizQuestionId]:
+) -> list[UUID4]:
     for i in question_ids:
         new_quiz_question_id = uuid4()
         new_record = QuizQuestion(
