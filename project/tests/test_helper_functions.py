@@ -14,7 +14,7 @@ class TestHelperFunctionsFailure:
     ):
         too_short = [MockQuestion(id=uuid4()), MockQuestion(id=uuid4())]
 
-        result = choose_random_questions(too_short)
+        result = choose_random_questions(too_short, picked_questions=[])
 
         assert result == []
 
@@ -31,7 +31,7 @@ class TestHelperFunctionsSuccess:
             MockQuestion(id=uuid4()),
         ]
 
-        result = choose_random_questions(good_list)
+        result = choose_random_questions(good_list, picked_questions=[])
         unique_list = set(result)
 
         assert len(result) == 5
