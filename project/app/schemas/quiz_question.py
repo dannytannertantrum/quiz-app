@@ -1,6 +1,6 @@
 from typing import Optional
 
-from pydantic import BaseModel, UUID4
+from pydantic import BaseModel, Field, UUID4
 
 
 class QuizQuestionId(BaseModel):
@@ -8,7 +8,8 @@ class QuizQuestionId(BaseModel):
 
 
 class QuizQuestionUpdateAnswer(BaseModel):
-    user_answer: Optional[int]
+    # For now, users only have a max of 4 answer options
+    user_answer: Optional[int] = Field(default=None, le=4)
 
 
 class QuizQuestionAndAnswers(QuizQuestionId, QuizQuestionUpdateAnswer):

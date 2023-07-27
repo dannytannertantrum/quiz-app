@@ -41,6 +41,23 @@ class TestQuizQuestionRoutesFailure:
             "detail": f"No question associated with quiz question id: {random_uuid}"
         }
 
+    def test_update_quiz_question_raises_exception_when_answer_id_greater_than_4(
+        self,
+        client: TestClient,
+        token_headers: dict[str, str],
+        create_test_quiz_question: list[QuizQuestionId],
+    ):
+        quiz_question_id = create_test_quiz_question[0]
+        user_input = {"user_answer": 5}
+
+        response = client.put(
+            f"/quiz-questions/{quiz_question_id}",
+            headers=token_headers,
+            json=user_input,
+        )
+
+        assert response.status_code == 422
+
 
 class TestQuizQuestionRoutesSuccess:
     def test_get_quiz_question_by_id(
