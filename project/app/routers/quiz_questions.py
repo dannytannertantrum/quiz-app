@@ -26,19 +26,20 @@ def read_quiz_question_by_id(
     db: Session = Depends(get_db),
     current_user: UserCurrent = Depends(get_current_user),
 ) -> QuizQuestionAndAnswers:
-    question_id = crud_quiz_questions.get_question_by_quiz_question_id(
-        db, quiz_question_id
-    )
-    if not question_id:
+    result = crud_quiz_questions.get_question_by_quiz_question_id(db, quiz_question_id)
+    if not result:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
             detail=f"No question associated with quiz question id: {quiz_question_id}",
         )
 
-    question_info = crud_questions.get_question_by_id(db, question_id=question_id)
+    question_info = crud_questions.get_question_by_id(
+        db, question_id=result.question_id
+    )
 
     return {
         "id": quiz_question_id,
         "question": question_info.question,
         "answer_options": question_info.answer_options,
+        "user_answer": result.user_answer,
     }

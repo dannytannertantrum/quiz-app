@@ -47,10 +47,10 @@ class TestCrudQuizQuestionSuccess:
         create_test_quiz_question: list[QuizQuestionId],
         create_test_quiz: QuizId,
     ) -> None:
-        question_id = crud_quiz_questions.get_question_by_quiz_question_id(
+        result = crud_quiz_questions.get_question_by_quiz_question_id(
             db, quiz_question_id=create_test_quiz_question[0]
         )
-        question = crud_questions.get_question_by_id(db, question_id=question_id)
+        question = crud_questions.get_question_by_id(db, question_id=result.question_id)
 
-        assert isinstance(question_id, UUID)
+        assert isinstance(result.question_id, UUID)
         assert question is not None
