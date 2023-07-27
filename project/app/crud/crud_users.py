@@ -13,6 +13,9 @@ from app.security import get_password_hash, verify_password
 def get_user_by_id(
     db: Session, user_id: UUID4, check_for_deleted_users: Optional[bool] = False
 ) -> UserInDB:
+    """
+    Returns id, email and hashed password of user or None if no record found
+    """
     if check_for_deleted_users:
         return db.execute(
             select(User.id, User.email, User.hashed_password).where(User.id == user_id)
@@ -27,7 +30,7 @@ def get_user_by_id(
 
 def get_user_by_email(db: Session, email: EmailStr) -> UserInDB:
     """
-    Returns user id, email and hashed password if user is active
+    Returns user id, email and hashed password if user is active or None if no record found
     """
     return db.execute(
         select(User.id, User.email, User.hashed_password).where(
@@ -37,6 +40,9 @@ def get_user_by_email(db: Session, email: EmailStr) -> UserInDB:
 
 
 def create_user_in_db(db: Session, user_input: UserCreate) -> User:
+    """
+    Creates and returns a new user record
+    """
     new_user_id = uuid4()
     new_user = User(
         id=new_user_id,
@@ -52,6 +58,11 @@ def create_user_in_db(db: Session, user_input: UserCreate) -> User:
 
 
 def delete_user_in_db(db: Session, user_id: UUID4, is_hard_delete: bool) -> None:
+    """
+    Performs a record deletion if is_hard_delete is set to true.
+    Otherwise, a soft delete is performed where the is_deleted field is updated to True
+    Does not return anything
+    """
     if is_hard_delete:
         db.execute(delete(User).where(User.id == user_id))
     else:
@@ -62,7 +73,7 @@ def delete_user_in_db(db: Session, user_id: UUID4, is_hard_delete: bool) -> None
 def update_user_in_db(db: Session, user_id: UUID4, user_input: UserUpdate) -> UserInDB:
     """
     For right now, a user on the front-end can only update their password
-    This returns a full User object
+    Updates and returns a the users id, email and hashed password
     """
     user = get_user_by_id(db, user_id)
 
@@ -84,6 +95,9 @@ def update_user_in_db(db: Session, user_id: UUID4, user_input: UserUpdate) -> Us
 
 
 def authenticate_user(db: Session, email: EmailStr, password: str):
+    """
+    Verifies a user has the correct password
+    """
     user = get_user_by_email(db, email)
     if not user:
         return False

@@ -1,3 +1,5 @@
+from uuid import uuid4
+
 from sqlalchemy.orm import Session
 
 from app.config import Settings
@@ -12,6 +14,20 @@ from tests.utils.kitchen_sink import random_lower_string
 
 
 class TestCrudQuestionNotReturningData:
+    def test_get_questions_returns_empty_list_when_no_questions_exist(
+        self, db: Session
+    ) -> None:
+        result = crud_questions.get_questions(db)
+
+        assert result == []
+
+    def test_get_question_by_id_returns_None_when_no_questions_exist(
+        self, db: Session
+    ) -> None:
+        result = crud_questions.get_question_by_id(db, question_id=uuid4())
+
+        assert result is None
+
     def test_get_questions_with_question_marked_is_deleted_returns_no_results(
         self, app_config: Settings, db: Session, create_test_subtopics: list[Topic]
     ) -> None:

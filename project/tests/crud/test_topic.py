@@ -1,3 +1,5 @@
+from uuid import uuid4
+
 from sqlalchemy.orm import Session
 
 from app.config import Settings
@@ -6,7 +8,45 @@ from app.crud import crud_topics
 from tests.utils.topic import create_test_topic, delete_test_topics
 
 
+random_uuid = uuid4()
+
+
 class TestCrudTopicNotReturningData:
+    def test_get_all_topics_returns_empty_list_if_no_records_round(
+        self, db: Session
+    ) -> None:
+        result = crud_topics.get_all_topics(db)
+
+        assert result == []
+
+    def test_get_topic_by_id_returns_None_if_no_record_found(self, db: Session) -> None:
+        result = crud_topics.get_topic_by_id(db, topic_id=random_uuid)
+
+        assert result is None
+
+    def test_get_primary_topics_returns_empty_list_if_no_records_round(
+        self, db: Session
+    ) -> None:
+        result = crud_topics.get_primary_topics(db)
+
+        assert result == []
+
+    def test_get_subtopics_returns_empty_list_if_no_records_round(
+        self, db: Session
+    ) -> None:
+        result = crud_topics.get_subtopics(db, primary_topic_id=random_uuid)
+
+        assert result == []
+
+    def test_get_primary_topic_id_by_subtopic_ids_returns_None_if_no_records_round(
+        self, db: Session
+    ) -> None:
+        result = crud_topics.get_primary_topic_id_by_subtopic_ids(
+            db, subtopic_ids=[random_uuid]
+        )
+
+        assert result is None
+
     def test_get_topics_marked_is_deleted_return_no_results(self, db: Session) -> None:
         try:
             create_test_topic(db, title="This should not be returned", is_deleted=True)
