@@ -15,6 +15,12 @@ def get_quiz_questions_by_quiz_id(db: Session, quiz_id: UUID4) -> list[UUID4]:
     )
 
 
+def get_question_by_quiz_question_id(db: Session, quiz_question_id: UUID4) -> UUID4:
+    return db.execute(
+        select(QuizQuestion.question_id).where(QuizQuestion.id == quiz_question_id)
+    ).scalar()
+
+
 def create_quiz_question_in_db(
     db: Session, question_ids: list[UUID4], quiz_id: UUID4
 ) -> list[UUID4]:

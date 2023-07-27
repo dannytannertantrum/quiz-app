@@ -26,7 +26,7 @@ class Question(Base):
         - created_at (datetime)
         - last_modified_at (datetime)
         - answer_options: [
-            - {id: incrementing or UUID, option: string},
+            - {id: int, option: string},
         - ],
         - correct_answer: <id of correct answer>
         - is_deleted (bool)

@@ -3,7 +3,7 @@ from uuid import UUID
 from pydantic import UUID4
 from sqlalchemy.orm import Session
 
-from app.crud import crud_quiz_questions
+from app.crud import crud_questions, crud_quiz_questions
 from app.models import Question
 from app.schemas.quiz import QuizId
 from app.schemas.quiz_question import QuizQuestionId
@@ -40,3 +40,17 @@ class TestCrudQuizQuestionSuccess:
 
         assert len(result) == 5
         assert isinstance(result[0], UUID)
+
+    def test_get_question_by_quiz_question_id(
+        self,
+        db: Session,
+        create_test_quiz_question: list[QuizQuestionId],
+        create_test_quiz: QuizId,
+    ) -> None:
+        question_id = crud_quiz_questions.get_question_by_quiz_question_id(
+            db, quiz_question_id=create_test_quiz_question[0]
+        )
+        question = crud_questions.get_question_by_id(db, question_id=question_id)
+
+        assert isinstance(question_id, UUID)
+        assert question is not None
