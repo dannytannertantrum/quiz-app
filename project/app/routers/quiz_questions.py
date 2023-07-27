@@ -5,7 +5,7 @@ from sqlalchemy.orm import Session
 from app.crud import crud_questions, crud_quiz_questions
 from app.database import get_db
 from app.dependencies import get_current_user
-from app.schemas.quiz_question import QuizQuestionAndAnswers
+from app.schemas.quiz_question import QuizQuestionAndAnswers, QuizQuestionUpdateAnswer
 from app.schemas.user import UserCurrent
 
 
@@ -26,20 +26,43 @@ def read_quiz_question_by_id(
     db: Session = Depends(get_db),
     current_user: UserCurrent = Depends(get_current_user),
 ) -> QuizQuestionAndAnswers:
-    result = crud_quiz_questions.get_question_by_quiz_question_id(db, quiz_question_id)
-    if not result:
+    quiz_question = crud_quiz_questions.get_question_by_quiz_question_id(
+        db, quiz_question_id
+    )
+    if not quiz_question:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
             detail=f"No question associated with quiz question id: {quiz_question_id}",
         )
 
     question_info = crud_questions.get_question_by_id(
-        db, question_id=result.question_id
+        db, question_id=quiz_question.question_id
     )
 
     return {
         "id": quiz_question_id,
         "question": question_info.question,
         "answer_options": question_info.answer_options,
-        "user_answer": result.user_answer,
+        "user_answer": quiz_question.user_answer,
     }
+
+
+@router.put("/{quiz_question_id}", status_code=status.HTTP_204_NO_CONTENT)
+def update_quiz_question(
+    quiz_question_id: UUID4,
+    user_input: QuizQuestionUpdateAnswer,
+    current_user: UserCurrent = Depends(get_current_user),
+    db: Session = Depends(get_db),
+) -> None:
+    quiz_question = crud_quiz_questions.get_question_by_quiz_question_id(
+        db, quiz_question_id=quiz_question_id
+    )
+    if not quiz_question:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=f"No question associated with quiz question id: {quiz_question_id}",
+        )
+
+    crud_quiz_questions.update_quiz_question_in_db(
+        db, user_input=user_input, quiz_question_id=quiz_question_id
+    )

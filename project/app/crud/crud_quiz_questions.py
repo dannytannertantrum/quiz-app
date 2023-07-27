@@ -1,10 +1,11 @@
 from uuid import uuid4
 
 from pydantic import UUID4
-from sqlalchemy import select
+from sqlalchemy import select, update
 from sqlalchemy.orm import Session
 
 from app.models.quiz_question import QuizQuestion
+from app.schemas.quiz_question import QuizQuestionUpdateAnswer
 
 
 def get_quiz_questions_by_quiz_id(db: Session, quiz_id: UUID4) -> list[UUID4]:
@@ -45,3 +46,21 @@ def create_quiz_question_in_db(
     quiz_question_ids = get_quiz_questions_by_quiz_id(db, quiz_id)
 
     return quiz_question_ids
+
+
+def update_quiz_question_in_db(
+    db: Session, user_input: QuizQuestionUpdateAnswer, quiz_question_id: UUID4
+) -> QuizQuestion:
+    """
+    Returns the question id and user answer
+    """
+    updated_quiz_question_record = db.execute(
+        update(QuizQuestion)
+        .where(QuizQuestion.id == quiz_question_id)
+        .values(user_answer=user_input.user_answer)
+        .returning(QuizQuestion.id, QuizQuestion.user_answer)
+    ).first()
+
+    db.commit()
+
+    return updated_quiz_question_record
