@@ -1,3 +1,4 @@
+from datetime import datetime, timezone
 from uuid import UUID, uuid4
 
 from sqlalchemy.orm import Session
@@ -30,3 +31,19 @@ class TestCrudQuizSuccess:
             assert isinstance(result, UUID)
         finally:
             quiz.delete_test_quizzes(db)
+
+    def test_update_quiz_in_db(self, db: Session, create_test_quiz: QuizId) -> None:
+        quiz_record = crud_quizzes.get_quiz_by_id(db, quiz_id=create_test_quiz)
+
+        assert quiz_record.last_modified_at is None
+        assert quiz_record.score is None
+
+        crud_quizzes.update_quiz_in_db(
+            db,
+            quiz_id=create_test_quiz,
+            last_modified_at=datetime.now(timezone.utc),
+            score=3,
+        )
+
+        assert quiz_record.last_modified_at is not None
+        assert quiz_record.score == 3

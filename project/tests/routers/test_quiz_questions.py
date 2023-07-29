@@ -3,7 +3,8 @@ from uuid import uuid4
 from fastapi.testclient import TestClient
 from sqlalchemy.orm import Session
 
-from app.crud import crud_quiz_questions
+from app.crud import crud_quizzes, crud_quiz_questions
+from app.schemas.quiz import QuizId
 from app.schemas.quiz_question import QuizQuestionId, QuizQuestionAndAnswers
 
 
@@ -81,6 +82,7 @@ class TestQuizQuestionRoutesSuccess:
         client: TestClient,
         db: Session,
         token_headers: dict[str, str],
+        create_test_quiz: QuizId,
         create_test_quiz_question: list[QuizQuestionId],
     ) -> None:
         quiz_question_id = create_test_quiz_question[0]
@@ -94,6 +96,10 @@ class TestQuizQuestionRoutesSuccess:
         question_info = crud_quiz_questions.get_question_by_quiz_question_id(
             db, quiz_question_id=quiz_question_id
         )
+        quiz = crud_quizzes.get_quiz_by_id(db, quiz_id=create_test_quiz)
 
         assert response.status_code == 204
         assert question_info.user_answer == 2
+
+        # Make sure the Quiz record also got updated
+        assert quiz.last_modified_at is not None

@@ -1,8 +1,10 @@
+from datetime import datetime, timezone
+
 from fastapi import APIRouter, Depends, HTTPException, status
 from pydantic import UUID4
 from sqlalchemy.orm import Session
 
-from app.crud import crud_questions, crud_quiz_questions
+from app.crud import crud_questions, crud_quizzes, crud_quiz_questions
 from app.database import get_db
 from app.dependencies import get_current_user
 from app.schemas.quiz_question import QuizQuestionAndAnswers, QuizQuestionUpdateAnswer
@@ -63,6 +65,12 @@ def update_quiz_question(
             detail=f"No question associated with quiz question id: {quiz_question_id}",
         )
 
-    crud_quiz_questions.update_quiz_question_in_db(
+    quiz_question_record = crud_quiz_questions.update_quiz_question_in_db(
         db, user_input=user_input, quiz_question_id=quiz_question_id
+    )
+
+    crud_quizzes.update_quiz_in_db(
+        db,
+        quiz_id=quiz_question_record.quiz_id,
+        last_modified_at=datetime.now(timezone.utc),
     )
