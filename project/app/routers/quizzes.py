@@ -43,11 +43,11 @@ def create_quiz(
         )
 
     question_ids = choose_random_questions(questions, picked_questions=[])
-    quiz_question_ids = crud_quiz_questions.create_quiz_question_in_db(
+    quiz_question_records = crud_quiz_questions.create_quiz_question_in_db(
         db, question_ids, quiz_id
     )
 
-    return {"id": quiz_id, "quiz_question_ids": quiz_question_ids}
+    return {"id": quiz_id, "quiz_questions": quiz_question_records}
 
 
 @router.get(

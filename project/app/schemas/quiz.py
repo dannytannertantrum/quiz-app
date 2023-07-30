@@ -3,6 +3,8 @@ from typing import Optional
 
 from pydantic import BaseModel, UUID4
 
+from app.schemas.quiz_question import QuizQuestionFullResponse
+
 
 class QuizId(BaseModel):
     id: UUID4
@@ -13,7 +15,7 @@ class QuizCreate(BaseModel):
 
 
 class QuizCreateResponse(QuizId):
-    quiz_question_ids: list[UUID4]
+    quiz_questions: list[QuizQuestionFullResponse]
 
 
 class QuizWithTopicData(QuizId):

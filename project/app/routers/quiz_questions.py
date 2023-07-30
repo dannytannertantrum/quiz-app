@@ -7,7 +7,10 @@ from sqlalchemy.orm import Session
 from app.crud import crud_questions, crud_quizzes, crud_quiz_questions
 from app.database import get_db
 from app.dependencies import get_current_user
-from app.schemas.quiz_question import QuizQuestionAndAnswers, QuizQuestionUpdateAnswer
+from app.schemas.quiz_question import (
+    QuizQuestionAndAnswers,
+    QuizQuestionUpdateAnswerRequest,
+)
 from app.schemas.user import UserCurrent
 
 
@@ -52,7 +55,7 @@ def read_quiz_question_by_id(
 @router.put("/{quiz_question_id}", status_code=status.HTTP_204_NO_CONTENT)
 def update_quiz_question(
     quiz_question_id: UUID4,
-    user_input: QuizQuestionUpdateAnswer,
+    user_input: QuizQuestionUpdateAnswerRequest,
     current_user: UserCurrent = Depends(get_current_user),
     db: Session = Depends(get_db),
 ) -> None:

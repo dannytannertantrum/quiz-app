@@ -4,8 +4,9 @@ from fastapi.testclient import TestClient
 from sqlalchemy.orm import Session
 
 from app.crud import crud_quizzes, crud_quiz_questions
+from app.models import QuizQuestion
 from app.schemas.quiz import QuizId
-from app.schemas.quiz_question import QuizQuestionId, QuizQuestionAndAnswers
+from app.schemas.quiz_question import QuizQuestionAndAnswers
 
 
 class TestQuizQuestionRoutesFailure:
@@ -46,9 +47,9 @@ class TestQuizQuestionRoutesFailure:
         self,
         client: TestClient,
         token_headers: dict[str, str],
-        create_test_quiz_question: list[QuizQuestionId],
+        create_test_quiz_question: list[QuizQuestion],
     ):
-        quiz_question_id = create_test_quiz_question[0]
+        quiz_question_id = create_test_quiz_question[0].id
         user_input = {"user_answer": 5}
 
         response = client.put(
@@ -65,10 +66,10 @@ class TestQuizQuestionRoutesSuccess:
         self,
         client: TestClient,
         token_headers: dict[str, str],
-        create_test_quiz_question: list[QuizQuestionId],
+        create_test_quiz_question: list[QuizQuestion],
     ) -> None:
         response = client.get(
-            f"/quiz-questions/{create_test_quiz_question[0]}", headers=token_headers
+            f"/quiz-questions/{create_test_quiz_question[0].id}", headers=token_headers
         )
         data: QuizQuestionAndAnswers = response.json()
 
@@ -83,9 +84,9 @@ class TestQuizQuestionRoutesSuccess:
         db: Session,
         token_headers: dict[str, str],
         create_test_quiz: QuizId,
-        create_test_quiz_question: list[QuizQuestionId],
+        create_test_quiz_question: list[QuizQuestion],
     ) -> None:
-        quiz_question_id = create_test_quiz_question[0]
+        quiz_question_id = create_test_quiz_question[0].id
         user_input = {"user_answer": 2}
 
         response = client.put(

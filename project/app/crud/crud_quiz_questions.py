@@ -5,15 +5,15 @@ from sqlalchemy import select, update
 from sqlalchemy.orm import Session
 
 from app.models.quiz_question import QuizQuestion
-from app.schemas.quiz_question import QuizQuestionUpdateAnswer
+from app.schemas.quiz_question import QuizQuestionUpdateAnswerRequest
 
 
-def get_quiz_questions_by_quiz_id(db: Session, quiz_id: UUID4) -> list[UUID4]:
+def get_quiz_questions_by_quiz_id(db: Session, quiz_id: UUID4) -> list[QuizQuestion]:
     """
-    Returns a list of Quiz Question UUIDs or an empty list if none found
+    Returns a list of Quiz Question records or an empty list if none found
     """
     return (
-        db.execute(select(QuizQuestion.id).where(QuizQuestion.quiz_id == quiz_id))
+        db.execute(select(QuizQuestion).where(QuizQuestion.quiz_id == quiz_id))
         .scalars()
         .all()
     )
@@ -34,9 +34,9 @@ def get_question_by_quiz_question_id(
 
 def create_quiz_question_in_db(
     db: Session, question_ids: list[UUID4], quiz_id: UUID4
-) -> list[UUID4]:
+) -> list[QuizQuestion]:
     """
-    Creates a new QuizQuestion database record and returns a list of question IDs
+    Creates new QuizQuestion database records and returns them
     """
     for i in question_ids:
         new_quiz_question_id = uuid4()
@@ -49,13 +49,13 @@ def create_quiz_question_in_db(
         db.commit()
         db.refresh(new_record)
 
-    quiz_question_ids = get_quiz_questions_by_quiz_id(db, quiz_id)
+    quiz_question_records = get_quiz_questions_by_quiz_id(db, quiz_id)
 
-    return quiz_question_ids
+    return quiz_question_records
 
 
 def update_quiz_question_in_db(
-    db: Session, user_input: QuizQuestionUpdateAnswer, quiz_question_id: UUID4
+    db: Session, user_input: QuizQuestionUpdateAnswerRequest, quiz_question_id: UUID4
 ) -> QuizQuestion:
     """
     Returns the question id, quiz_id and user answer or None if no record found

@@ -11,8 +11,8 @@ from app.config import get_settings, Settings
 from app.crud import crud_quizzes, crud_quiz_questions
 from app.database import Base
 from app.main import app
-from app.models import topic, question, user
-from app.schemas import quiz, quiz_question
+from app.models import Question, QuizQuestion, Topic, User
+from app.schemas import quiz
 from tests.utils.question import (
     create_test_question,
     delete_test_questions,
@@ -59,7 +59,7 @@ def db() -> Generator:
 
 
 @pytest.fixture(scope="function")
-def generate_test_user(db: Session, app_config: Settings) -> user.User:
+def generate_test_user(db: Session, app_config: Settings) -> User:
     user = create_test_user(
         db,
         id=app_config.TEST_USER_UUID,
@@ -74,7 +74,7 @@ def generate_test_user(db: Session, app_config: Settings) -> user.User:
 
 @pytest.fixture(scope="function")
 def token_headers(
-    client: TestClient, generate_test_user: user.User, app_config: Settings
+    client: TestClient, generate_test_user: User, app_config: Settings
 ) -> dict[str, str]:
     return get_token_headers(
         client=client,
@@ -84,7 +84,7 @@ def token_headers(
 
 
 @pytest.fixture(scope="class")
-def create_test_primary_topics(db: Session, app_config: Settings) -> list[topic.Topic]:
+def create_test_primary_topics(db: Session, app_config: Settings) -> list[Topic]:
     primary_topic_movies = create_test_topic(
         db, title="Movies", id=app_config.TEST_PRIMARY_TOPIC_MOVIES_UUID
     )
@@ -104,7 +104,7 @@ def create_test_primary_topics(db: Session, app_config: Settings) -> list[topic.
 
 
 @pytest.fixture(scope="class")
-def create_deleted_test_primary_topic(db: Session, app_config: Settings) -> topic.Topic:
+def create_deleted_test_primary_topic(db: Session, app_config: Settings) -> Topic:
     deleted_primary_topic = create_test_topic(
         db,
         title="Movies",
@@ -119,8 +119,8 @@ def create_deleted_test_primary_topic(db: Session, app_config: Settings) -> topi
 
 @pytest.fixture(scope="class")
 def create_test_subtopics(
-    db: Session, create_test_primary_topics: list[topic.Topic], app_config: Settings
-) -> list[topic.Topic]:
+    db: Session, create_test_primary_topics: list[Topic], app_config: Settings
+) -> list[Topic]:
     subtopic_horror = create_test_topic(
         db,
         id=app_config.TEST_SUBTOPIC_HORROR_UUID,
@@ -187,8 +187,8 @@ def create_test_subtopics(
 
 @pytest.fixture(scope="class")
 def create_deleted_test_subtopic(
-    db: Session, create_test_primary_topics: list[topic.Topic], app_config: Settings
-) -> topic.Topic:
+    db: Session, create_test_primary_topics: list[Topic], app_config: Settings
+) -> Topic:
     deleted_subtopic = create_test_topic(
         db,
         parent_topic_id=app_config.TEST_PRIMARY_TOPIC_MOVIES_UUID,
@@ -202,8 +202,8 @@ def create_deleted_test_subtopic(
 
 @pytest.fixture(scope="class")
 def create_test_subtopic_with_deleted_parent_topic(
-    db: Session, create_deleted_test_primary_topic: topic.Topic, app_config: Settings
-) -> topic.Topic:
+    db: Session, create_deleted_test_primary_topic: Topic, app_config: Settings
+) -> Topic:
     subtopic_with_deleted_parent = create_test_topic(
         db,
         parent_topic_id=app_config.TEST_DELETED_PRIMARY_TOPIC_SPORTS_UUID,
@@ -217,8 +217,8 @@ def create_test_subtopic_with_deleted_parent_topic(
 
 @pytest.fixture(scope="class")
 def create_test_questions(
-    db: Session, create_test_subtopics: list[topic.Topic]
-) -> list[question.Question]:
+    db: Session, create_test_subtopics: list[Topic]
+) -> list[Question]:
     questionsToYield = []
 
     for i in range(30):
@@ -239,7 +239,7 @@ def create_test_questions(
 
 
 @pytest.fixture(scope="function")
-def create_test_quiz(db: Session, generate_test_user: user.User) -> quiz.QuizId:
+def create_test_quiz(db: Session, generate_test_user: User) -> quiz.QuizId:
     yield crud_quizzes.create_quiz_in_db(db, user_id=generate_test_user.id)
     delete_test_quizzes(db)
 
@@ -247,14 +247,14 @@ def create_test_quiz(db: Session, generate_test_user: user.User) -> quiz.QuizId:
 @pytest.fixture(scope="function")
 def create_test_quiz_question(
     db: Session,
-    create_test_questions: list[question.Question],
+    create_test_questions: list[Question],
     create_test_quiz: quiz.QuizId,
-) -> list[quiz_question.QuizQuestionId]:
+) -> list[QuizQuestion]:
     questions = create_test_questions[:5]
     question_ids: list[UUID4] = list(map(lambda x: x[0], questions))
-    quiz_question_ids = crud_quiz_questions.create_quiz_question_in_db(
+    quiz_questions = crud_quiz_questions.create_quiz_question_in_db(
         db, question_ids=question_ids, quiz_id=create_test_quiz
     )
 
-    yield quiz_question_ids
+    yield quiz_questions
     delete_test_quiz_questions(db)

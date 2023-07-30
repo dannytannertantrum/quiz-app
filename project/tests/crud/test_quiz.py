@@ -6,7 +6,6 @@ from sqlalchemy.orm import Session
 from app.crud import crud_quizzes, crud_quiz_questions
 from app.models import Question, QuizQuestion, Topic, User
 from app.schemas.quiz import QuizId
-from app.schemas.quiz_question import QuizQuestionId
 from tests.utils.quiz import delete_test_quizzes
 
 
@@ -40,7 +39,7 @@ class TestCrudQuizNotReturningData:
         db: Session,
         generate_test_user: User,
         create_test_quiz: QuizId,
-        create_test_quiz_question: list[QuizQuestionId],
+        create_test_quiz_question: list[QuizQuestion],
     ) -> None:
         quiz_record = crud_quizzes.get_quiz_by_id(db, quiz_id=create_test_quiz)
         quiz_question_record = crud_quiz_questions.get_quiz_questions_by_quiz_id(
