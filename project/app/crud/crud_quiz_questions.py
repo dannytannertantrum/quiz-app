@@ -19,7 +19,7 @@ def get_quiz_questions_by_quiz_id(db: Session, quiz_id: UUID4) -> list[QuizQuest
     )
 
 
-def get_question_by_quiz_question_id(
+def get_question_and_user_answer_by_quiz_question_id(
     db: Session, quiz_question_id: UUID4
 ) -> QuizQuestion:
     """

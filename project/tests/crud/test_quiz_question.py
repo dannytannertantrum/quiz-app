@@ -23,10 +23,10 @@ class TestCrudQuizQuestionFailure:
 
         assert result == []
 
-    def test_get_question_by_quiz_question_id_returns_None_if_no_record_found(
+    def test_get_question_and_user_answer_by_quiz_question_id_returns_None_if_no_record_found(
         self, db: Session
     ) -> None:
-        result = crud_quiz_questions.get_question_by_quiz_question_id(
+        result = crud_quiz_questions.get_question_and_user_answer_by_quiz_question_id(
             db, quiz_question_id=random_uuid
         )
 
@@ -59,6 +59,7 @@ class TestCrudQuizQuestionSuccess:
             )
 
             assert len(result) == 5
+            assert result[0].quiz_id == create_test_quiz
         finally:
             quiz_question.delete_test_quiz_questions(db)
 
@@ -74,19 +75,24 @@ class TestCrudQuizQuestionSuccess:
 
         assert len(result) == 5
         assert isinstance(result[0].quiz_id, UUID)
+        assert isinstance(result[0].question_id, UUID)
 
-    def test_get_question_by_quiz_question_id(
+    def test_get_question_and_user_answer_by_quiz_question_id(
         self,
         db: Session,
         create_test_quiz_question: list[QuizQuestion],
         create_test_quiz: QuizId,
     ) -> None:
-        result = crud_quiz_questions.get_question_by_quiz_question_id(
-            db, quiz_question_id=create_test_quiz_question[0].id
+        question_info = (
+            crud_quiz_questions.get_question_and_user_answer_by_quiz_question_id(
+                db, quiz_question_id=create_test_quiz_question[0].id
+            )
         )
-        question = crud_questions.get_question_by_id(db, question_id=result.question_id)
+        question = crud_questions.get_question_by_id(
+            db, question_id=question_info.question_id
+        )
 
-        assert isinstance(result.question_id, UUID)
+        assert isinstance(question_info.question_id, UUID)
         assert question is not None
 
     def test_update_quiz_question_in_db(
@@ -101,8 +107,10 @@ class TestCrudQuizQuestionSuccess:
         crud_quiz_questions.update_quiz_question_in_db(
             db, quiz_question_id=quiz_question_id, user_input=user_input
         )
-        question_info = crud_quiz_questions.get_question_by_quiz_question_id(
-            db, quiz_question_id=quiz_question_id
+        question_info = (
+            crud_quiz_questions.get_question_and_user_answer_by_quiz_question_id(
+                db, quiz_question_id=quiz_question_id
+            )
         )
 
         assert question_info.user_answer == 3

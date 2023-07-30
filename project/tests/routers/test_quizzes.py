@@ -87,10 +87,17 @@ class TestQuizRoutesSuccess:
     def test_create_quiz(self, create_quiz_api_response: Response, db: Session) -> None:
         response_json = create_quiz_api_response.json()
         quiz = crud_quizzes.get_quiz_by_id(db, quiz_id=response_json["id"])
+        quiz_questions = crud_quiz_questions.get_quiz_questions_by_quiz_id(
+            db, quiz_id=response_json["id"]
+        )
 
         assert create_quiz_api_response.status_code == 201
         assert quiz is not None
         assert str(quiz.id) == response_json["id"]
+
+        # Ensure quiz question records also created
+        assert len(quiz_questions) == 5
+        assert quiz_questions[0].quiz_id == quiz.id
 
     def test_create_quiz_creates_a_quiz_question_record(
         self, create_quiz_api_response: Response, db: Session

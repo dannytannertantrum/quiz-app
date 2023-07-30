@@ -94,8 +94,10 @@ class TestQuizQuestionRoutesSuccess:
             headers=token_headers,
             json=user_input,
         )
-        question_info = crud_quiz_questions.get_question_by_quiz_question_id(
-            db, quiz_question_id=quiz_question_id
+        question_info = (
+            crud_quiz_questions.get_question_and_user_answer_by_quiz_question_id(
+                db, quiz_question_id=quiz_question_id
+            )
         )
         quiz = crud_quizzes.get_quiz_by_id(db, quiz_id=create_test_quiz)
 

@@ -31,8 +31,10 @@ def read_quiz_question_by_id(
     db: Session = Depends(get_db),
     current_user: UserCurrent = Depends(get_current_user),
 ) -> QuizQuestionAndAnswers:
-    quiz_question = crud_quiz_questions.get_question_by_quiz_question_id(
-        db, quiz_question_id
+    quiz_question = (
+        crud_quiz_questions.get_question_and_user_answer_by_quiz_question_id(
+            db, quiz_question_id
+        )
     )
     if not quiz_question:
         raise HTTPException(
@@ -59,8 +61,10 @@ def update_quiz_question(
     current_user: UserCurrent = Depends(get_current_user),
     db: Session = Depends(get_db),
 ) -> None:
-    quiz_question = crud_quiz_questions.get_question_by_quiz_question_id(
-        db, quiz_question_id=quiz_question_id
+    quiz_question = (
+        crud_quiz_questions.get_question_and_user_answer_by_quiz_question_id(
+            db, quiz_question_id=quiz_question_id
+        )
     )
     if not quiz_question:
         raise HTTPException(
