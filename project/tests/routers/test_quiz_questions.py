@@ -47,9 +47,9 @@ class TestQuizQuestionRoutesFailure:
         self,
         client: TestClient,
         token_headers: dict[str, str],
-        create_test_quiz_question: list[QuizQuestion],
+        create_test_quiz_questions: list[QuizQuestion],
     ):
-        quiz_question_id = create_test_quiz_question[0].id
+        quiz_question_id = create_test_quiz_questions[0].id
         user_input = {"user_answer": 5}
 
         response = client.put(
@@ -66,10 +66,10 @@ class TestQuizQuestionRoutesSuccess:
         self,
         client: TestClient,
         token_headers: dict[str, str],
-        create_test_quiz_question: list[QuizQuestion],
+        create_test_quiz_questions: list[QuizQuestion],
     ) -> None:
         response = client.get(
-            f"/quiz-questions/{create_test_quiz_question[0].id}", headers=token_headers
+            f"/quiz-questions/{create_test_quiz_questions[0].id}", headers=token_headers
         )
         data: QuizQuestionAndAnswers = response.json()
 
@@ -78,15 +78,15 @@ class TestQuizQuestionRoutesSuccess:
         assert isinstance(data["question"], str)
         assert data["answer_options"] is not None
 
-    def test_update_quiz_question(
+    def test_update_quiz_question_with_empty_answers(
         self,
         client: TestClient,
         db: Session,
         token_headers: dict[str, str],
         create_test_quiz: QuizId,
-        create_test_quiz_question: list[QuizQuestion],
+        create_test_quiz_questions: list[QuizQuestion],
     ) -> None:
-        quiz_question_id = create_test_quiz_question[0].id
+        quiz_question_id = create_test_quiz_questions[0].id
         user_input = {"user_answer": 2}
 
         response = client.put(
@@ -106,3 +106,39 @@ class TestQuizQuestionRoutesSuccess:
 
         # Make sure the Quiz record also got updated
         assert quiz.last_modified_at is not None
+        assert quiz.completed_at is None
+        assert quiz.score is None
+
+    def test_update_quiz_question_with_all_answers_submitted(
+        self,
+        client: TestClient,
+        db: Session,
+        token_headers: dict[str, str],
+        create_test_quiz_for_qq_with_all_answers: QuizId,
+        create_test_quiz_questions_with_all_answers: list[QuizQuestion],
+    ) -> None:
+        quiz_question_id = create_test_quiz_questions_with_all_answers[0].id
+        user_input = {"user_answer": 2}
+
+        response = client.put(
+            f"/quiz-questions/{quiz_question_id}",
+            headers=token_headers,
+            json=user_input,
+        )
+        question_info = (
+            crud_quiz_questions.get_question_and_user_answer_by_quiz_question_id(
+                db, quiz_question_id=quiz_question_id
+            )
+        )
+        quiz = crud_quizzes.get_quiz_by_id(
+            db, quiz_id=create_test_quiz_for_qq_with_all_answers
+        )
+
+        assert response.status_code == 204
+        assert question_info.user_answer == 2
+
+        # Make sure the Quiz record also got updated
+        assert quiz.last_modified_at is not None
+        assert quiz.completed_at is not None
+        assert isinstance(quiz.score, int)
+        assert quiz.score == 40  # Kinda brittle

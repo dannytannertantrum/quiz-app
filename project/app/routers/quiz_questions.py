@@ -76,9 +76,30 @@ def update_quiz_question(
     quiz_question_record = crud_quiz_questions.update_quiz_question_in_db(
         db, user_input=user_input, quiz_question_id=quiz_question_id
     )
+    quiz_questions = crud_quiz_questions.get_quiz_questions_by_quiz_id(
+        db, quiz_id=quiz_question_record.quiz_id
+    )
+    user_answers = list(
+        filter(
+            lambda answer: answer is not None,
+            map(lambda x: x.user_answer, quiz_questions),
+        )
+    )
+    completed_at = None
+    last_modified_at = datetime.now(timezone.utc)
+    score = None
+
+    if len(user_answers) == 5:
+        completed_at = datetime.now(timezone.utc)
+        result = crud_quiz_questions.calculate_user_score(
+            db, quiz_id=quiz_question_record.quiz_id
+        )
+        score = result.user_score
 
     crud_quizzes.update_quiz_in_db(
         db,
+        completed_at=completed_at,
+        last_modified_at=last_modified_at,
         quiz_id=quiz_question_record.quiz_id,
-        last_modified_at=datetime.now(timezone.utc),
+        score=score,
     )

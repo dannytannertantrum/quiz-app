@@ -14,6 +14,10 @@ class QuizCreate(BaseModel):
     selected_topics: list[UUID4]
 
 
+class QuizIdWithScore(QuizId):
+    user_score: int
+
+
 class QuizCreateResponse(QuizId):
     quiz_questions: list[QuizQuestionFullResponse]
 

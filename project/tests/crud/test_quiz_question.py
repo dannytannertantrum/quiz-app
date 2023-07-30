@@ -43,6 +43,13 @@ class TestCrudQuizQuestionFailure:
 
         assert result is None
 
+    def test_calculate_user_score_returns_None_if_no_record_to_update_found(
+        self, db: Session
+    ) -> None:
+        result = crud_quiz_questions.calculate_user_score(db, quiz_id=random_uuid)
+
+        assert result is None
+
 
 class TestCrudQuizQuestionSuccess:
     def test_create_quiz_question_in_db(
@@ -66,7 +73,7 @@ class TestCrudQuizQuestionSuccess:
     def test_get_quiz_questions_by_quiz_id(
         self,
         db: Session,
-        create_test_quiz_question: list[QuizQuestion],
+        create_test_quiz_questions: list[QuizQuestion],
         create_test_quiz: QuizId,
     ) -> None:
         result = crud_quiz_questions.get_quiz_questions_by_quiz_id(
@@ -80,12 +87,12 @@ class TestCrudQuizQuestionSuccess:
     def test_get_question_and_user_answer_by_quiz_question_id(
         self,
         db: Session,
-        create_test_quiz_question: list[QuizQuestion],
+        create_test_quiz_questions: list[QuizQuestion],
         create_test_quiz: QuizId,
     ) -> None:
         question_info = (
             crud_quiz_questions.get_question_and_user_answer_by_quiz_question_id(
-                db, quiz_question_id=create_test_quiz_question[0].id
+                db, quiz_question_id=create_test_quiz_questions[0].id
             )
         )
         question = crud_questions.get_question_by_id(
@@ -98,10 +105,10 @@ class TestCrudQuizQuestionSuccess:
     def test_update_quiz_question_in_db(
         self,
         db: Session,
-        create_test_quiz_question: list[QuizQuestion],
+        create_test_quiz_questions: list[QuizQuestion],
         create_test_quiz: QuizId,
     ) -> None:
-        quiz_question_id = create_test_quiz_question[0].id
+        quiz_question_id = create_test_quiz_questions[0].id
         user_input = QuizQuestionUpdateAnswerRequest(user_answer=3)
 
         crud_quiz_questions.update_quiz_question_in_db(
@@ -114,3 +121,17 @@ class TestCrudQuizQuestionSuccess:
         )
 
         assert question_info.user_answer == 3
+
+    def test_calculate_user_score(
+        self,
+        db: Session,
+        create_test_quiz_questions_with_all_answers: list[QuizQuestion],
+        create_test_quiz_for_qq_with_all_answers: QuizId,
+    ) -> None:
+        result = crud_quiz_questions.calculate_user_score(
+            db, quiz_id=create_test_quiz_for_qq_with_all_answers
+        )
+
+        # Based on the test questions and user answers we created,
+        # there are 2 correct answers - kinda brittle
+        assert result.user_score == 40

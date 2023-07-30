@@ -46,7 +46,7 @@ class TestCrudQuizNotReturningData:
         db: Session,
         generate_test_user: User,
         create_test_quiz: QuizId,
-        create_test_quiz_question: list[QuizQuestion],
+        create_test_quiz_questions: list[QuizQuestion],
     ) -> None:
         quiz_record = crud_quizzes.get_quiz_by_id(db, quiz_id=create_test_quiz)
         quiz_question_record = crud_quiz_questions.get_quiz_questions_by_quiz_id(
@@ -107,7 +107,7 @@ class TestCrudQuizReturningData:
         create_test_questions: list[Question],
         create_test_primary_topics: list[Topic],
         create_test_subtopics: list[Topic],
-        create_test_quiz_question: list[QuizQuestion],
+        create_test_quiz_questions: list[QuizQuestion],
         generate_test_user: User,
     ):
         quizzes_with_topic_data = (
@@ -128,7 +128,7 @@ class TestCrudQuizReturningData:
         create_test_questions: list[Question],
         create_test_primary_topics: list[Topic],
         create_test_subtopics: list[Topic],
-        create_test_quiz_question: list[QuizQuestion],
+        create_test_quiz_questions: list[QuizQuestion],
     ):
         quiz_with_topic_data = crud_quizzes.get_quiz_with_topic_data_by_quiz_id(
             db, quiz_id=create_test_quiz

@@ -117,7 +117,7 @@ class TestQuizRoutesSuccess:
         create_test_questions: list[Question],
         create_test_primary_topics: list[Topic],
         create_test_subtopics: list[Topic],
-        create_test_quiz_question: list[QuizQuestion],
+        create_test_quiz_questions: list[QuizQuestion],
         generate_test_user: User,
     ) -> None:
         response = client.get("/quizzes/user/me", headers=token_headers)
@@ -142,7 +142,7 @@ class TestQuizRoutesSuccess:
         create_test_questions: list[Question],
         create_test_primary_topics: list[Topic],
         create_test_subtopics: list[Topic],
-        create_test_quiz_question: list[QuizQuestion],
+        create_test_quiz_questions: list[QuizQuestion],
         generate_test_user: User,
     ) -> None:
         response = client.get(f"/quizzes/{create_test_quiz}", headers=token_headers)
@@ -165,7 +165,7 @@ class TestQuizRoutesSuccess:
         client: TestClient,
         token_headers: dict[str, str],
         create_test_quiz: QuizId,
-        create_test_quiz_question: list[QuizQuestion],
+        create_test_quiz_questions: list[QuizQuestion],
     ) -> None:
         quiz_record = crud_quizzes.get_quiz_by_id(db, quiz_id=create_test_quiz)
         quiz_question_record = crud_quiz_questions.get_quiz_questions_by_quiz_id(

@@ -20,7 +20,10 @@ from tests.utils.question import (
 )
 from tests.utils.kitchen_sink import random_lower_string, get_token_headers
 from tests.utils.quiz import delete_test_quizzes
-from tests.utils.quiz_question import delete_test_quiz_questions
+from tests.utils.quiz_question import (
+    create_test_quiz_questions_with_answers,
+    delete_test_quiz_questions,
+)
 from tests.utils.topic import create_test_topic, delete_test_topics
 from tests.utils.user import create_test_user, delete_test_users
 
@@ -227,7 +230,7 @@ def create_test_questions(
             create_test_question(
                 db,
                 answer_options=random_answer_options,
-                correct_answer=i,
+                correct_answer=i % 4 + 1,
                 question=random_lower_string(),
                 question_type="multiple choice",
                 topic_id=create_test_subtopics[currentSubtopicIndex].id,
@@ -245,7 +248,7 @@ def create_test_quiz(db: Session, generate_test_user: User) -> quiz.QuizId:
 
 
 @pytest.fixture(scope="function")
-def create_test_quiz_question(
+def create_test_quiz_questions(
     db: Session,
     create_test_questions: list[Question],
     create_test_quiz: quiz.QuizId,
@@ -257,4 +260,29 @@ def create_test_quiz_question(
     )
 
     yield quiz_questions
+    delete_test_quiz_questions(db)
+
+
+@pytest.fixture(scope="function")
+def create_test_quiz_for_qq_with_all_answers(
+    db: Session, generate_test_user: User
+) -> quiz.QuizId:
+    yield crud_quizzes.create_quiz_in_db(db, user_id=generate_test_user.id)
+    delete_test_quizzes(db)
+
+
+@pytest.fixture(scope="function")
+def create_test_quiz_questions_with_all_answers(
+    db: Session,
+    create_test_questions: list[Question],
+    create_test_quiz_for_qq_with_all_answers: quiz.QuizId,
+) -> list[QuizQuestion]:
+    # Use the last 5 values to do something different than above
+    questions = create_test_questions[-5:]
+    question_ids: list[UUID4] = list(map(lambda x: x[0], questions))
+    quiz_questions_with_answers = create_test_quiz_questions_with_answers(
+        db, question_ids=question_ids, quiz_id=create_test_quiz_for_qq_with_all_answers
+    )
+
+    yield quiz_questions_with_answers
     delete_test_quiz_questions(db)
