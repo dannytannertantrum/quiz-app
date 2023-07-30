@@ -9,7 +9,7 @@ from app.schemas.topic import TopicWithDescription
 from tests.utils.topic import create_test_topic, delete_test_topics
 
 
-class TestTopicRoutesNotReturningData:
+class TestTopicRoutesFailure:
     def test_read_all_topics_returning_empty_list_raises_not_found_error(
         self, client: TestClient, token_headers: dict[str, str]
     ):
@@ -111,7 +111,7 @@ class TestTopicRoutesNotReturningData:
             delete_test_topics(db)
 
 
-class TestTopicRoutesReturningData:
+class TestTopicRoutesSuccess:
     def test_read_all_topics_returns_all_topics(
         self,
         client: TestClient,

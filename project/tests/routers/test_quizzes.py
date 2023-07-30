@@ -33,7 +33,7 @@ def create_quiz_api_response(
     quiz.delete_test_quizzes(db)
 
 
-class TestQuizRoutesNotReturningData:
+class TestQuizRoutesFailure:
     def test_create_quiz_bad_user_input_raises_exception(
         self, client: TestClient, token_headers: dict[str, str]
     ) -> None:
@@ -84,7 +84,7 @@ class TestQuizRoutesNotReturningData:
         assert response.json() == {"detail": "No quiz found"}
 
 
-class TestQuizRoutesReturningData:
+class TestQuizRoutesSuccess:
     def test_create_quiz(self, create_quiz_api_response: Response, db: Session) -> None:
         response_json = create_quiz_api_response.json()
         quiz = crud_quizzes.get_quiz_by_id(db, quiz_id=response_json["id"])

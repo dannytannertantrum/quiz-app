@@ -13,7 +13,7 @@ from tests.utils.quiz import delete_test_quizzes
 random_uuid = uuid4()
 
 
-class TestCrudQuizFailure:
+class TestCrudQuizNotReturningData:
     def test_get_quiz_by_id_returns_None_if_no_record_found(self, db: Session) -> None:
         quiz = crud_quizzes.get_quiz_by_id(db, quiz_id=random_uuid)
 
@@ -35,8 +35,34 @@ class TestCrudQuizFailure:
 
         assert quiz is None
 
+    def test_delete_quiz(
+        self,
+        db: Session,
+        generate_test_user: User,
+        create_test_quiz: QuizId,
+        create_test_quiz_question: list[QuizQuestionId],
+    ) -> None:
+        quiz_record = crud_quizzes.get_quiz_by_id(db, quiz_id=create_test_quiz)
+        quiz_question_record = crud_quiz_questions.get_quiz_questions_by_quiz_id(
+            db, quiz_id=create_test_quiz
+        )
 
-class TestCrudQuizSuccess:
+        assert quiz_record is not None
+        assert quiz_question_record is not None
+
+        crud_quizzes.delete_quiz_in_db(db, quiz_id=create_test_quiz)
+        deleted_quiz_record = crud_quizzes.get_quiz_by_id(db, quiz_id=create_test_quiz)
+        deleted_quiz_question_record = (
+            crud_quiz_questions.get_quiz_questions_by_quiz_id(
+                db, quiz_id=create_test_quiz
+            )
+        )
+
+        assert deleted_quiz_record is None
+        assert deleted_quiz_question_record == []
+
+
+class TestCrudQuizReturningData:
     def test_get_quiz_by_id(self, db: Session, create_test_quiz: QuizId) -> None:
         result = crud_quizzes.get_quiz_by_id(db, quiz_id=create_test_quiz)
 
@@ -106,29 +132,3 @@ class TestCrudQuizSuccess:
         assert quiz_with_topic_data.created_at is not None
         assert isinstance(quiz_with_topic_data.subtopics, list)
         assert isinstance(quiz_with_topic_data.primary_topic, str)
-
-    def test_delete_quiz(
-        self,
-        db: Session,
-        generate_test_user: User,
-        create_test_quiz: QuizId,
-        create_test_quiz_question: list[QuizQuestionId],
-    ) -> None:
-        quiz_record = crud_quizzes.get_quiz_by_id(db, quiz_id=create_test_quiz)
-        quiz_question_record = crud_quiz_questions.get_quiz_questions_by_quiz_id(
-            db, quiz_id=create_test_quiz
-        )
-
-        assert quiz_record is not None
-        assert quiz_question_record is not None
-
-        crud_quizzes.delete_quiz_in_db(db, quiz_id=create_test_quiz)
-        deleted_quiz_record = crud_quizzes.get_quiz_by_id(db, quiz_id=create_test_quiz)
-        deleted_quiz_question_record = (
-            crud_quiz_questions.get_quiz_questions_by_quiz_id(
-                db, quiz_id=create_test_quiz
-            )
-        )
-
-        assert deleted_quiz_record is None
-        assert deleted_quiz_question_record == []

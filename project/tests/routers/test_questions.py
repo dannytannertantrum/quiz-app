@@ -16,7 +16,7 @@ from tests.utils.question import (
 from tests.utils.kitchen_sink import random_lower_string
 
 
-class TestQuestionRoutesNotReturningData:
+class TestQuestionRoutesFailure:
     def test_read_all_questions_returning_empty_list_returns_not_found_error(
         self, client: TestClient, token_headers: dict[str, str]
     ):
@@ -122,7 +122,7 @@ class TestQuestionRoutesNotReturningData:
             delete_test_topics(db)
 
 
-class TestQuestionRoutesReturningData:
+class TestQuestionRoutesSuccess:
     def test_read_all_questions_returns_questions(
         self,
         db: Session,

@@ -7,7 +7,7 @@ from app.models.user import User
 app_config: Settings = get_settings()
 
 
-class TestAuthRouteFails:
+class TestAuthRouteFailure:
     def test_get_access_token(self, client: TestClient) -> None:
         login_data = {
             "username": "random_user@example.com",
