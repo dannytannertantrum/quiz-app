@@ -28,6 +28,11 @@ def create_quiz(
     db: Session = Depends(get_db),
     current_user: UserCurrent = Depends(get_current_user),
 ) -> QuizCreateResponse:
+    """
+    Create a new quiz record and in turn, create 5 Quiz question records
+    because each quiz has 5 questions
+    Return the quiz id and a list of quiz_question_ids
+    """
     quiz_id = crud_quizzes.create_quiz_in_db(db, current_user["id"])
     questions = crud_questions.get_questions_by_subtopic_ids(
         db, user_input.selected_topics
