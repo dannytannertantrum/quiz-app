@@ -1,3 +1,5 @@
+from uuid import uuid4
+
 from fastapi.responses import Response
 from fastapi.testclient import TestClient
 import pytest
@@ -72,6 +74,14 @@ class TestQuizRoutesNotReturningData:
         assert response.status_code == 404
         assert response.json() == {"detail": "No quizzes found"}
 
+    def test_read_quiz_with_topic_data_by_quiz_id_raises_exception_if_quiz_not_found(
+        self, client: TestClient, token_headers: dict[str, str]
+    ) -> None:
+        response = client.get(f"/quizzes/{uuid4()}", headers=token_headers)
+
+        assert response.status_code == 404
+        assert response.json() == {"detail": "No quiz found"}
+
 
 class TestQuizRoutesReturningData:
     def test_create_quiz(self, create_quiz_api_response: Response, db: Session) -> None:
@@ -105,6 +115,31 @@ class TestQuizRoutesReturningData:
     ) -> None:
         response = client.get("/quizzes/user/me", headers=token_headers)
         data: QuizWithTopicData = response.json()[0]
+
+        # Each list item of primary and subtopic generators is of type <class 'sqlalchemy.engine.row.Row'>
+        # Index 1 is the topic title in each list - yes, this is brittle and perhaps I'll update at some point
+        primary_topics = list(map(lambda x: x[1], create_test_primary_topics))
+        subtopics = list(map(lambda x: x[1], create_test_subtopics))
+
+        assert response.status_code == 200
+        assert data["primary_topic"] in primary_topics
+        assert data["subtopics"][0] in subtopics
+        assert isinstance(data["subtopics"], list)
+        assert data["created_at"] is not None
+
+    def test_read_quiz_with_topic_data_by_quiz_id(
+        self,
+        client: TestClient,
+        token_headers: dict[str, str],
+        create_test_quiz: QuizId,
+        create_test_questions: list[Question],
+        create_test_primary_topics: list[Topic],
+        create_test_subtopics: list[Topic],
+        create_test_quiz_question: list[QuizQuestion],
+        generate_test_user: User,
+    ) -> None:
+        response = client.get(f"/quizzes/{create_test_quiz}", headers=token_headers)
+        data: QuizWithTopicData = response.json()
 
         # Each list item of primary and subtopic generators is of type <class 'sqlalchemy.engine.row.Row'>
         # Index 1 is the topic title in each list - yes, this is brittle and perhaps I'll update at some point

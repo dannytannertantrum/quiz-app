@@ -20,6 +20,48 @@ def get_quiz_by_id(db: Session, quiz_id: UUID4) -> Quiz:
     return db.execute(select(Quiz).where(Quiz.id == quiz_id)).scalars().first()
 
 
+def get_quiz_with_topic_data_by_quiz_id(
+    db: Session, quiz_id: UUID4
+) -> QuizWithTopicData:
+    """
+    Returns a Quiz record by quiz id with the following additional fields returned:
+    - subtopics (a list of subtopics associated with the quiz)
+    - primary_topic (name of the primary topic for the quiz)
+
+    If no record found, returns None
+    """
+    t1 = aliased(Topic)
+    t2 = aliased(Topic)
+
+    return db.execute(
+        select(
+            Quiz.id,
+            Quiz.created_at,
+            Quiz.completed_at,
+            Quiz.last_modified_at,
+            Quiz.score,
+            Quiz.user_id,
+            func.array_agg(distinct(t1.title)).label("subtopics"),
+            t2.title.label("primary_topic"),
+        )
+        .distinct(Quiz.id)
+        .join(QuizQuestion, Quiz.id == QuizQuestion.quiz_id)
+        .join(Question, QuizQuestion.question_id == Question.id)
+        .join(t1, Question.topic_id == t1.id)
+        .join(t2, t1.parent_topic_id == t2.id)
+        .where(Quiz.id == quiz_id)
+        .group_by(
+            Quiz.id,
+            Quiz.created_at,
+            Quiz.completed_at,
+            Quiz.last_modified_at,
+            Quiz.score,
+            Quiz.user_id,
+            t2.title,
+        )
+    ).first()
+
+
 def get_all_quizzes_with_topic_data_by_user_id(
     db: Session, user_id: UUID4
 ) -> list[QuizWithTopicData]:

@@ -1,4 +1,5 @@
 from fastapi import APIRouter, Depends, HTTPException, status
+from pydantic import UUID4
 from sqlalchemy.orm import Session
 
 from app.crud import crud_questions, crud_quizzes, crud_quiz_questions
@@ -71,3 +72,35 @@ def read_all_quizzes_with_topic_data_by_user_id(
         )
 
     return quizzes_with_topic_data
+
+
+@router.get(
+    "/{quiz_id}",
+    response_model=QuizWithTopicData,
+    status_code=status.HTTP_200_OK,
+)
+def read_quiz_with_topic_data_by_quiz_id(
+    quiz_id: UUID4,
+    db: Session = Depends(get_db),
+    current_user: UserCurrent = Depends(get_current_user),
+) -> QuizWithTopicData:
+    """
+    After a user submits the last answer on a quiz, they get directed
+    to a page with their score. The front-end can add a query parameter
+    like ?quiz_complete and generate a message based on the score and topics
+    E.g. a perfect score may say, "You really know your <topic>!"
+    """
+    if not current_user:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND, detail="User not found"
+        )
+
+    quiz_with_topic_data = crud_quizzes.get_quiz_with_topic_data_by_quiz_id(
+        db, quiz_id=quiz_id
+    )
+    if not quiz_with_topic_data:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND, detail="No quiz found"
+        )
+
+    return quiz_with_topic_data

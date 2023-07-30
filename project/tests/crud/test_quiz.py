@@ -21,11 +21,18 @@ class TestCrudQuizFailure:
     def test_get_all_quizzes_with_topic_data_by_user_id_returns_empty_list_if_none_found(
         self, db: Session
     ) -> None:
-        quiz = crud_quizzes.get_all_quizzes_with_topic_data_by_user_id(
+        quizzes = crud_quizzes.get_all_quizzes_with_topic_data_by_user_id(
             db, user_id=random_uuid
         )
 
-        assert quiz == []
+        assert quizzes == []
+
+    def test_get_quiz_with_topic_data_by_quiz_id_returns_None_if_no_record_found(
+        self, db: Session
+    ) -> None:
+        quiz = crud_quizzes.get_quiz_with_topic_data_by_quiz_id(db, quiz_id=random_uuid)
+
+        assert quiz is None
 
 
 class TestCrudQuizSuccess:
@@ -80,3 +87,21 @@ class TestCrudQuizSuccess:
         assert quizzes_with_topic_data[0].created_at is not None
         assert isinstance(quizzes_with_topic_data[0].subtopics, list)
         assert isinstance(quizzes_with_topic_data[0].primary_topic, str)
+
+    def test_get_quiz_with_topic_data_by_quiz_id(
+        self,
+        db: Session,
+        create_test_quiz: QuizId,
+        create_test_questions: list[Question],
+        create_test_primary_topics: list[Topic],
+        create_test_subtopics: list[Topic],
+        create_test_quiz_question: list[QuizQuestion],
+    ):
+        quiz_with_topic_data = crud_quizzes.get_quiz_with_topic_data_by_quiz_id(
+            db, quiz_id=create_test_quiz
+        )
+
+        assert quiz_with_topic_data.id == create_test_quiz
+        assert quiz_with_topic_data.created_at is not None
+        assert isinstance(quiz_with_topic_data.subtopics, list)
+        assert isinstance(quiz_with_topic_data.primary_topic, str)
