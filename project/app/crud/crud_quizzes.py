@@ -145,6 +145,10 @@ def update_quiz_in_db(
     quiz_model: Quiz = (
         db.execute(select(Quiz).where(Quiz.id == quiz_id)).scalars().first()
     )
+
+    if not quiz_model:
+        return None
+
     quiz_model.last_modified_at = last_modified_at
     quiz_model.completed_at = completed_at
     quiz_model.score = score

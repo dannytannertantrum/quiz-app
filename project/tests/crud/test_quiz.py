@@ -34,6 +34,13 @@ class TestCrudQuizNotReturningData:
 
         assert quiz is None
 
+    def test_update_quiz_in_db_returns_None_if_no_record_to_update_found(
+        self, db: Session
+    ) -> None:
+        quiz_record = crud_quizzes.get_quiz_by_id(db, quiz_id=random_uuid)
+
+        assert quiz_record is None
+
     def test_delete_quiz(
         self,
         db: Session,

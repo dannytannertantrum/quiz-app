@@ -25,6 +25,7 @@ router = APIRouter(
     "/{quiz_question_id}",
     response_model=QuizQuestionAndAnswers,
     status_code=status.HTTP_200_OK,
+    description="Returns the quiz question id, question, answer options, and the id of the user selected answer",
 )
 def read_quiz_question_by_id(
     quiz_question_id: UUID4,

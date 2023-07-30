@@ -58,15 +58,21 @@ def update_quiz_question_in_db(
     db: Session, user_input: QuizQuestionUpdateAnswerRequest, quiz_question_id: UUID4
 ) -> QuizQuestion:
     """
-    Returns the question id, quiz_id and user answer or None if no record found
+    Returns a Quiz Question record or None if no record found
     """
-    updated_quiz_question_record = db.execute(
-        update(QuizQuestion)
-        .where(QuizQuestion.id == quiz_question_id)
-        .values(user_answer=user_input.user_answer)
-        .returning(QuizQuestion.id, QuizQuestion.user_answer, QuizQuestion.quiz_id)
-    ).first()
+    quiz_question_model: QuizQuestion = (
+        db.execute(select(QuizQuestion).where(QuizQuestion.id == quiz_question_id))
+        .scalars()
+        .first()
+    )
 
+    if not quiz_question_model:
+        return None
+
+    quiz_question_model.user_answer = user_input.user_answer
+
+    db.add(quiz_question_model)
     db.commit()
+    db.refresh(quiz_question_model)
 
-    return updated_quiz_question_record
+    return quiz_question_model
