@@ -5,7 +5,7 @@ from app.crud import crud_questions, crud_quizzes, crud_quiz_questions
 from app.database import get_db
 from app.dependencies import get_current_user
 from app.helper_functions import choose_random_questions
-from app.schemas.quiz import QuizCreate, QuizCreateResponse
+from app.schemas.quiz import QuizCreate, QuizCreateResponse, QuizWithTopicData
 from app.schemas.user import UserCurrent
 
 
@@ -41,4 +41,33 @@ def create_quiz(
         db, question_ids, quiz_id
     )
 
-    return {"quiz_id": quiz_id, "quiz_question_ids": quiz_question_ids}
+    return {"id": quiz_id, "quiz_question_ids": quiz_question_ids}
+
+
+@router.get(
+    "/user/me",
+    response_model=list[QuizWithTopicData],
+    status_code=status.HTTP_200_OK,
+)
+def read_all_quizzes_with_topic_data_by_user_id(
+    db: Session = Depends(get_db),
+    current_user: UserCurrent = Depends(get_current_user),
+) -> list[QuizWithTopicData]:
+    """
+    All quizzes in the account section need to show the completed date,
+    score, primary topic names and subtopic names
+    """
+    if not current_user:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND, detail="User not found"
+        )
+
+    quizzes_with_topic_data = crud_quizzes.get_all_quizzes_with_topic_data_by_user_id(
+        db, user_id=current_user["id"]
+    )
+    if not quizzes_with_topic_data:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND, detail="No quizzes found"
+        )
+
+    return quizzes_with_topic_data

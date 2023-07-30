@@ -18,7 +18,7 @@ def get_all_topics(db: Session) -> list[Topic]:
 
 def get_topic_by_id(db: Session, topic_id: UUID4) -> Topic:
     """
-    Returns topic id if is_deleted is False or None if no record found
+    Returns topic id, title and description if is_deleted is False or None if no record found
     """
     return db.execute(
         select(Topic.id, Topic.title, Topic.description).where(

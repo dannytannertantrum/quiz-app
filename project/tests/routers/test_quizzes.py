@@ -4,8 +4,8 @@ import pytest
 from sqlalchemy.orm import Session
 
 from app.crud import crud_quizzes, crud_quiz_questions
-from app.models.question import Question
-from app.models.topic import Topic
+from app.models import Question, QuizQuestion, Topic, User
+from app.schemas.quiz import QuizId, QuizWithTopicData
 from tests.utils import kitchen_sink, question, quiz
 
 
@@ -64,22 +64,55 @@ class TestQuizRoutesNotReturningData:
         finally:
             question.delete_test_questions(db)
 
+    def test_read_all_quizzes_with_topic_data_by_user_id_raises_exception_if_user_not_found(
+        self, client: TestClient, token_headers: dict[str, str]
+    ) -> None:
+        response = client.get("/quizzes/user/me", headers=token_headers)
+
+        assert response.status_code == 404
+        assert response.json() == {"detail": "No quizzes found"}
+
 
 class TestQuizRoutesReturningData:
     def test_create_quiz(self, create_quiz_api_response: Response, db: Session) -> None:
         response_json = create_quiz_api_response.json()
-        result = crud_quizzes.get_quiz_by_id(db, quiz_id=response_json["quiz_id"])
+        quiz = crud_quizzes.get_quiz_by_id(db, quiz_id=response_json["id"])
 
         assert create_quiz_api_response.status_code == 201
-        assert result is not None
-        assert str(result.id) == response_json["quiz_id"]
+        assert quiz is not None
+        assert str(quiz.id) == response_json["id"]
 
     def test_create_quiz_creates_a_quiz_question_record(
         self, create_quiz_api_response: Response, db: Session
     ) -> None:
         response_json = create_quiz_api_response.json()
         result = crud_quiz_questions.get_quiz_questions_by_quiz_id(
-            db, quiz_id=response_json["quiz_id"]
+            db, quiz_id=response_json["id"]
         )
 
         assert result is not None
+
+    def test_read_all_quizzes_with_topic_data_by_user_id(
+        self,
+        client: TestClient,
+        token_headers: dict[str, str],
+        create_test_quiz: QuizId,
+        create_test_questions: list[Question],
+        create_test_primary_topics: list[Topic],
+        create_test_subtopics: list[Topic],
+        create_test_quiz_question: list[QuizQuestion],
+        generate_test_user: User,
+    ) -> None:
+        response = client.get("/quizzes/user/me", headers=token_headers)
+        data: QuizWithTopicData = response.json()[0]
+
+        # Each list item of primary and subtopic generators is of type <class 'sqlalchemy.engine.row.Row'>
+        # Index 1 is the topic title in each list - yes, this is brittle and perhaps I'll update at some point
+        primary_topics = list(map(lambda x: x[1], create_test_primary_topics))
+        subtopics = list(map(lambda x: x[1], create_test_subtopics))
+
+        assert response.status_code == 200
+        assert data["primary_topic"] in primary_topics
+        assert data["subtopics"][0] in subtopics
+        assert isinstance(data["subtopics"], list)
+        assert data["created_at"] is not None

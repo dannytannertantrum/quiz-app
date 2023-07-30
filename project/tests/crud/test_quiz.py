@@ -4,16 +4,28 @@ from uuid import UUID, uuid4
 from sqlalchemy.orm import Session
 
 from app.crud import crud_quizzes
-from app.models import User
+from app.models import Question, QuizQuestion, Topic, User
 from app.schemas.quiz import QuizId
 from tests.utils import quiz
 
 
+random_uuid = uuid4()
+
+
 class TestCrudQuizFailure:
     def test_get_quiz_by_id_returns_None_if_no_record_found(self, db: Session) -> None:
-        result = crud_quizzes.get_quiz_by_id(db, quiz_id=uuid4())
+        quiz = crud_quizzes.get_quiz_by_id(db, quiz_id=random_uuid)
 
-        assert result is None
+        assert quiz is None
+
+    def test_get_all_quizzes_with_topic_data_by_user_id_returns_empty_list_if_none_found(
+        self, db: Session
+    ) -> None:
+        quiz = crud_quizzes.get_all_quizzes_with_topic_data_by_user_id(
+            db, user_id=random_uuid
+        )
+
+        assert quiz == []
 
 
 class TestCrudQuizSuccess:
@@ -47,3 +59,24 @@ class TestCrudQuizSuccess:
 
         assert quiz_record.last_modified_at is not None
         assert quiz_record.score == 3
+
+    def test_get_all_quizzes_with_topic_data_by_user_id(
+        self,
+        db: Session,
+        create_test_quiz: QuizId,
+        create_test_questions: list[Question],
+        create_test_primary_topics: list[Topic],
+        create_test_subtopics: list[Topic],
+        create_test_quiz_question: list[QuizQuestion],
+        generate_test_user: User,
+    ):
+        quizzes_with_topic_data = (
+            crud_quizzes.get_all_quizzes_with_topic_data_by_user_id(
+                db, user_id=generate_test_user.id
+            )
+        )
+
+        assert quizzes_with_topic_data[0].id == create_test_quiz
+        assert quizzes_with_topic_data[0].created_at is not None
+        assert isinstance(quizzes_with_topic_data[0].subtopics, list)
+        assert isinstance(quizzes_with_topic_data[0].primary_topic, str)
