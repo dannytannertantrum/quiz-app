@@ -3,7 +3,7 @@ from typing import Optional
 from uuid import uuid4
 
 from pydantic import UUID4
-from sqlalchemy import distinct, select, func
+from sqlalchemy import delete, distinct, select, func
 from sqlalchemy.orm import aliased, Session
 
 from app.models.question import Question
@@ -134,7 +134,7 @@ def update_quiz_in_db(
     last_modified_at: datetime,
     completed_at: Optional[datetime] = None,
     score: Optional[int] = None,
-):
+) -> None:
     """
     Updates a Quiz record in the following scenarios:
     1. Every time a user submits an answer on a quiz, a quiz question
@@ -153,4 +153,7 @@ def update_quiz_in_db(
     db.commit()
     db.refresh(quiz_model)
 
-    return quiz_model
+
+def delete_quiz_in_db(db: Session, quiz_id: UUID4) -> None:
+    db.execute(delete(Quiz).where(Quiz.id == quiz_id))
+    db.commit()

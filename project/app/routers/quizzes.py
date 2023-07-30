@@ -104,3 +104,20 @@ def read_quiz_with_topic_data_by_quiz_id(
         )
 
     return quiz_with_topic_data
+
+
+@router.delete("/{quiz_id}", status_code=status.HTTP_204_NO_CONTENT)
+def delete_quiz(
+    quiz_id: UUID4,
+    db: Session = Depends(get_db),
+    current_user: UserCurrent = Depends(get_current_user),
+) -> None:
+    """
+    Hard delete a quiz record from the database
+    """
+    if not current_user:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND, detail="User not found"
+        )
+
+    crud_quizzes.delete_quiz_in_db(db, quiz_id=quiz_id)

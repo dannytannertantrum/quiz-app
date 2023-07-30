@@ -1,7 +1,7 @@
 from sqlalchemy import delete
 from sqlalchemy.orm import Session
 
-from app.models.quiz import Quiz
+from app.models import Quiz
 
 
 def delete_test_quizzes(db: Session) -> None:
