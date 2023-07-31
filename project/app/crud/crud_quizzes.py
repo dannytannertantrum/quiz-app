@@ -3,14 +3,58 @@ from typing import Optional
 from uuid import uuid4
 
 from pydantic import UUID4
-from sqlalchemy import delete, distinct, func, select
+from sqlalchemy import case, delete, distinct, func, Integer, select
 from sqlalchemy.orm import aliased, Session
 
 from app.models.question import Question
-from app.models.quiz import Quiz
+from app.models import Question, Quiz
 from app.models.quiz_question import QuizQuestion
 from app.models.topic import Topic
-from app.schemas.quiz import QuizAllData, QuizId, QuizWithTopicData
+from app.schemas.quiz import QuizAllData, QuizId, QuizIdWithScore, QuizWithTopicData
+
+
+def calculate_user_score(db: Session, quiz_id: UUID4) -> QuizIdWithScore:
+    """
+    Compares user submitted answer ids to correct answer ids
+    and calculates a score based on how many they got right
+
+    Returns a "user_score" aliased column
+
+    SELECT
+        SUM(CASE WHEN quiz_questions.user_answer = questions.correct_answer THEN 1 ELSE 0 END)
+        * 100 / COUNT(quiz_questions.question_id) AS user_score
+        FROM quizzes
+        JOIN quiz_questions ON quizzes.id = quiz_questions.quiz_id
+        JOIN questions questions ON quiz_questions.question_id = questions.id
+        WHERE quizzes.id = quiz_id;
+
+    Also, I hate SQLAlchemy
+    """
+    return db.execute(
+        select(
+            Quiz.id,
+            (
+                func.cast(
+                    func.sum(
+                        case(
+                            (
+                                QuizQuestion.user_answer == Question.correct_answer,
+                                1,
+                            ),
+                            else_=0,
+                        )
+                    )
+                    * 100
+                    / func.count(QuizQuestion.question_id),
+                    Integer,
+                )
+            ).label("user_score"),
+        )
+        .join(QuizQuestion, Quiz.id == QuizQuestion.quiz_id)
+        .join(Question, QuizQuestion.question_id == Question.id)
+        .where(Quiz.id == quiz_id)
+        .group_by(Quiz.id)
+    ).first()
 
 
 def get_quiz_by_id(db: Session, quiz_id: UUID4) -> Quiz:

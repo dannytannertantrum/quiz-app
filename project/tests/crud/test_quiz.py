@@ -76,8 +76,29 @@ class TestCrudQuizNotReturningData:
         assert deleted_quiz_record is None
         assert deleted_quiz_question_record == []
 
+    def test_calculate_user_score_returns_None_if_no_record_to_update_found(
+        self, db: Session
+    ) -> None:
+        result = crud_quizzes.calculate_user_score(db, quiz_id=random_uuid)
+
+        assert result is None
+
 
 class TestCrudQuizReturningData:
+    def test_calculate_user_score(
+        self,
+        db: Session,
+        create_test_quiz_questions_with_all_answers: list[QuizQuestion],
+        create_test_quiz_for_qq_with_all_answers: QuizId,
+    ) -> None:
+        result = crud_quizzes.calculate_user_score(
+            db, quiz_id=create_test_quiz_for_qq_with_all_answers
+        )
+
+        # Based on the test questions and user answers we created,
+        # there are 2 correct answers - kinda brittle
+        assert result.user_score == 40
+
     def test_get_quiz_by_id(self, db: Session, create_test_quiz: QuizId) -> None:
         result = crud_quizzes.get_quiz_by_id(db, quiz_id=create_test_quiz)
 

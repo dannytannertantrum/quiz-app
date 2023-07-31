@@ -43,13 +43,6 @@ class TestCrudQuizQuestionFailure:
 
         assert result is None
 
-    def test_calculate_user_score_returns_None_if_no_record_to_update_found(
-        self, db: Session
-    ) -> None:
-        result = crud_quiz_questions.calculate_user_score(db, quiz_id=random_uuid)
-
-        assert result is None
-
 
 class TestCrudQuizQuestionSuccess:
     def test_create_quiz_question_in_db(
@@ -121,17 +114,3 @@ class TestCrudQuizQuestionSuccess:
         )
 
         assert question_info.user_answer == 3
-
-    def test_calculate_user_score(
-        self,
-        db: Session,
-        create_test_quiz_questions_with_all_answers: list[QuizQuestion],
-        create_test_quiz_for_qq_with_all_answers: QuizId,
-    ) -> None:
-        result = crud_quiz_questions.calculate_user_score(
-            db, quiz_id=create_test_quiz_for_qq_with_all_answers
-        )
-
-        # Based on the test questions and user answers we created,
-        # there are 2 correct answers - kinda brittle
-        assert result.user_score == 40

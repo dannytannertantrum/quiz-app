@@ -91,7 +91,7 @@ def update_quiz_question(
 
     if len(user_answers) == 5:
         completed_at = datetime.now(timezone.utc)
-        result = crud_quiz_questions.calculate_user_score(
+        result = crud_quizzes.calculate_user_score(
             db, quiz_id=quiz_question_record.quiz_id
         )
         score = result.user_score
