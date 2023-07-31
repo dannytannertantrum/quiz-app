@@ -3,14 +3,14 @@ from typing import Optional
 from uuid import uuid4
 
 from pydantic import UUID4
-from sqlalchemy import delete, distinct, select, func
+from sqlalchemy import delete, distinct, func, select
 from sqlalchemy.orm import aliased, Session
 
 from app.models.question import Question
 from app.models.quiz import Quiz
 from app.models.quiz_question import QuizQuestion
 from app.models.topic import Topic
-from app.schemas.quiz import QuizId, QuizWithTopicData
+from app.schemas.quiz import QuizAllData, QuizId, QuizWithTopicData
 
 
 def get_quiz_by_id(db: Session, quiz_id: UUID4) -> Quiz:
@@ -114,12 +114,64 @@ def get_all_quizzes_with_topic_data_by_user_id(
     ).all()
 
 
-def create_quiz_in_db(db: Session, user_id: UUID4) -> QuizId:
+def get_quiz_with_all_questions_answers_and_topics(
+    db: Session, quiz_id: UUID4
+) -> QuizAllData:
+    t1 = aliased(Topic)
+    t2 = aliased(Topic)
+
+    return db.execute(
+        select(
+            Quiz.id,
+            Quiz.created_at,
+            Quiz.completed_at,
+            Quiz.last_modified_at,
+            Quiz.score,
+            Quiz.user_id,
+            t2.title.label("primary_topic"),
+            func.array_agg(distinct(t1.title)).label("subtopics"),
+            func.json_agg(
+                func.json_build_object(
+                    "question_id",
+                    Question.id,
+                    "question",
+                    Question.question,
+                    "answer_options",
+                    Question.answer_options,
+                    "correct_answer",
+                    Question.correct_answer,
+                    "user_answer",
+                    QuizQuestion.user_answer,
+                )
+            ).label("questions_data"),
+        )
+        .join(QuizQuestion, Quiz.id == QuizQuestion.quiz_id)
+        .join(Question, QuizQuestion.question_id == Question.id)
+        .join(t1, Question.topic_id == t1.id)
+        .join(t2, t1.parent_topic_id == t2.id)
+        .where(Quiz.id == quiz_id)
+        .group_by(Quiz.id, t2.title)
+    ).first()
+
+
+def create_quiz_in_db(
+    db: Session,
+    user_id: UUID4,
+    last_modified_at: Optional[datetime] = None,
+    completed_at: Optional[datetime] = None,
+    score: Optional[int] = None,
+) -> QuizId:
     """
     Creates a new Quiz record in the database and returns its id
     """
     new_quiz_id = uuid4()
-    new_quiz = Quiz(id=new_quiz_id, user_id=user_id)
+    new_quiz = Quiz(
+        id=new_quiz_id,
+        user_id=user_id,
+        last_modified_at=last_modified_at,
+        completed_at=completed_at,
+        score=score,
+    )
 
     db.add(new_quiz)
     db.commit()

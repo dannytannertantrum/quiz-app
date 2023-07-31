@@ -6,7 +6,12 @@ from app.crud import crud_questions, crud_quizzes, crud_quiz_questions
 from app.database import get_db
 from app.dependencies import get_current_user
 from app.helper_functions import choose_random_questions
-from app.schemas.quiz import QuizCreate, QuizCreateResponse, QuizWithTopicData
+from app.schemas.quiz import (
+    QuizCreate,
+    QuizCreateResponse,
+    QuizWithTopicData,
+    QuizAllData,
+)
 from app.schemas.user import UserCurrent
 
 
@@ -109,6 +114,38 @@ def read_quiz_with_topic_data_by_quiz_id(
         )
 
     return quiz_with_topic_data
+
+
+@router.get(
+    "/{quiz_id}/review",
+    description="Return a quiz record with all the questions, answers and user submitted answers",
+    response_model=QuizAllData,
+    status_code=status.HTTP_200_OK,
+)
+def read_quiz_with_all_questions_answers_and_topics(
+    quiz_id: UUID4,
+    db: Session = Depends(get_db),
+    current_user: UserCurrent = Depends(get_current_user),
+) -> QuizAllData:
+    """
+    After a user has completed a quiz, they can review their answers
+    to see which questions they answered correctly
+    """
+    if not current_user:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND, detail="User not found"
+        )
+
+    quiz_with_all_data = crud_quizzes.get_quiz_with_all_questions_answers_and_topics(
+        db, quiz_id=quiz_id
+    )
+
+    if not quiz_with_all_data:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND, detail="No quiz found"
+        )
+
+    return quiz_with_all_data
 
 
 @router.delete("/{quiz_id}", status_code=status.HTTP_204_NO_CONTENT)

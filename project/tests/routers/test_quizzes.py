@@ -7,7 +7,7 @@ from sqlalchemy.orm import Session
 
 from app.crud import crud_quizzes, crud_quiz_questions
 from app.models import Question, QuizQuestion, Topic, User
-from app.schemas.quiz import QuizId, QuizWithTopicData
+from app.schemas.quiz import QuizId, QuizWithTopicData, QuizAllData
 from tests.utils import kitchen_sink, question, quiz
 
 
@@ -78,6 +78,14 @@ class TestQuizRoutesFailure:
         self, client: TestClient, token_headers: dict[str, str]
     ) -> None:
         response = client.get(f"/quizzes/{uuid4()}", headers=token_headers)
+
+        assert response.status_code == 404
+        assert response.json() == {"detail": "No quiz found"}
+
+    def test_read_quiz_with_all_questions_answers_and_topics_raises_exception_if_quiz_not_found(
+        self, client: TestClient, token_headers: dict[str, str]
+    ) -> None:
+        response = client.get(f"/quizzes/{uuid4()}/review", headers=token_headers)
 
         assert response.status_code == 404
         assert response.json() == {"detail": "No quiz found"}
@@ -158,6 +166,42 @@ class TestQuizRoutesSuccess:
         assert data["subtopics"][0] in subtopics
         assert isinstance(data["subtopics"], list)
         assert data["created_at"] is not None
+
+    def test_read_quiz_with_all_questions_answers_and_topics(
+        self,
+        client: TestClient,
+        token_headers: dict[str, str],
+        create_test_quiz_for_qq_with_all_answers: QuizId,
+        create_test_questions: list[Question],
+        create_test_primary_topics: list[Topic],
+        create_test_subtopics: list[Topic],
+        create_test_quiz_questions_with_all_answers: list[QuizQuestion],
+        generate_test_user: User,
+    ) -> None:
+        response = client.get(
+            f"/quizzes/{create_test_quiz_for_qq_with_all_answers}/review",
+            headers=token_headers,
+        )
+        data: QuizAllData = response.json()
+
+        # Each list item of primary and subtopic generators is of type <class 'sqlalchemy.engine.row.Row'>
+        # Index 1 is the topic title in each list - yes, this is brittle and perhaps I'll update at some point
+        primary_topics = list(map(lambda x: x[1], create_test_primary_topics))
+        subtopics = list(map(lambda x: x[1], create_test_subtopics))
+
+        assert response.status_code == 200
+        assert isinstance(data["subtopics"], list)
+        assert data["created_at"] is not None
+        assert data["last_modified_at"] is not None
+        assert data["completed_at"] is not None
+        assert data["score"] > 0
+        assert isinstance(data["questions_data"][0]["answer_options"], list)
+        assert isinstance(data["questions_data"][0]["question"], str)
+        assert data["questions_data"][0]["user_answer"] > 0
+        assert data["questions_data"][0]["correct_answer"] > 0
+        assert isinstance(data["questions_data"][0]["question_id"], str)
+        assert data["primary_topic"] in primary_topics
+        assert data["subtopics"][0] in subtopics
 
     def test_delete_quiz(
         self,

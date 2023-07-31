@@ -1,4 +1,5 @@
 import os
+from datetime import datetime, timezone
 from typing import Generator
 
 import pytest
@@ -267,7 +268,13 @@ def create_test_quiz_questions(
 def create_test_quiz_for_qq_with_all_answers(
     db: Session, generate_test_user: User
 ) -> quiz.QuizId:
-    yield crud_quizzes.create_quiz_in_db(db, user_id=generate_test_user.id)
+    yield crud_quizzes.create_quiz_in_db(
+        db,
+        user_id=generate_test_user.id,
+        last_modified_at=datetime.now(timezone.utc),
+        completed_at=datetime.now(timezone.utc),
+        score=40,
+    )
     delete_test_quizzes(db)
 
 

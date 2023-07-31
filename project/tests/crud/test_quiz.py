@@ -34,6 +34,15 @@ class TestCrudQuizNotReturningData:
 
         assert quiz is None
 
+    def test_get_quiz_with_all_questions_answers_and_topics_returns_None_if_no_record_found(
+        self, db: Session
+    ) -> None:
+        quiz = crud_quizzes.get_quiz_with_all_questions_answers_and_topics(
+            db, quiz_id=random_uuid
+        )
+
+        assert quiz is None
+
     def test_update_quiz_in_db_returns_None_if_no_record_to_update_found(
         self, db: Session
     ) -> None:
@@ -138,3 +147,31 @@ class TestCrudQuizReturningData:
         assert quiz_with_topic_data.created_at is not None
         assert isinstance(quiz_with_topic_data.subtopics, list)
         assert isinstance(quiz_with_topic_data.primary_topic, str)
+
+    def test_get_quiz_with_all_questions_answers_and_topics(
+        self,
+        db: Session,
+        create_test_quiz_for_qq_with_all_answers: QuizId,
+        create_test_questions: list[Question],
+        create_test_primary_topics: list[Topic],
+        create_test_subtopics: list[Topic],
+        create_test_quiz_questions_with_all_answers: list[QuizQuestion],
+    ):
+        quiz_with_all_data = (
+            crud_quizzes.get_quiz_with_all_questions_answers_and_topics(
+                db, quiz_id=create_test_quiz_for_qq_with_all_answers
+            )
+        )
+
+        assert quiz_with_all_data.id == create_test_quiz_for_qq_with_all_answers
+        assert quiz_with_all_data.created_at is not None
+        assert quiz_with_all_data.last_modified_at is not None
+        assert quiz_with_all_data.completed_at is not None
+        assert quiz_with_all_data.score > 0
+        assert isinstance(quiz_with_all_data.questions_data[0]["answer_options"], list)
+        assert isinstance(quiz_with_all_data.questions_data[0]["question"], str)
+        assert quiz_with_all_data.questions_data[0]["user_answer"] > 0
+        assert quiz_with_all_data.questions_data[0]["correct_answer"] > 0
+        assert isinstance(quiz_with_all_data.questions_data[0]["question_id"], str)
+        assert isinstance(quiz_with_all_data.subtopics, list)
+        assert isinstance(quiz_with_all_data.primary_topic, str)

@@ -1,7 +1,7 @@
 from datetime import datetime
 from typing import Optional
 
-from pydantic import BaseModel, UUID4
+from pydantic import BaseModel, Field, UUID4
 
 from app.schemas.quiz_question import QuizQuestionFullResponse
 
@@ -30,3 +30,15 @@ class QuizWithTopicData(QuizId):
     subtopics: list[str]
     primary_topic: str
     user_id: UUID4
+
+
+class QuestionsAnswersAndUserAnswer(BaseModel):
+    answer_options: list[dict[str, str | int]]
+    correct_answer: int = Field(default=None, gt=0, le=4)
+    question: str
+    question_id: UUID4
+    user_answer: Optional[int] = Field(default=None, gt=0, le=4)
+
+
+class QuizAllData(QuizWithTopicData):
+    questions_data: list[QuestionsAnswersAndUserAnswer]
