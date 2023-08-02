@@ -23,7 +23,7 @@ source .venv/bin/activate
 (.venv) $ docker-compose up -d --build
 ```
 
-Now that the app is running, check out the docs and play around with the API endpoints: [http://127.0.0.1:8004/docs](http://127.0.0.1:8004/docs)!
+Now that the app is running, check out the docs and play around with the API endpoints: [http://127.0.0.1:8004/docs](http://127.0.0.1:8004/docs)
 
 ## Running Database Migrations
 
