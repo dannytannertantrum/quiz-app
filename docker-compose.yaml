@@ -1,28 +1,28 @@
 version: '3.8'
 
 services:
-  web:
-    build: ./project
+  backend:
+    build: ./backend
     # --workers provides a single worker process
     # the host defines the address to host the server on and port defines the port to hose the server on
     command: uvicorn app.main:app --reload --workers 1 --host 0.0.0.0 --port 8000
     volumes:
       # Reminder: <host-directory>:<container-directory>
-      - ./project:/code
+      - ./backend:/code
     ports:
       # Reminder: <host-port>:<container-port>
       - 8004:8000
     environment:
       - ENVIRONMENT=dev
       - TESTING=0
-      - DATABASE_URL=postgresql://postgres:postgres@web-database:5432/web_dev
-      - DATABASE_TEST_URL=postgresql://postgres:postgres@web-database:5432/web_test
+      - DATABASE_URL=postgresql://postgres:postgres@db:5432/dev
+      - DATABASE_TEST_URL=postgresql://postgres:postgres@db:5432/test
     depends_on:
-      - web-database
+      - db
 
-  web-database:
+  db:
     build:
-      context: ./project/database
+      context: ./backend/database
       dockerfile: Dockerfile
     expose:
       - 5432

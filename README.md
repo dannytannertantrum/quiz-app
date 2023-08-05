@@ -15,7 +15,7 @@ A quiz app built with the following tech:
 - [Docker Desktop](https://docs.docker.com/get-docker/)
 - [Postgres](https://www.postgresql.org/download/)
 
-3. **Create an isolated Python environment and activate it -** Run the following commands from your terminal in the `project` directory:
+3. **Create an isolated Python environment and activate it -** Run the following commands from your terminal in the `backend` directory:
 
 ```
 python3 -m venv .venv
@@ -29,21 +29,21 @@ Now that the app is running, check out the docs and play around with the API end
 
 We're using [SQLAlchemy](https://docs.sqlalchemy.org/en/20/index.html) as our ORM and [Alembic](https://alembic.sqlalchemy.org/en/latest/) to manage migrations. With the commands above in _Getting Started_, you should have...
 
-- Two containers up and running: `web` and `web-database`
+- Two containers up and running: `backend` and `db`
   - **NOTE:** You can confirm this by running `docker compose ps`
-- Have two empty databases: `web_dev` and `web_test`
+- Have two empty databases: `dev` and `test`
 
-We manage our `web_dev` database migrations with alembic. For tests, we bind the models via SQLAlchemy and tables are built before any tests run.
+We manage our `dev` database migrations with alembic. For tests, we bind the models via SQLAlchemy and tables are built before any tests run.
 
 ### Migration Commands
 
-- **Upgrade to the latest migration:** `docker compose exec web alembic upgrade head`
-- **Upgrade per migration:** `docker compose exec web alembic upgrade +1`
-- **Downgrade all the way back to nothing:** `docker compose exec web alembic downgrade base`
-- **Downgrade per migrations:** `docker compose exec web alembic downgrade -1`
-- **Get the current version:** `docker compose exec web alembic current`
-- **After creating a new model and you want to autogenerate SQL:** `docker compose exec web alembic revision --autogenerate -m "Your commit message here"`
+- **Upgrade to the latest migration:** `docker compose exec backend alembic upgrade head`
+- **Upgrade per migration:** `docker compose exec backend alembic upgrade +1`
+- **Downgrade all the way back to nothing:** `docker compose exec backend alembic downgrade base`
+- **Downgrade per migrations:** `docker compose exec backend alembic downgrade -1`
+- **Get the current version:** `docker compose exec backend alembic current`
+- **After creating a new model and you want to autogenerate SQL:** `docker compose exec backend alembic revision --autogenerate -m "Your commit message here"`
 
 ## Testing
 
-As stated above, the test database is configured via `conftest.py` before any tests run. To run tests, make sure the containers are running and run: `docker compose run -e ENVIRONMENT=test web python3 -m pytest`
+As stated above, the test database is configured via `conftest.py` before any tests run. To run tests, make sure the containers are running and run: `docker compose run -e ENVIRONMENT=test backend python3 -m pytest`

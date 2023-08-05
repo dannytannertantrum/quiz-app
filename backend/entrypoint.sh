@@ -4,7 +4,7 @@ echo "Waiting for postgres..."
 
 # nc = netcat - a networking utility with the help of TCP/IP protocol which reads and writes data across network connections.
 # The nc -z option checks for the TCP connection without sending any data.
-while ! nc -z web-database 5432; do
+while ! nc -z db 5432; do
   # Use 0.1 to not overwhelm the system with continuous connection attempts
   sleep 0.1
 done
