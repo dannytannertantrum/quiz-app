@@ -6,14 +6,11 @@ services:
     # --workers provides a single worker process
     # the host defines the address to host the server on and port defines the port to hose the server on
     command: uvicorn app.main:app --reload --workers 1 --host 0.0.0.0 --port 8000
-    volumes:
-      # Reminder: <host-directory>:<container-directory>
-      - ./backend:/code
     ports:
       # Reminder: <host-port>:<container-port>
       - 8004:8000
     environment:
-      - ENVIRONMENT=dev
+      - ENVIRONMENT=production
       - TESTING=0
       - DATABASE_URL=postgresql://postgres:postgres@db:5432/dev
       - DATABASE_TEST_URL=postgresql://postgres:postgres@db:5432/test
@@ -33,10 +30,8 @@ services:
       - '5432:5432'
 
   frontend:
-    image: docker-nextjs-dev
-    build: ./frontend
+    image: docker-nextjs
+    build:
+      dockerfile: ./frontend/Dockerfile.production
     ports:
       - '3000:3000'
-    volumes:
-      - ./frontend/public:/code/public
-      - ./frontend/app:/code/app
