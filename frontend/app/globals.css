@@ -3,21 +3,22 @@
 @tailwind utilities;
 
 :root {
-  --foreground-hex: #1a141a;
-  --background-hex-start: #f2ecf2;
-  --background-hex-end: #c8b1c8;
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --foreground-hex: #c8b1c8;
-    --background-hex-start: #2a202a;
-    --background-hex-end: #1a141a;
-  }
+  --foreground-hex-dark: #c8b1c8;
+  --foreground-hex-light: #2f232e;
+  --background-hex-dark-end: #1a141a;
+  --background-hex-light-end: #c8b1c8;
+  --background-hex-dark-start: #2a202a;
+  --background-hex-light-start: #f2ecf2;
 }
 
 body {
-  color: var(--foreground-hex);
-  background: linear-gradient(to bottom, transparent, var(--background-hex-end))
-    var(--background-hex-start);
+  color: var(--foreground-hex-light);
+  background: linear-gradient(to bottom, transparent, var(--background-hex-light-end))
+    var(--background-hex-light-start);
+}
+
+body.darkmode {
+  color: var(--foreground-hex-dark);
+  background: linear-gradient(to bottom, transparent, var(--background-hex-dark-end))
+    var(--background-hex-dark-start);
 }
