@@ -13,12 +13,14 @@
 
 body {
   color: var(--foreground-hex-light);
+  fill: var(--foreground-hex-light);
   background: linear-gradient(to bottom, transparent, var(--background-hex-light-end))
     var(--background-hex-light-start);
 }
 
-body.darkmode {
+html.dark body {
   color: var(--foreground-hex-dark);
+  fill: var(--foreground-hex-dark);
   background: linear-gradient(to bottom, transparent, var(--background-hex-dark-end))
     var(--background-hex-dark-start);
 }
