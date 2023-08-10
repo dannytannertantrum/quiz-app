@@ -11,7 +11,7 @@ interface ColorSchemeToggleProps {
 
 export const ThemeSwitcher = ({ size }: ColorSchemeToggleProps): JSX.Element | null => {
   const [mounted, setMounted] = useState(false);
-  const { theme, setTheme } = useTheme();
+  const { resolvedTheme, setTheme } = useTheme();
 
   useEffect(() => {
     setMounted(true);
@@ -23,7 +23,7 @@ export const ThemeSwitcher = ({ size }: ColorSchemeToggleProps): JSX.Element | n
     <button
       aria-label='toggle light and dark mode'
       className={'text-xl md:text-3xl'}
-      onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
+      onClick={() => setTheme(resolvedTheme === 'dark' ? 'light' : 'dark')}
       style={size ? { fontSize: `${size}px` } : {}}
       title='Toggle light and dark mode'
     >
