@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
 
+import { Header } from './components/molecules/Header';
 import './globals.css';
 import { ThemeProvider } from './context/Theme';
 
@@ -16,6 +17,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang='en' suppressHydrationWarning>
       <body className={inter.variable}>
         <ThemeProvider attribute='class' defaultTheme='system' enableSystem>
+          <Header />
           {children}
         </ThemeProvider>
       </body>
