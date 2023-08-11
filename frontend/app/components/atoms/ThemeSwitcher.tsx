@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 import { useTheme } from 'next-themes';
 
-import { FaSolidAdjust } from '../svgs/AdjustColorScheme';
+import { FaSolidAdjust } from '../../../public/svgs/FaSolidAdjust';
 
 interface ColorSchemeToggleProps {
   size?: number;
@@ -22,7 +22,7 @@ export const ThemeSwitcher = ({ size }: ColorSchemeToggleProps): JSX.Element | n
   return (
     <button
       aria-label='toggle light and dark mode'
-      className={'text-xl md:text-3xl'}
+      className='text-xl md:text-3xl'
       onClick={() => setTheme(resolvedTheme === 'dark' ? 'light' : 'dark')}
       style={size ? { fontSize: `${size}px` } : {}}
       title='Toggle light and dark mode'

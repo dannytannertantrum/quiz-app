@@ -3,10 +3,10 @@
 @tailwind utilities;
 
 :root {
-  --foreground-hex-dark: #c8b1c8;
+  --foreground-hex-dark: #e2d5e1;
   --foreground-hex-light: #2f232e;
   --background-hex-dark-end: #1a141a;
-  --background-hex-light-end: #c8b1c8;
+  --background-hex-light-end: #e2d5e1;
   --background-hex-dark-start: #2a202a;
   --background-hex-light-start: #f2ecf2;
 }

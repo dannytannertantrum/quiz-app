@@ -3,8 +3,10 @@ import '@testing-library/jest-dom';
 import { render, screen } from 'test-utils';
 import { ThemeSwitcher } from '../app/components/atoms/ThemeSwitcher';
 
-test('loads and displays a theme switcher', () => {
-  render(<ThemeSwitcher />);
+describe('ThemeSwitcher', () => {
+  test('loads and displays a theme switcher', () => {
+    render(<ThemeSwitcher />);
 
-  expect(screen.getByRole('button', { name: 'toggle light and dark mode' })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'toggle light and dark mode' })).toBeInTheDocument();
+  });
 });
