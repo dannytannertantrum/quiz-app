@@ -31,7 +31,6 @@ export const Header = () => {
             className='object-scale-down object-left max-md:w-8'
             width={64}
             height={42}
-            priority
           />
         </Link>
         <ThemeSwitcher />
