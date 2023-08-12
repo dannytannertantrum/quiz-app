@@ -57,7 +57,7 @@ export const TextInput = ({
     <div className='flex flex-col relative w-full sm:w-80'>
       <input
         autoFocus={autofocus ?? false}
-        className={`bg-thunder-300 p-2.5 rounded mb-9
+        className={`bg-thunder-300 p-2.5 rounded mb-9 mt-1.5 text-lg
         disabled:bg-slate-400 disabled:text-slate-800 disabled:cursor-not-allowed
         dark:bg-thunder-900 dark:disabled:bg-slate-400 dark:disabled:text-slate-800`}
         data-testid='text-input'
@@ -75,14 +75,14 @@ export const TextInput = ({
       {type === 'password' && (
         <button
           aria-label='toggle view/hide password'
-          className='absolute top-1.5 right-4'
+          className='absolute top-4 right-4'
           onClick={() => setIsPasswordShowing(!isPasswordShowing)}
         >
           {isPasswordShowing ? <FaSolidEye width={20} /> : <FaEyeSlash width={20} />}
         </button>
       )}
       {errorMessage && (
-        <p className='relative -top-7 font-semibold text-red-900 dark:text-red-200'>
+        <p className='relative -top-7 font-semibold text-red-900 text-sm dark:text-red-200'>
           {errorMessage}
         </p>
       )}
