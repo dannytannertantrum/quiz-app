@@ -14,7 +14,7 @@ export interface LabelProps {
  */
 export const Label = ({ children, forAttribute }: LabelProps) => {
   return (
-    <label className='cursor-pointer text-xl' htmlFor={forAttribute}>
+    <label className='block cursor-pointer text-xl' htmlFor={forAttribute}>
       {children}
     </label>
   );

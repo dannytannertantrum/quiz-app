@@ -24,3 +24,9 @@ html.dark body {
   background: linear-gradient(to bottom, transparent, var(--background-hex-dark-end))
     var(--background-hex-dark-start);
 }
+
+@layer base {
+  fieldset label:last-of-type {
+    margin-bottom: 1em;
+  }
+}

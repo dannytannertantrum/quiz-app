@@ -58,8 +58,8 @@ export const TextInput = ({
       <input
         autoFocus={autofocus ?? false}
         className={`bg-thunder-300 p-2.5 rounded mt-1 text-lg
-        disabled:bg-slate-400 disabled:text-slate-800 disabled:cursor-not-allowed
-        dark:bg-thunder-900 dark:disabled:bg-slate-800 dark:disabled:text-slate-400`}
+        disabled:bg-slate-300 disabled:text-slate-500 disabled:cursor-not-allowed
+        dark:bg-thunder-900 dark:disabled:bg-slate-500 dark:disabled:text-slate-300`}
         data-testid='text-input'
         disabled={disabled}
         id={id}
