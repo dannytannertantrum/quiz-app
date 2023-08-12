@@ -2,7 +2,6 @@ import { ReactNode } from 'react';
 
 export interface LabelProps {
   forAttribute: string;
-  name?: string;
   children?: ReactNode;
 }
 
@@ -13,10 +12,9 @@ export interface LabelProps {
  * Otherwise, make sure you include it
  * @returns
  */
-export const Label = ({ children, name, forAttribute }: LabelProps) => {
+export const Label = ({ children, forAttribute }: LabelProps) => {
   return (
     <label className='cursor-pointer text-xl' htmlFor={forAttribute}>
-      {name}
       {children}
     </label>
   );

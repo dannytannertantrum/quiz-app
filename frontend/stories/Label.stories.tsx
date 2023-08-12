@@ -14,10 +14,10 @@ type Story = StoryObj<typeof meta>;
 export const PrimaryWithInput: Story = {
   args: {
     forAttribute: 'myInput',
-    name: 'Email:',
   },
   render: (args) => (
     <Label {...args}>
+      Email:
       <TextInput name='myInput' id='myInput' handleOnChange={() => {}} />
     </Label>
   ),

@@ -54,12 +54,12 @@ export const TextInput = ({
   }, [isPasswordShowing, setDisplayType, type]);
 
   return (
-    <div className='flex flex-col relative w-full sm:w-80'>
+    <div className='flex flex-col relative w-full cursor-default h-20 sm:w-80'>
       <input
         autoFocus={autofocus ?? false}
-        className={`bg-thunder-300 p-2.5 rounded mb-7 mt-1 text-lg
+        className={`bg-thunder-300 p-2.5 rounded mt-1 text-lg
         disabled:bg-slate-400 disabled:text-slate-800 disabled:cursor-not-allowed
-        dark:bg-thunder-900 dark:disabled:bg-slate-400 dark:disabled:text-slate-800`}
+        dark:bg-thunder-900 dark:disabled:bg-slate-800 dark:disabled:text-slate-400`}
         data-testid='text-input'
         disabled={disabled}
         id={id}
@@ -82,7 +82,7 @@ export const TextInput = ({
         </button>
       )}
       {errorMessage && (
-        <p className='relative -top-6 font-semibold text-red-900 text-sm dark:text-red-200'>
+        <p className='relative font-semibold pt-1 text-red-900 text-sm dark:text-red-200'>
           {errorMessage}
         </p>
       )}

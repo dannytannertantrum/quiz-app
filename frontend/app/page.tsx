@@ -14,7 +14,8 @@ export default function Home() {
 
   return (
     <main className='flex min-h-screen flex-col items-center gap-4 p-8'>
-      <Label forAttribute='email' name='Email:'>
+      <Label forAttribute='email'>
+        Email
         <TextInput
           id='email'
           name='email'

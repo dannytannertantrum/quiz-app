@@ -16,7 +16,8 @@ export const PrimaryWithLabelsAndInputs: Story = {
   args: {},
   render: (args) => (
     <Fieldset {...args}>
-      <Label forAttribute='myInput' name='user'>
+      <Label forAttribute='myInput'>
+        Email:
         <TextInput name='myInput' id='myInput' handleOnChange={() => {}} />
       </Label>
     </Fieldset>
@@ -27,7 +28,8 @@ export const Disabled: Story = {
   args: {},
   render: (args) => (
     <Fieldset {...args} disabled>
-      <Label forAttribute='myInput' name='user'>
+      <Label forAttribute='myInput'>
+        Email:
         <TextInput
           name='myInput'
           id='myInput'
@@ -35,7 +37,8 @@ export const Disabled: Story = {
           errorMessage='Here is an error to see what it looks like'
         />
       </Label>
-      <Label forAttribute='another' name='pass'>
+      <Label forAttribute='another'>
+        Password
         <TextInput name='another' id='another' handleOnChange={() => {}} type='password' />
       </Label>
     </Fieldset>
