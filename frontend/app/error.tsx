@@ -12,7 +12,7 @@ export default function Error({ error, reset }: { error: Error; reset: () => voi
   }, [error]);
 
   return (
-    <div>
+    <main className='flex flex-col items-center gap-4 p-8'>
       <h2 className='text-4xl'>Something went wrong!</h2>
       <Button
         onClick={
@@ -22,6 +22,6 @@ export default function Error({ error, reset }: { error: Error; reset: () => voi
       >
         Try again
       </Button>
-    </div>
+    </main>
   );
 }

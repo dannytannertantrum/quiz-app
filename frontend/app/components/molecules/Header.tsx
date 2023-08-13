@@ -23,7 +23,7 @@ export const Header = () => {
 
   return (
     <header className='px-4 border-b border-b-thunder-800 dark:border-b dark:border-b-thunder-300'>
-      <nav className='flex justify-between my-3 mx-auto max-w-7xl'>
+      <nav className='flex justify-between py-3 mx-auto max-w-7xl'>
         <Link href='/' className='flex'>
           <Image
             alt='Home'

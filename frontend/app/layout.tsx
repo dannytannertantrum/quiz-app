@@ -12,12 +12,23 @@ export const metadata: Metadata = {
   description: 'Take a quiz; get results',
 };
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+export default function RootLayout({
+  authHome,
+  children,
+  signIn,
+}: {
+  authHome: React.ReactNode;
+  children: React.ReactNode;
+  signIn: React.ReactNode;
+}) {
+  const isSignedIn = false; // Will change this after wiring up auth
+
   return (
     <html lang='en' suppressHydrationWarning>
-      <body className={inter.variable}>
+      <body className={`${inter.variable} min-h-screen`}>
         <ThemeProvider attribute='class' defaultTheme='system' enableSystem>
           <Header />
+          {isSignedIn ? authHome : signIn}
           {children}
         </ThemeProvider>
       </body>

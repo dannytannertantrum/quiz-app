@@ -1,3 +1,5 @@
+'use client';
+
 import { Button } from '../components/atoms/Button';
 import { Fieldset } from '../components/atoms/Fieldset';
 import { TextInput } from '../components/molecules/TextInput';
@@ -14,8 +16,23 @@ export const SignIn = () => {
     ''
   );
 
+  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+
+    const form = event.currentTarget;
+
+    const formData = new FormData(form);
+
+    // Set up fetch next
+  };
+
   return (
-    <form className='w-full sm:w-auto sm:min-w-[450px]' noValidate>
+    <form
+      method='post'
+      onSubmit={handleSubmit}
+      className='w-full sm:w-auto sm:min-w-[450px]'
+      noValidate
+    >
       <h2 className='text-4xl mb-6'>Sign In</h2>
       <Fieldset>
         <TextInput
