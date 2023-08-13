@@ -3,10 +3,11 @@ import { ReactNode } from 'react';
 export interface LabelProps {
   children?: ReactNode;
   disabled?: boolean;
+  onClick?: () => void;
   type?: 'button' | 'submit' | 'reset';
 }
 
-export const Button = ({ children, disabled, type }: LabelProps) => {
+export const Button = ({ children, disabled, onClick, type }: LabelProps) => {
   return (
     <button
       className={`cursor-pointer py-3 px-7 bg-thunder-300 border border-thunder-800 rounded-xl text-xl text-thunder-950
@@ -16,6 +17,7 @@ export const Button = ({ children, disabled, type }: LabelProps) => {
       dark:hover:bg-thunder-700 dark:hover:transition-colors dark:hover:duration-300 dark:hover:text-thunder-100
       dark:disabled:bg-slate-500 dark:disabled:text-slate-300 dark:disabled:border-slate-300 dark:disabled:cursor-not-allowed`}
       disabled={disabled}
+      onClick={onClick}
       type={type}
     >
       {children}
