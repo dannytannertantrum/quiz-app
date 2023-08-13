@@ -1,12 +1,15 @@
 import type { Meta, StoryObj } from '@storybook/react';
 
-import { TextInput } from '../app/components/atoms/TextInput';
+import { TextInput } from '../app/components/molecules/TextInput';
 
 const meta = {
-  title: 'Components/Atoms/TextInput',
+  title: 'Components/Molecules/TextInput',
   component: TextInput,
   args: {
-    name: 'my-input',
+    id: 'email',
+    label: 'Email Address',
+    name: 'email',
+    placeholder: 'Email Address',
   },
   argTypes: {
     handleOnChange: { action: 'changed' },
@@ -33,12 +36,14 @@ export const AutoFocused: Story = {
 export const Number: Story = {
   args: {
     ...Primary.args,
+    label: 'Enter a number',
     type: 'number',
   },
 };
 export const Password: Story = {
   args: {
     ...Primary.args,
+    label: 'password',
     type: 'password',
   },
 };

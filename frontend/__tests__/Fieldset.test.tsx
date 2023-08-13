@@ -2,7 +2,7 @@ import '@testing-library/jest-dom';
 
 import { render, screen } from 'test-utils';
 import { Fieldset } from '../app/components/atoms/Fieldset';
-import { TextInput } from '../app/components/atoms/TextInput';
+import { TextInput } from '../app/components/molecules/TextInput';
 
 describe('Fieldset', () => {
   test('loads and displays a fieldset', () => {
@@ -12,10 +12,16 @@ describe('Fieldset', () => {
   });
 
   test('When the fieldset is disabled, all inputs within should not be focusable', () => {
-    const labelInputName = 'myInput';
     render(
       <Fieldset disabled>
-        <TextInput handleOnChange={() => {}} name={labelInputName} />
+        <TextInput
+          handleOnBlur={() => {}}
+          handleOnChange={() => {}}
+          id='Email'
+          label='email'
+          name='email'
+          placeholder='email'
+        />
       </Fieldset>
     );
     const textInput: HTMLInputElement = screen.getByTestId('text-input');

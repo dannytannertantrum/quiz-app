@@ -15,7 +15,7 @@ export interface FieldsetProps {
  */
 export const Fieldset = ({ children, disabled }: FieldsetProps) => {
   return (
-    <fieldset className='w-full sm:w-auto' data-testid='test-fieldset' disabled={disabled}>
+    <fieldset data-testid='test-fieldset' disabled={disabled}>
       {children}
     </fieldset>
   );

@@ -1,10 +1,18 @@
 import '@testing-library/jest-dom';
 
 import { render, renderWithUserEvent, screen } from 'test-utils';
-import { TextInput } from '../app/components/atoms/TextInput';
+import { TextInput } from '../app/components/molecules/TextInput';
 
 describe('TextInput', () => {
   let onChangeMock: (value: string) => void;
+  let onBlurMock: () => void;
+
+  const props = {
+    id: 'email',
+    label: 'Email address',
+    name: 'email',
+    placeholder: 'Email address',
+  };
 
   beforeEach(() => {
     onChangeMock = jest.fn();
@@ -12,7 +20,7 @@ describe('TextInput', () => {
 
   test('loads and displays a functioning input type text', async () => {
     const { user } = renderWithUserEvent(
-      <TextInput name='myInput' handleOnChange={onChangeMock} />
+      <TextInput handleOnBlur={onBlurMock} handleOnChange={onChangeMock} {...props} />
     );
     const textInput: HTMLInputElement = screen.getByTestId('text-input');
     const text = 'stuff';
@@ -24,14 +32,21 @@ describe('TextInput', () => {
 
   test('displays an error message if the prop is defined', () => {
     const error = 'You done messed up';
-    render(<TextInput name='myInput' handleOnChange={onChangeMock} errorMessage={error} />);
+    render(
+      <TextInput
+        errorMessage={error}
+        handleOnBlur={onBlurMock}
+        handleOnChange={onChangeMock}
+        {...props}
+      />
+    );
 
     expect(screen.getByText(error)).toBeInTheDocument();
   });
 
   test('user cannot interact with input if element is disabled', async () => {
     const { user } = renderWithUserEvent(
-      <TextInput name='myInput' handleOnChange={onChangeMock} disabled />
+      <TextInput disabled handleOnBlur={onBlurMock} handleOnChange={onChangeMock} {...props} />
     );
     const textInput: HTMLInputElement = screen.getByTestId('text-input');
     const text = 'stuff';
@@ -42,7 +57,14 @@ describe('TextInput', () => {
   });
 
   test('icon shows when type is set to password', () => {
-    render(<TextInput name='myInput' handleOnChange={onChangeMock} type='password' />);
+    render(
+      <TextInput
+        handleOnBlur={onBlurMock}
+        handleOnChange={onChangeMock}
+        type='password'
+        {...props}
+      />
+    );
 
     expect(screen.getByRole('button', { name: 'toggle view/hide password' })).toBeInTheDocument();
   });

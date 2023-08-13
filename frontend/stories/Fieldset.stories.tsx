@@ -1,8 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react';
 
 import { Fieldset } from '../app/components/atoms/Fieldset';
-import { Label } from '../app/components/atoms/Label';
-import { TextInput } from '../app/components/atoms/TextInput';
+import { TextInput } from '../app/components/molecules/TextInput';
 
 const meta = {
   title: 'Components/Atoms/Fieldset',
@@ -16,10 +15,14 @@ export const PrimaryWithLabelsAndInputs: Story = {
   args: {},
   render: (args) => (
     <Fieldset {...args}>
-      <Label forAttribute='myInput'>
-        Email:
-        <TextInput name='myInput' id='myInput' handleOnChange={() => {}} />
-      </Label>
+      <TextInput
+        handleOnBlur={() => {}}
+        handleOnChange={() => {}}
+        id='email'
+        label='Email address'
+        name='email'
+        placeholder='email'
+      />
     </Fieldset>
   ),
 };
@@ -28,19 +31,24 @@ export const Disabled: Story = {
   args: {},
   render: (args) => (
     <Fieldset {...args} disabled>
-      <Label forAttribute='myInput'>
-        Email:
-        <TextInput
-          name='myInput'
-          id='myInput'
-          handleOnChange={() => {}}
-          errorMessage='Here is an error to see what it looks like'
-        />
-      </Label>
-      <Label forAttribute='another'>
-        Password
-        <TextInput name='another' id='another' handleOnChange={() => {}} type='password' />
-      </Label>
+      <TextInput
+        errorMessage='Here is an error to see what it looks like'
+        handleOnBlur={() => {}}
+        handleOnChange={() => {}}
+        id='email'
+        label='Email'
+        name='username'
+        placeholder='email'
+      />
+      <TextInput
+        handleOnBlur={() => {}}
+        handleOnChange={() => {}}
+        id='another'
+        label='Another'
+        name='another'
+        placeholder='email'
+        type='password'
+      />
     </Fieldset>
   ),
 };

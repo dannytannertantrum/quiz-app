@@ -3,12 +3,12 @@
 @tailwind utilities;
 
 :root {
-  --foreground-hex-dark: #e2d5e1;
-  --foreground-hex-light: #2f232e;
-  --background-hex-dark-end: #1a141a;
-  --background-hex-light-end: #e2d5e1;
-  --background-hex-dark-start: #2a202a;
-  --background-hex-light-start: #f2ecf2;
+  --background-hex-dark-end: #1a141a; /* thunder-1000 */
+  --background-hex-dark-start: #2a202a; /* thunder-975 */
+  --background-hex-light-end: #e2d5e1; /* thunder-200 */
+  --background-hex-light-start: #f2ecf2; /* thunder-100 */
+  --foreground-hex-dark: #e2d5e1; /* thunder-200 */
+  --foreground-hex-light: #2f232e; /* thunder-950 */
 }
 
 body {
