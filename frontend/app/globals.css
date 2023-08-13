@@ -3,26 +3,22 @@
 @tailwind utilities;
 
 :root {
-  --background-hex-dark-end: #1a141a; /* thunder-1000 */
-  --background-hex-dark-start: #2a202a; /* thunder-975 */
-  --background-hex-light-end: #e2d5e1; /* thunder-200 */
-  --background-hex-light-start: #f2ecf2; /* thunder-100 */
-  --foreground-hex-dark: #e2d5e1; /* thunder-200 */
-  --foreground-hex-light: #2f232e; /* thunder-950 */
+  --background-hex-dark: #1a141a; /* thunder-1000 */
+  --background-hex-light: #c8b1c8; /* thunder-100 */
+  --foreground-hex-dark: #c8b1c8; /* thunder-100 */
+  --foreground-hex-light: #1a141a; /* thunder-1000 */
 }
 
 body {
   color: var(--foreground-hex-light);
   fill: var(--foreground-hex-light);
-  background: linear-gradient(to bottom, transparent, var(--background-hex-light-end))
-    var(--background-hex-light-start);
+  background: var(--background-hex-light);
 }
 
 html.dark body {
   color: var(--foreground-hex-dark);
   fill: var(--foreground-hex-dark);
-  background: linear-gradient(to bottom, transparent, var(--background-hex-dark-end))
-    var(--background-hex-dark-start);
+  background: var(--background-hex-dark);
 }
 
 @layer base {
