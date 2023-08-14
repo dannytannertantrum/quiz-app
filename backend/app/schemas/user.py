@@ -5,7 +5,8 @@ class UserBase(BaseModel):
     email: EmailStr
 
 
-class UserCreate(UserBase):
+class UserCreate(BaseModel):
+    username: EmailStr
     password: str = Field(default=None, min_length=8)
 
 

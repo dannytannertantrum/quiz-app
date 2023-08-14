@@ -20,6 +20,7 @@ A quiz app built with the following tech:
 ```
 python3 -m venv .venv
 source .venv/bin/activate
+(.venv) $ pip3 install -r requirements.txt
 (.venv) $ docker-compose up -d --build
 ```
 

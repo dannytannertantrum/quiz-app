@@ -17,7 +17,7 @@ class TestUserRoutesFailure:
     def test_create_user_with_existing_email_raises_exception(
         self, client: TestClient, generate_test_user: User
     ) -> None:
-        user_input = {"email": generate_test_user.email, "password": "HelloWorld"}
+        user_input = {"username": generate_test_user.email, "password": "HelloWorld"}
         response = client.post("/users/", json=user_input)
 
         assert response.status_code == 400
@@ -28,7 +28,7 @@ class TestUserRoutesFailure:
     def test_create_user_with_password_less_than_8_characters_raises_exception(
         self, client: TestClient
     ) -> None:
-        user_input = {"email": "test@example.com", "password": "Hello"}
+        user_input = {"username": "test@example.com", "password": "Hello"}
         response = client.post("/users/", json=user_input)
 
         assert response.status_code == 422
@@ -36,7 +36,7 @@ class TestUserRoutesFailure:
     def test_create_user_with_invalid_email_raises_exception(
         self, client: TestClient
     ) -> None:
-        user_input = {"email": "bademail.com", "password": "HELLOWORLD!!"}
+        user_input = {"username": "bademail.com", "password": "HELLOWORLD!!"}
         response = client.post("/users/", json=user_input)
 
         assert response.status_code == 422
@@ -125,7 +125,7 @@ class TestUserRoutesFailure:
 class TestUserRoutesSuccess:
     def test_create_user(self, db: Session, client: TestClient) -> None:
         user_input = {
-            "email": "myEmail@example.com",
+            "username": "myEmail@example.com",
             "password": "MyCoolPassword",
         }
         try:
@@ -134,7 +134,7 @@ class TestUserRoutesSuccess:
 
             assert response.status_code == 201
             assert new_user["id"] is not None
-            assert new_user["email"] == user_input["email"]
+            assert new_user["email"] == user_input["username"]
         finally:
             delete_test_users(db)
 

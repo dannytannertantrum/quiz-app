@@ -19,7 +19,7 @@ router = APIRouter(
 
 @router.post("/", response_model=UserInDB, status_code=status.HTTP_201_CREATED)
 def create_user(user_input: UserCreate, db: Session = Depends(get_db)) -> UserInDB:
-    user = crud_users.get_user_by_email(db, user_input.email)
+    user = crud_users.get_user_by_email(db, user_input.username)
     if user:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,

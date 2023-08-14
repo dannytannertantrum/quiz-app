@@ -233,7 +233,7 @@ class TestCrudUserReturningData:
         assert result.hashed_password == generate_test_user.hashed_password
 
     def test_create_user(self, db: Session) -> None:
-        user_input = UserCreate(email="myNewUser@example.com", password="myPassword")
+        user_input = UserCreate(username="myNewUser@example.com", password="myPassword")
         result = crud_users.create_user_in_db(db, user_input=user_input)
 
         assert result.id is not None

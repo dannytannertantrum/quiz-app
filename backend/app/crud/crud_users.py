@@ -46,7 +46,7 @@ def create_user_in_db(db: Session, user_input: UserCreate) -> User:
     new_user_id = uuid4()
     new_user = User(
         id=new_user_id,
-        email=user_input.email,
+        email=user_input.username,
         hashed_password=get_password_hash(user_input.password),
         is_deleted=False,
     )
