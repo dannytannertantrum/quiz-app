@@ -22,6 +22,10 @@ export const AuthForm = () => {
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
+    emailInput.validate(emailInput.value);
+    passwordInput.validate(passwordInput.value);
+    if (emailInput.error || passwordInput.error) return;
+
     // const form = event.currentTarget;
     // const formData = new FormData(form);
   };

@@ -22,4 +22,14 @@ describe('AuthForm', () => {
 
     expect(screen.getByText('Create account')).toBeInTheDocument();
   });
+
+  test('error message displays when user tries to submit the form without info', async () => {
+    const { user } = renderWithUserEvent(<AuthForm />);
+    const submitButton = screen.getByText('Submit');
+
+    await user.click(submitButton);
+
+    expect(screen.getByText(/Please enter a valid email/)).toBeInTheDocument();
+    expect(screen.getByText('Password cannot be blank')).toBeInTheDocument();
+  });
 });

@@ -61,10 +61,11 @@ export const useInput = (element: FieldValidationProperties, initialValue = '') 
   };
 
   return {
-    value,
     error,
-    touched,
     handleBlur,
     handleChange,
+    touched,
+    validate,
+    value,
   };
 };
