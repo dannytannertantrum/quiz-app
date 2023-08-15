@@ -1,39 +1,41 @@
 'use client';
 
-import { Button } from '../components/atoms/Button';
-import { Fieldset } from '../components/atoms/Fieldset';
-import { TextInput } from '../components/molecules/TextInput';
-import { FieldValidationProperties, useInput } from '../hooks/fieldValidation';
+import { useState } from 'react';
+
+import { Button } from '../atoms/Button';
+import { Fieldset } from '../atoms/Fieldset';
+import { TextInput } from '../molecules/TextInput';
+import { FieldValidationProperties, useInput } from '../../hooks/fieldValidation';
 
 const baseValidationProperties: Pick<FieldValidationProperties, 'required'> = {
   required: true,
 };
 
-export const SignIn = () => {
+export const AuthForm = () => {
+  const [isSignIn, setIsSignIn] = useState(true);
   const emailInput = useInput({ ...baseValidationProperties, name: 'Email' }, '');
   const passwordInput = useInput(
     { ...baseValidationProperties, name: 'Password', maxLength: 64, minLength: 8 },
     ''
   );
 
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
-    const form = event.currentTarget;
-
-    const formData = new FormData(form);
-
-    // Set up fetch next
+    // const form = event.currentTarget;
+    // const formData = new FormData(form);
   };
 
   return (
     <form
       method='post'
       onSubmit={handleSubmit}
-      className='w-full sm:w-auto sm:min-w-[450px]'
+      className={`w-full bg-thunder-200 border-y border-thunder-800 p-7 shadow-lg shadow-thunder-500
+      dark:bg-thunder-1000 dark:border-thunder-300 dark:shadow-thunder-800
+      md:w-auto md:min-w-[500px] md:border md:rounded-xl`}
       noValidate
     >
-      <h2 className='text-4xl mb-6'>Sign In</h2>
+      <h2 className='text-4xl mb-6'>{isSignIn ? 'Sign in' : 'Create account'}</h2>
       <Fieldset>
         <TextInput
           errorMessage={emailInput.error}
@@ -59,7 +61,12 @@ export const SignIn = () => {
           type='password'
           value={passwordInput.value}
         />
-        <Button type='submit'>Click me</Button>
+        <div className='flex flex-col gap-4 justify-between md:flex-row'>
+          <Button type='submit'>Submit</Button>
+          <Button type='button' onClick={() => setIsSignIn(!isSignIn)} secondary>
+            {isSignIn ? 'Create a new account' : 'Already have an account? Sign in'}
+          </Button>
+        </div>
       </Fieldset>
     </form>
   );
