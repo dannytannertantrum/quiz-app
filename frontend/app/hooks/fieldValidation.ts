@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 
-import { EMAIL_REGEX } from '../constants';
+import { EMAIL_REGEX } from '../utils/constants';
 
 export interface FieldValidationProperties {
   name: string;
