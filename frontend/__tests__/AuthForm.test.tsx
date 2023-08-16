@@ -32,4 +32,22 @@ describe('AuthForm', () => {
     expect(screen.getByText(/Please enter a valid email/)).toBeInTheDocument();
     expect(screen.getByText('Password cannot be blank')).toBeInTheDocument();
   });
+
+  test('toggle sign in resets the state for an input and gives the email input focus', async () => {
+    const { user } = renderWithUserEvent(<AuthForm />);
+    const emailInput = screen.getByLabelText('Email address');
+    const submitButton = screen.getByText('Submit');
+    const toggleSignInButton = screen.getByText('Create a new account');
+    const userInputText = 'hello';
+
+    await user.type(emailInput, userInputText);
+    await user.click(submitButton);
+
+    expect(screen.getByText(/Please enter a valid email/)).toBeInTheDocument();
+
+    await user.click(toggleSignInButton);
+
+    expect(emailInput).toHaveDisplayValue('');
+    expect(emailInput).toHaveFocus();
+  });
 });

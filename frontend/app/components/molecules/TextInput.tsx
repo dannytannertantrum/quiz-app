@@ -12,11 +12,12 @@ export interface TextInputProps {
   label: string;
   name: string;
   placeholder: string;
+  autofocus?: boolean;
   disabled?: boolean;
   errorMessage?: string;
-  autofocus?: boolean;
-  minlength?: number;
+  inputref?: React.MutableRefObject<null | HTMLInputElement>;
   maxlength?: number;
+  minlength?: number;
   pattern?: string;
   required?: boolean;
   type?: string;
@@ -39,6 +40,7 @@ export const TextInput = ({
   errorMessage,
   handleOnBlur,
   handleOnChange,
+  inputref,
   label,
   id,
   minlength,
@@ -53,6 +55,10 @@ export const TextInput = ({
   const [isPasswordShowing, setIsPasswordShowing] = useState(false);
   const [displayType, setDisplayType] = useState(type);
 
+  const wrapperClasses = `relative flex flex-col w-full min-h-[105px] cursor-default ${
+    errorMessage && 'textInputError'
+  }`;
+
   useEffect(() => {
     if (type === 'password') {
       if (isPasswordShowing) {
@@ -64,14 +70,13 @@ export const TextInput = ({
   }, [isPasswordShowing, setDisplayType, type]);
 
   return (
-    <div className='relative flex flex-col w-full min-h-[105px] cursor-default'>
+    <div className={wrapperClasses}>
       <input
         autoFocus={autofocus ?? false}
-        className={`peer bg-transparent py-2 border-b-2 mb-7 border-thunder-500 mt-1 text-xl placeholder-transparent
-        focus:outline-none focus:border-b-2 focus:border-outer-space-400 [&:not(:focus)]:invalid:border-red-900
-        disabled:bg-slate-300 disabled:text-slate-500 disabled:cursor-not-allowed
-        [&:not(:focus)]:invalid:text-red-900 [&:not(:focus)]:invalid:dark:text-red-200
-        dark:disabled:bg-slate-500 dark:disabled:text-slate-300 dark:[&:not(:focus)]:invalid:border-red-300
+        className={`peer bg-transparent focus:bg-transparent py-2 border-b-2 mb-7 border-thunder-500 mt-1 text-xl placeholder-transparent
+        focus:outline-none focus:border-b-2 focus:border-outer-space-700
+        disabled:text-slate-500 disabled:cursor-not-allowed
+        dark:disabled:text-slate-300 focus:dark:border-outer-space-300
         `}
         data-testid='text-input'
         disabled={disabled}
@@ -83,14 +88,15 @@ export const TextInput = ({
         onChange={(e: ChangeEvent<HTMLInputElement>) => handleOnChange(e.target.value)}
         pattern={pattern}
         placeholder={placeholder}
+        ref={inputref}
         required={required}
         type={displayType ?? 'text'}
         value={value}
       />
       <label
         className={`absolute transition-all left-0 -top-3 cursor-pointer text-base
-        peer-placeholder-shown:text-xl peer-placeholder-shown:top-3.5 peer-focus:-top-3 peer-focus:text-base
-        peer-disabled:text-transparent peer-disabled:cursor-default`}
+        peer-placeholder-shown:text-xl peer-disabled:text-slate-500 peer-placeholder-shown:top-3.5 peer-focus:-top-3 peer-focus:text-base
+        peer-disabled:cursor-not-allowed dark:peer-disabled:text-slate-300`}
         htmlFor={id}
       >
         {label}
@@ -105,11 +111,7 @@ export const TextInput = ({
           {isPasswordShowing ? <FaSolidEye width={20} /> : <FaEyeSlash width={20} />}
         </button>
       )}
-      {errorMessage && (
-        <p className='relative -top-7 font-semibold pt-1 text-red-900 text-sm dark:text-red-200'>
-          {errorMessage}
-        </p>
-      )}
+      {errorMessage && <p className='relative -top-7 pt-1 text-sm'>{errorMessage}</p>}
     </div>
   );
 };

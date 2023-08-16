@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 
 import { Button } from '../atoms/Button';
 import { Fieldset } from '../atoms/Fieldset';
@@ -18,6 +18,14 @@ export const AuthForm = () => {
     { ...baseValidationProperties, name: 'Password', maxLength: 64, minLength: 8 },
     ''
   );
+  const emailInputRef = useRef<HTMLInputElement>(null);
+
+  const toggleSignIn = () => {
+    setIsSignIn(!isSignIn);
+    emailInput.reset();
+    passwordInput.reset();
+    emailInputRef && emailInputRef.current?.focus();
+  };
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -32,9 +40,10 @@ export const AuthForm = () => {
 
   return (
     <form
+      autoComplete='off'
       method='post'
       onSubmit={handleSubmit}
-      className={`w-full bg-thunder-200 border-y border-thunder-800 p-7 shadow-lg shadow-thunder-500
+      className={`w-full bg-thunder-100 border-y border-thunder-800 p-7 shadow-lg shadow-thunder-500
       dark:bg-thunder-1000 dark:border-thunder-300 dark:shadow-thunder-800
       md:w-auto md:min-w-[500px] md:border md:rounded-xl`}
       noValidate
@@ -49,6 +58,7 @@ export const AuthForm = () => {
           label='Email address'
           name='username' // 'username' is the expected key for the OAUTH spec
           placeholder='Email address'
+          inputref={emailInputRef}
           type='email'
           value={emailInput.value}
         />
@@ -67,7 +77,7 @@ export const AuthForm = () => {
         />
         <div className='flex flex-col gap-4 justify-between md:flex-row'>
           <Button type='submit'>Submit</Button>
-          <Button type='button' onClick={() => setIsSignIn(!isSignIn)} secondary>
+          <Button type='button' onClick={toggleSignIn} secondary>
             {isSignIn ? 'Create a new account' : 'Already have an account? Sign in'}
           </Button>
         </div>

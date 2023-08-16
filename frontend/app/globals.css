@@ -6,7 +6,7 @@
   --background-hex-dark: #2a202a; /* thunder-975 */
   --background-hex-light: #c8b1c8; /* thunder-100 */
   --foreground-hex-dark: #c8b1c8; /* thunder-100 */
-  --foreground-hex-light: ##2a202a; /* thunder-975 */
+  --foreground-hex-light: #2a202a; /* thunder-975 */
 }
 
 body {
@@ -24,5 +24,39 @@ html.dark body {
 @layer base {
   fieldset label:last-of-type {
     margin-bottom: 1em;
+  }
+
+  :focus {
+    outline: 2px solid var(--foreground-hex-light);
+  }
+
+  .textInputError {
+    & input,
+    & input:focus {
+      color: #881337; /* rose-900 */
+    }
+    & label {
+      color: #881337;
+    }
+    & p {
+      color: #881337;
+    }
+  }
+
+  html.dark .textInputError {
+    & input,
+    & input:focus {
+      color: #fda4af; /* rose-300 */
+    }
+    & label {
+      color: #fda4af;
+    }
+    & p {
+      color: #fda4af;
+    }
+  }
+
+  .dark :focus {
+    outline: 2px solid var(--foreground-hex-dark);
   }
 }

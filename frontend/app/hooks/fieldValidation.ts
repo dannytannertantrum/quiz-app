@@ -60,10 +60,18 @@ export const useInput = (element: FieldValidationProperties, initialValue = '') 
     }
   };
 
+  const reset = (): void => {
+    setError('');
+    setTouched(false);
+    setHasTyped(false);
+    setValue('');
+  };
+
   return {
     error,
     handleBlur,
     handleChange,
+    reset,
     touched,
     validate,
     value,
