@@ -1,6 +1,6 @@
 import '@testing-library/jest-dom';
 
-import { render, screen } from 'test-utils';
+import { render, screen } from 'custom-rtl';
 import { Button } from '../app/components/atoms/Button';
 
 describe('Button', () => {

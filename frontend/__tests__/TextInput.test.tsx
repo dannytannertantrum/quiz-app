@@ -1,6 +1,6 @@
 import '@testing-library/jest-dom';
 
-import { render, renderWithUserEvent, screen } from 'test-utils';
+import { render, renderWithUserEvent, screen } from 'custom-rtl';
 import { TextInput } from '../app/components/molecules/TextInput';
 
 describe('TextInput', () => {

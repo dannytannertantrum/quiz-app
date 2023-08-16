@@ -77,7 +77,7 @@ const config: Config = {
   // maxWorkers: "50%",
 
   // An array of directory names to be searched recursively up from the requiring module's location
-  moduleDirectories: ['node_modules', 'utils', __dirname],
+  moduleDirectories: ['node_modules', 'test-utils', __dirname],
 
   // An array of file extensions your modules use
   // moduleFileExtensions: ['js', 'mjs', 'cjs', 'jsx', 'ts', 'tsx', 'json', 'node'],

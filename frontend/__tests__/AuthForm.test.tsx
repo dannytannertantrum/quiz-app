@@ -1,6 +1,6 @@
 import '@testing-library/jest-dom';
 
-import { render, renderWithUserEvent, screen } from 'test-utils';
+import { render, renderWithUserEvent, screen } from 'custom-rtl';
 import { AuthForm } from '../app/components/organisms/AuthForm';
 
 describe('AuthForm', () => {

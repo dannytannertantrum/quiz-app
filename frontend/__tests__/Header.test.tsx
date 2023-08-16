@@ -1,6 +1,6 @@
 import '@testing-library/jest-dom';
 
-import { render, screen } from 'test-utils';
+import { render, screen } from 'custom-rtl';
 import { Header } from '../app/components/molecules/Header';
 
 describe('Header', () => {
