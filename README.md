@@ -30,7 +30,7 @@ Now that the app is running, check out the docs and play around with the API end
 
 We're using [SQLAlchemy](https://docs.sqlalchemy.org/en/20/index.html) as our ORM and [Alembic](https://alembic.sqlalchemy.org/en/latest/) to manage migrations. With the commands above in _Getting Started_, you should have...
 
-- Two containers up and running: `backend` and `db`
+- Three containers up and running: `backend`, `db` and `frontend`
   - **NOTE:** You can confirm this by running `docker compose ps`
 - Have two empty databases: `dev` and `test`
 
