@@ -12,7 +12,7 @@ from app.schemas.quiz import (
     QuizWithTopicData,
     QuizAllData,
 )
-from app.schemas.user import UserCurrent
+from app.schemas.user import UserBase
 
 
 router = APIRouter(
@@ -31,7 +31,7 @@ router = APIRouter(
 def create_quiz(
     user_input: QuizCreate,
     db: Session = Depends(get_db),
-    current_user: UserCurrent = Depends(get_current_user),
+    current_user: UserBase = Depends(get_current_user),
 ) -> QuizCreateResponse:
     """
     Create a new quiz record and in turn, create 5 Quiz question records
@@ -62,7 +62,7 @@ def create_quiz(
 )
 def read_all_quizzes_with_topic_data_by_user_id(
     db: Session = Depends(get_db),
-    current_user: UserCurrent = Depends(get_current_user),
+    current_user: UserBase = Depends(get_current_user),
 ) -> list[QuizWithTopicData]:
     """
     All quizzes in the account section need to show the completed date,
@@ -92,7 +92,7 @@ def read_all_quizzes_with_topic_data_by_user_id(
 def read_quiz_with_topic_data_by_quiz_id(
     quiz_id: UUID4,
     db: Session = Depends(get_db),
-    current_user: UserCurrent = Depends(get_current_user),
+    current_user: UserBase = Depends(get_current_user),
 ) -> QuizWithTopicData:
     """
     After a user submits the last answer on a quiz, they get directed
@@ -125,7 +125,7 @@ def read_quiz_with_topic_data_by_quiz_id(
 def read_quiz_with_all_questions_answers_and_topics(
     quiz_id: UUID4,
     db: Session = Depends(get_db),
-    current_user: UserCurrent = Depends(get_current_user),
+    current_user: UserBase = Depends(get_current_user),
 ) -> QuizAllData:
     """
     After a user has completed a quiz, they can review their answers
@@ -152,7 +152,7 @@ def read_quiz_with_all_questions_answers_and_topics(
 def delete_quiz(
     quiz_id: UUID4,
     db: Session = Depends(get_db),
-    current_user: UserCurrent = Depends(get_current_user),
+    current_user: UserBase = Depends(get_current_user),
 ) -> None:
     """
     Hard delete a quiz record from the database

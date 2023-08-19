@@ -11,7 +11,7 @@ from app.schemas.quiz_question import (
     QuizQuestionAndAnswers,
     QuizQuestionUpdateAnswerRequest,
 )
-from app.schemas.user import UserCurrent
+from app.schemas.user import UserBase
 
 
 router = APIRouter(
@@ -30,7 +30,7 @@ router = APIRouter(
 def read_quiz_question_by_id(
     quiz_question_id: UUID4,
     db: Session = Depends(get_db),
-    current_user: UserCurrent = Depends(get_current_user),
+    current_user: UserBase = Depends(get_current_user),
 ) -> QuizQuestionAndAnswers:
     quiz_question = (
         crud_quiz_questions.get_question_and_user_answer_by_quiz_question_id(
@@ -59,7 +59,7 @@ def read_quiz_question_by_id(
 def update_quiz_question(
     quiz_question_id: UUID4,
     user_input: QuizQuestionUpdateAnswerRequest,
-    current_user: UserCurrent = Depends(get_current_user),
+    current_user: UserBase = Depends(get_current_user),
     db: Session = Depends(get_db),
 ) -> None:
     quiz_question = (

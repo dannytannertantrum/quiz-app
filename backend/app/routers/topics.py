@@ -6,7 +6,7 @@ from app.crud import crud_topics
 from app.database import get_db
 from app.dependencies import get_current_user
 from app.schemas.topic import TopicWithDescription
-from app.schemas.user import UserCurrent
+from app.schemas.user import UserBase
 
 
 router = APIRouter(
@@ -24,7 +24,7 @@ router = APIRouter(
 )
 def read_all_topics(
     db: Session = Depends(get_db),
-    current_user: UserCurrent = Depends(get_current_user),
+    current_user: UserBase = Depends(get_current_user),
 ) -> list[TopicWithDescription]:
     topics = crud_topics.get_all_topics(db)
     if not topics:
@@ -43,7 +43,7 @@ def read_all_topics(
 )
 def read_primary_topics(
     db: Session = Depends(get_db),
-    current_user: UserCurrent = Depends(get_current_user),
+    current_user: UserBase = Depends(get_current_user),
 ) -> list[TopicWithDescription]:
     topics = crud_topics.get_primary_topics(db)
     if not topics:
@@ -63,7 +63,7 @@ def read_primary_topics(
 def read_subtopics(
     primary_topic_id: UUID4,
     db: Session = Depends(get_db),
-    current_user: UserCurrent = Depends(get_current_user),
+    current_user: UserBase = Depends(get_current_user),
 ) -> list[TopicWithDescription]:
     subtopics = crud_topics.get_subtopics(db, primary_topic_id)
     if not subtopics:
@@ -84,7 +84,7 @@ def read_subtopics(
 def read_topic_by_id(
     topic_id: UUID4,
     db: Session = Depends(get_db),
-    current_user: UserCurrent = Depends(get_current_user),
+    current_user: UserBase = Depends(get_current_user),
 ) -> TopicWithDescription:
     topic = crud_topics.get_topic_by_id(db, topic_id)
     if not topic:

@@ -10,7 +10,7 @@ from app.database import get_db
 from app.config import get_settings
 from app.crud import crud_users
 from app.schemas.token import TokenData
-from app.schemas.user import UserCurrent
+from app.schemas.user import UserBase
 
 
 settings = get_settings()
@@ -20,7 +20,7 @@ pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 def get_current_user(
     token: Annotated[str, Depends(oauth2_scheme)], db: Session = Depends(get_db)
-) -> UserCurrent:
+) -> UserBase:
     # The additional header WWW-Authenticate with value Bearer we are returning here is part of the spec.
     # Any HTTP (error) status code 401 "UNAUTHORIZED" is supposed to also return a WWW-Authenticate header.
     credentials_exception = HTTPException(
