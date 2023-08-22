@@ -7,7 +7,14 @@ from sqlalchemy.orm import Session
 from app.crud import crud_users
 from app.database import get_db
 from app.dependencies import get_current_user
-from app.schemas.user import UserCreate, UserCurrent, UserDelete, UserInDB, UserUpdate
+from app.schemas.user import (
+    UserBase,
+    UserCreate,
+    UserCurrent,
+    UserDelete,
+    UserInDB,
+    UserUpdate,
+)
 
 
 router = APIRouter(
@@ -27,6 +34,11 @@ def create_user(user_input: UserCreate, db: Session = Depends(get_db)) -> UserIn
         )
     new_user = crud_users.create_user_in_db(db, user_input=user_input)
     return new_user
+
+
+@router.get("/", response_model=list[UserBase], status_code=status.HTTP_200_OK)
+def read_all_users(db: Session = Depends(get_db)) -> list[UserBase]:
+    return crud_users.get_all_user_emails(db)
 
 
 @router.get("/me", response_model=UserCurrent, status_code=status.HTTP_200_OK)

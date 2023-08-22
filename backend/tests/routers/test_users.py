@@ -14,6 +14,16 @@ app_config: Settings = get_settings()
 
 
 class TestUserRoutesFailure:
+    def test_read_all_users_when_no_users_exist_returns_empty_array(
+        self,
+        client: TestClient,
+    ) -> None:
+        response = client.get("/users/")
+        users = response.json()
+
+        assert response.status_code == 200
+        assert users == []
+
     def test_create_user_with_existing_email_raises_exception(
         self, client: TestClient, generate_test_user: User
     ) -> None:
@@ -123,6 +133,13 @@ class TestUserRoutesFailure:
 
 
 class TestUserRoutesSuccess:
+    def test_read_all_users(self, client: TestClient, generate_test_user: User) -> None:
+        response = client.get("/users/")
+        users = response.json()
+
+        assert response.status_code == 200
+        assert len(users) == 1
+
     def test_create_user(self, db: Session, client: TestClient) -> None:
         user_input = {
             "username": "myEmail@example.com",
