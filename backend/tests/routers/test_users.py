@@ -151,23 +151,6 @@ class TestUserRoutesSuccess:
         assert user["id"] is not None
         assert user["email"] == generate_test_user.email
 
-    def test_read_all_users_when_no_users_exist_returns_empty_array(
-        self,
-        client: TestClient,
-    ) -> None:
-        response = client.get("/users/")
-        users = response.json()
-
-        assert response.status_code == 200
-        assert users == []
-
-    def test_read_all_users(self, client: TestClient, generate_test_user: User) -> None:
-        response = client.get("/users/")
-        users = response.json()
-
-        assert response.status_code == 200
-        assert len(users) == 1
-
     def test_update_user(
         self,
         client: TestClient,

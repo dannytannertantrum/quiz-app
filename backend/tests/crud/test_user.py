@@ -15,13 +15,6 @@ app_config: Settings = get_settings()
 
 
 class TestCrudUserNotReturningData:
-    def test_get_all_users_returns_empty_list_when_no_users_found(
-        self, db: Session
-    ) -> None:
-        users = crud_users.get_all_users(db)
-
-        assert users == []
-
     def test_get_user_by_id_marked_is_deleted_returns_no_result(
         self, db: Session
     ) -> None:
@@ -225,11 +218,6 @@ class TestCrudUserNotReturningData:
 
 
 class TestCrudUserReturningData:
-    def test_get_all_users(self, db: Session, generate_test_user: User) -> None:
-        users = crud_users.get_all_users(db)
-
-        assert len(users) == 1
-
     def test_get_user_by_id(self, db: Session, generate_test_user: User) -> None:
         result = crud_users.get_user_by_id(db, generate_test_user.id)
 

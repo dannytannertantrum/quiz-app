@@ -7,7 +7,7 @@ from sqlalchemy.orm import Session
 from app.crud import crud_users
 from app.database import get_db
 from app.dependencies import get_current_user
-from app.schemas.user import UserCreate, UserBase, UserDelete, UserInDB, UserUpdate
+from app.schemas.user import UserCreate, UserCurrent, UserDelete, UserInDB, UserUpdate
 
 
 router = APIRouter(
@@ -29,15 +29,10 @@ def create_user(user_input: UserCreate, db: Session = Depends(get_db)) -> UserIn
     return new_user
 
 
-@router.get("/", response_model=list[UserBase], status_code=status.HTTP_200_OK)
-def read_all_users(db: Session = Depends(get_db)) -> list[UserBase]:
-    return crud_users.get_all_users(db)
-
-
-@router.get("/me", response_model=UserBase, status_code=status.HTTP_200_OK)
+@router.get("/me", response_model=UserCurrent, status_code=status.HTTP_200_OK)
 def read_users_me(
-    current_user: Annotated[UserBase, Depends(get_current_user)]
-) -> UserBase:
+    current_user: Annotated[UserCurrent, Depends(get_current_user)]
+) -> UserCurrent:
     return current_user
 
 
@@ -45,7 +40,7 @@ def read_users_me(
 def update_user(
     user_input: UserUpdate,
     user_id: UUID4,
-    current_user: Annotated[UserBase, Depends(get_current_user)],
+    current_user: Annotated[UserCurrent, Depends(get_current_user)],
     db: Session = Depends(get_db),
 ) -> UserInDB:
     if current_user is None:
@@ -64,7 +59,7 @@ def update_user(
 @router.delete("/{user_id}", response_model=UserDelete, status_code=status.HTTP_200_OK)
 def delete_user(
     user_id: UUID4,
-    current_user: Annotated[UserBase, Depends(get_current_user)],
+    current_user: Annotated[UserCurrent, Depends(get_current_user)],
     db: Session = Depends(get_db),
     is_hard_delete: Annotated[bool | None, Query()] = None,
 ) -> UserDelete:
@@ -83,8 +78,4 @@ def delete_user(
         if is_hard_delete
         else f"Account with email {current_user['email']} has been deactivated"
     )
-    return {
-        "id": current_user["id"],
-        "email": current_user["email"],
-        "message": message,
-    }
+    return {"email": current_user["email"], "message": message}
