@@ -4,7 +4,7 @@ services:
   backend:
     build: ./backend
     # --workers provides a single worker process
-    # the host defines the address to host the server on and port defines the port to hose the server on
+    # the host defines the address to host the server on and port defines the port to host the server on
     command: uvicorn app.main:app --reload --workers 1 --host 0.0.0.0 --port 8000
     volumes:
       # Reminder: <host-directory>:<container-directory>
@@ -19,6 +19,8 @@ services:
       - DATABASE_TEST_URL=postgresql://postgres:postgres@db:5432/test
     depends_on:
       - db
+    networks:
+      - devnetwork
 
   db:
     build:
@@ -31,12 +33,30 @@ services:
       - POSTGRES_PASSWORD=postgres
     ports:
       - '5432:5432'
+    networks:
+      - devnetwork
 
   frontend:
     image: docker-nextjs-dev
     build: ./frontend
+    networks:
+      - devnetwork
     ports:
       - '3000:3000'
     volumes:
       - ./frontend/public:/code/public
       - ./frontend/app:/code/app
+
+# https://stackoverflow.com/questions/67326850/react-next-js-docker-build-failing-when-trying-to-reach-out-to-local-api-endpoin
+# When trying to hit endpoints via server components in Next, we were getting TypeError: fetch failed
+# cause: Error: connect ECONNREFUSED 127.0.0.1:8004
+# For future troubleshooting, we can use "docker network ls" in the terminal to see the name of the network our app is using
+# Then, we run "docker network inspect <network-name-here>" to view the network object, and map those values we see in our terminal
+# To the values that we are using below
+networks:
+  devnetwork:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.19.0.0/16
+          gateway: 172.19.0.1
