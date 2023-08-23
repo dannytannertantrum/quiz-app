@@ -43,7 +43,8 @@ export const useInput = (element: FieldValidationProperties, initialValue = '') 
   const handleChange = (value: string): void => {
     setValue(value);
     setHasTyped(true);
-    if (touched) {
+    // The second check is in case the user tried submitting the form completely blank
+    if (touched || (error && hasTyped)) {
       validate(value);
     }
   };
@@ -71,7 +72,9 @@ export const useInput = (element: FieldValidationProperties, initialValue = '') 
     error,
     handleBlur,
     handleChange,
+    hasTyped,
     reset,
+    setError,
     touched,
     validate,
     value,

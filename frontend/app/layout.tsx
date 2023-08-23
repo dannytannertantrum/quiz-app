@@ -14,11 +14,9 @@ export const metadata: Metadata = {
 
 export default function RootLayout({
   authHome,
-  children,
   signIn,
 }: {
   authHome: React.ReactNode;
-  children: React.ReactNode;
   signIn: React.ReactNode;
 }) {
   const isSignedIn = false; // Will change this after wiring up auth
@@ -29,7 +27,6 @@ export default function RootLayout({
         <ThemeProvider attribute='class' defaultTheme='system' enableSystem>
           <Header />
           {isSignedIn ? authHome : signIn}
-          {children}
         </ThemeProvider>
       </body>
     </html>

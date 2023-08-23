@@ -1,11 +1,11 @@
 import '@testing-library/jest-dom';
 
 import { render, renderWithUserEvent, screen } from 'custom-rtl';
-import { AuthForm } from '../app/components/organisms/AuthForm';
+import { AuthForm } from '../../../app/components/organisms/AuthForm';
 
 describe('AuthForm', () => {
   test('loads and displays the AuthForm component', () => {
-    render(<AuthForm />);
+    render(<AuthForm userEmails={[]} />);
 
     expect(screen.getByText('Sign in')).toBeInTheDocument();
     expect(screen.getByText('Email address')).toBeInTheDocument();
@@ -13,7 +13,7 @@ describe('AuthForm', () => {
   });
 
   test('displays create account text when secondary button is clicked', async () => {
-    const { user } = renderWithUserEvent(<AuthForm />);
+    const { user } = renderWithUserEvent(<AuthForm userEmails={[]} />);
     const secondaryButton = screen.getByText('Create a new account');
 
     expect(screen.queryByText('Create account')).toBeNull();
@@ -24,7 +24,7 @@ describe('AuthForm', () => {
   });
 
   test('error message displays when user tries to submit the form without info', async () => {
-    const { user } = renderWithUserEvent(<AuthForm />);
+    const { user } = renderWithUserEvent(<AuthForm userEmails={[]} />);
     const submitButton = screen.getByText('Submit');
 
     await user.click(submitButton);
@@ -34,7 +34,7 @@ describe('AuthForm', () => {
   });
 
   test('toggle sign in resets the state for an input and gives the email input focus', async () => {
-    const { user } = renderWithUserEvent(<AuthForm />);
+    const { user } = renderWithUserEvent(<AuthForm userEmails={[]} />);
     const emailInput = screen.getByLabelText('Email address');
     const submitButton = screen.getByText('Submit');
     const toggleSignInButton = screen.getByText('Create a new account');
@@ -49,5 +49,21 @@ describe('AuthForm', () => {
 
     expect(emailInput).toHaveDisplayValue('');
     expect(emailInput).toHaveFocus();
+  });
+
+  test('existing email error message displays when user tries to submit the form with an existing email', async () => {
+    const emails = ['user@example.com', 'test@test.net'];
+    const { user } = renderWithUserEvent(<AuthForm userEmails={emails} />);
+    const emailInput = screen.queryAllByTestId('text-input')[0];
+    const passwordInput = screen.queryAllByTestId('text-input')[1];
+    const secondaryButton = screen.getByText('Create a new account');
+    const submitButton = screen.getByText('Submit');
+
+    await user.click(secondaryButton);
+    await user.type(emailInput, 'user@example.com');
+    await user.type(passwordInput, 'fjdlsajrlf3495j');
+    await user.click(submitButton);
+
+    expect(screen.getByText(/A user with this email already exists/)).toBeInTheDocument();
   });
 });

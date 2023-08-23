@@ -1,8 +1,8 @@
 import '@testing-library/jest-dom';
 
 import { render, screen } from 'custom-rtl';
-import { Fieldset } from '../app/components/atoms/Fieldset';
-import { TextInput } from '../app/components/molecules/TextInput';
+import { Fieldset } from '../../../app/components/atoms/Fieldset';
+import { TextInput } from '../../../app/components/molecules/TextInput';
 
 describe('Fieldset', () => {
   test('loads and displays a fieldset', () => {

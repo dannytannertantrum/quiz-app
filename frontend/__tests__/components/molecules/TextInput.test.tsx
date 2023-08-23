@@ -1,7 +1,7 @@
 import '@testing-library/jest-dom';
 
 import { render, renderWithUserEvent, screen } from 'custom-rtl';
-import { TextInput } from '../app/components/molecules/TextInput';
+import { TextInput } from '../../../app/components/molecules/TextInput';
 
 describe('TextInput', () => {
   let onChangeMock: (value: string) => void;
