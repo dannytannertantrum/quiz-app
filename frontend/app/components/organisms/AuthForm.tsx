@@ -8,6 +8,7 @@ import { checkForDuplicateEmail } from '../../utils/helperFunctions';
 import { CREATE_USER, FETCH_ERROR, FETCH_IN_PROGRESS } from '../../utils/constants';
 import { createUser } from '../../api/users/route';
 import { Fieldset } from '../atoms/Fieldset';
+import { QuizLoader } from '../atoms/QuizLoader';
 import { TextInput } from '../molecules/TextInput';
 import { useInput } from '../../hooks/fieldValidation';
 import { userReducer } from '../../reducers/user';
@@ -122,7 +123,9 @@ export const AuthForm = ({ userEmails }: { userEmails: BaseUserData['email'][] }
           value={passwordInput.value}
         />
         <div className='flex flex-col gap-4 justify-between md:flex-row'>
-          <Button type='submit'>Submit</Button>
+          <Button type='submit' styles={{ minWidth: '150px' }}>
+            {state.isLoading ? <QuizLoader center /> : 'Submit'}
+          </Button>
           <Button type='button' onClick={toggleSignIn} secondary>
             {isSignIn ? 'Create a new account' : 'Already have an account? Sign in'}
           </Button>
