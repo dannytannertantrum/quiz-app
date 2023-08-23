@@ -1,14 +1,13 @@
 from typing import Annotated
 
 from fastapi import APIRouter, Depends, HTTPException, Query, status
-from pydantic import UUID4
+from pydantic import UUID4, EmailStr
 from sqlalchemy.orm import Session
 
 from app.crud import crud_users
 from app.database import get_db
 from app.dependencies import get_current_user
 from app.schemas.user import (
-    UserBase,
     UserCreate,
     UserCurrent,
     UserDelete,
@@ -36,8 +35,8 @@ def create_user(user_input: UserCreate, db: Session = Depends(get_db)) -> UserIn
     return new_user
 
 
-@router.get("/", response_model=list[UserBase], status_code=status.HTTP_200_OK)
-def read_all_users(db: Session = Depends(get_db)) -> list[UserBase]:
+@router.get("/", response_model=list[EmailStr], status_code=status.HTTP_200_OK)
+def read_all_users(db: Session = Depends(get_db)) -> list[EmailStr]:
     return crud_users.get_all_user_emails(db)
 
 

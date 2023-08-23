@@ -6,15 +6,17 @@ from sqlalchemy import delete, select, update
 from sqlalchemy.orm import Session
 
 from app.models.user import User
-from app.schemas.user import UserBase, UserCreate, UserInDB, UserUpdate
+from app.schemas.user import UserCreate, UserInDB, UserUpdate
 from app.security import get_password_hash, verify_password
 
 
-def get_all_user_emails(db: Session) -> list[UserBase]:
+def get_all_user_emails(db: Session) -> list[EmailStr]:
     """
     Returns a list of all user emails or an empty list if none found
     """
-    return db.execute(select(User.email).where(User.is_deleted == False)).all()
+    return (
+        db.execute(select(User.email).where(User.is_deleted == False)).scalars().all()
+    )
 
 
 def get_user_by_id(

@@ -135,10 +135,12 @@ class TestUserRoutesFailure:
 class TestUserRoutesSuccess:
     def test_read_all_users(self, client: TestClient, generate_test_user: User) -> None:
         response = client.get("/users/")
-        users = response.json()
+        # It would normally be plural, but we're only passing in one user
+        user = response.json()
 
         assert response.status_code == 200
-        assert len(users) == 1
+        assert len(user) == 1
+        assert isinstance(user[0], str)
 
     def test_create_user(self, db: Session, client: TestClient) -> None:
         user_input = {
