@@ -19,7 +19,7 @@ from tests.utils.question import (
     delete_test_questions,
     random_answer_options,
 )
-from tests.utils.kitchen_sink import random_lower_string, get_token_headers
+from tests.utils.kitchen_sink import random_lower_string, get_token_from_cookies
 from tests.utils.quiz import delete_test_quizzes
 from tests.utils.quiz_question import (
     create_test_quiz_questions_with_answers,
@@ -77,10 +77,10 @@ def generate_test_user(db: Session, app_config: Settings) -> User:
 
 
 @pytest.fixture(scope="function")
-def token_headers(
+def access_token(
     client: TestClient, generate_test_user: User, app_config: Settings
 ) -> dict[str, str]:
-    return get_token_headers(
+    return get_token_from_cookies(
         client=client,
         email=app_config.TEST_USER_EMAIL,
         password=app_config.TEST_USER_PLAIN_TEXT_PASSWORD,

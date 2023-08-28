@@ -11,10 +11,10 @@ from app.schemas.quiz_question import QuizQuestionAndAnswers
 
 class TestQuizQuestionRoutesFailure:
     def test_read_quiz_question_by_id_raises_not_found_error_when_question_not_found(
-        self, client: TestClient, token_headers: dict[str, str]
+        self, client: TestClient, access_token: dict[str, str]
     ):
         random_uuid = uuid4()
-        response = client.get(f"/quiz-questions/{random_uuid}", headers=token_headers)
+        response = client.get(f"/quiz-questions/{random_uuid}", headers=access_token)
 
         assert response.status_code == 404
         assert response.json() == {
@@ -22,20 +22,20 @@ class TestQuizQuestionRoutesFailure:
         }
 
     def test_read_quiz_question_by_id_raises_exception_with_bad_request(
-        self, client: TestClient, token_headers: dict[str, str]
+        self, client: TestClient, access_token: dict[str, str]
     ):
-        response = client.get("/quiz-questions/not-a-uuid", headers=token_headers)
+        response = client.get("/quiz-questions/not-a-uuid", headers=access_token)
 
         assert response.status_code == 422
 
     def test_update_quiz_question_raises_not_found_error_when_question_not_found(
-        self, client: TestClient, token_headers: dict[str, str]
+        self, client: TestClient, access_token: dict[str, str]
     ):
         random_uuid = uuid4()
         user_input = {"user_answer": 2}
 
         response = client.put(
-            f"/quiz-questions/{random_uuid}", headers=token_headers, json=user_input
+            f"/quiz-questions/{random_uuid}", headers=access_token, json=user_input
         )
 
         assert response.status_code == 404
@@ -46,7 +46,7 @@ class TestQuizQuestionRoutesFailure:
     def test_update_quiz_question_raises_exception_when_answer_id_greater_than_4(
         self,
         client: TestClient,
-        token_headers: dict[str, str],
+        access_token: dict[str, str],
         create_test_quiz_questions: list[QuizQuestion],
     ):
         quiz_question_id = create_test_quiz_questions[0].id
@@ -54,7 +54,7 @@ class TestQuizQuestionRoutesFailure:
 
         response = client.put(
             f"/quiz-questions/{quiz_question_id}",
-            headers=token_headers,
+            headers=access_token,
             json=user_input,
         )
 
@@ -65,11 +65,11 @@ class TestQuizQuestionRoutesSuccess:
     def test_get_quiz_question_by_id(
         self,
         client: TestClient,
-        token_headers: dict[str, str],
+        access_token: dict[str, str],
         create_test_quiz_questions: list[QuizQuestion],
     ) -> None:
         response = client.get(
-            f"/quiz-questions/{create_test_quiz_questions[0].id}", headers=token_headers
+            f"/quiz-questions/{create_test_quiz_questions[0].id}", headers=access_token
         )
         data: QuizQuestionAndAnswers = response.json()
 
@@ -82,7 +82,7 @@ class TestQuizQuestionRoutesSuccess:
         self,
         client: TestClient,
         db: Session,
-        token_headers: dict[str, str],
+        access_token: dict[str, str],
         create_test_quiz: QuizId,
         create_test_quiz_questions: list[QuizQuestion],
     ) -> None:
@@ -91,7 +91,7 @@ class TestQuizQuestionRoutesSuccess:
 
         response = client.put(
             f"/quiz-questions/{quiz_question_id}",
-            headers=token_headers,
+            headers=access_token,
             json=user_input,
         )
         question_info = (
@@ -113,7 +113,7 @@ class TestQuizQuestionRoutesSuccess:
         self,
         client: TestClient,
         db: Session,
-        token_headers: dict[str, str],
+        access_token: dict[str, str],
         create_test_quiz_for_qq_with_all_answers: QuizId,
         create_test_quiz_questions_with_all_answers: list[QuizQuestion],
     ) -> None:
@@ -122,7 +122,7 @@ class TestQuizQuestionRoutesSuccess:
 
         response = client.put(
             f"/quiz-questions/{quiz_question_id}",
-            headers=token_headers,
+            headers=access_token,
             json=user_input,
         )
         question_info = (

@@ -15,7 +15,7 @@ from tests.utils import kitchen_sink, question, quiz
 def create_quiz_api_response(
     db: Session,
     client: TestClient,
-    token_headers: dict[str, str],
+    access_token: dict[str, str],
     create_test_subtopics: list[Topic],
     create_test_questions: list[Question],
 ) -> Response:
@@ -26,7 +26,7 @@ def create_quiz_api_response(
             str(create_test_subtopics[2].id),
         ]
     }
-    response = client.post("/quizzes/", headers=token_headers, json=user_input)
+    response = client.post("/quizzes/", headers=access_token, json=user_input)
 
     yield response
     quiz.delete_test_quizzes(db)
@@ -34,10 +34,10 @@ def create_quiz_api_response(
 
 class TestQuizRoutesFailure:
     def test_create_quiz_bad_user_input_raises_exception(
-        self, client: TestClient, token_headers: dict[str, str]
+        self, client: TestClient, access_token: dict[str, str]
     ) -> None:
         user_input = {"selected_topics": ["not-a-uuid"]}
-        response = client.post("/quizzes/", headers=token_headers, json=user_input)
+        response = client.post("/quizzes/", headers=access_token, json=user_input)
 
         assert response.status_code == 422
 
@@ -45,7 +45,7 @@ class TestQuizRoutesFailure:
         self,
         db: Session,
         client: TestClient,
-        token_headers: dict[str, str],
+        access_token: dict[str, str],
         create_test_subtopics: list[Topic],
     ) -> None:
         try:
@@ -59,7 +59,7 @@ class TestQuizRoutesFailure:
             )
             user_input = {"selected_topics": [str(create_test_subtopics[0].id)]}
 
-            response = client.post("/quizzes/", headers=token_headers, json=user_input)
+            response = client.post("/quizzes/", headers=access_token, json=user_input)
 
             assert response.status_code == 400
             assert response.json() == {"detail": "Not enough questions found"}
@@ -67,25 +67,25 @@ class TestQuizRoutesFailure:
             question.delete_test_questions(db)
 
     def test_read_all_quizzes_with_topic_data_by_user_id_raises_exception_if_user_not_found(
-        self, client: TestClient, token_headers: dict[str, str]
+        self, client: TestClient, access_token: dict[str, str]
     ) -> None:
-        response = client.get("/quizzes/user/me", headers=token_headers)
+        response = client.get("/quizzes/user/me", headers=access_token)
 
         assert response.status_code == 404
         assert response.json() == {"detail": "No quizzes found"}
 
     def test_read_quiz_with_topic_data_by_quiz_id_raises_exception_if_quiz_not_found(
-        self, client: TestClient, token_headers: dict[str, str]
+        self, client: TestClient, access_token: dict[str, str]
     ) -> None:
-        response = client.get(f"/quizzes/{uuid4()}", headers=token_headers)
+        response = client.get(f"/quizzes/{uuid4()}", headers=access_token)
 
         assert response.status_code == 404
         assert response.json() == {"detail": "No quiz found"}
 
     def test_read_quiz_with_all_questions_answers_and_topics_raises_exception_if_quiz_not_found(
-        self, client: TestClient, token_headers: dict[str, str]
+        self, client: TestClient, access_token: dict[str, str]
     ) -> None:
-        response = client.get(f"/quizzes/{uuid4()}/review", headers=token_headers)
+        response = client.get(f"/quizzes/{uuid4()}/review", headers=access_token)
 
         assert response.status_code == 404
         assert response.json() == {"detail": "No quiz found"}
@@ -120,7 +120,7 @@ class TestQuizRoutesSuccess:
     def test_read_all_quizzes_with_topic_data_by_user_id(
         self,
         client: TestClient,
-        token_headers: dict[str, str],
+        access_token: dict[str, str],
         create_test_quiz: QuizId,
         create_test_questions: list[Question],
         create_test_primary_topics: list[Topic],
@@ -128,7 +128,7 @@ class TestQuizRoutesSuccess:
         create_test_quiz_questions: list[QuizQuestion],
         generate_test_user: User,
     ) -> None:
-        response = client.get("/quizzes/user/me", headers=token_headers)
+        response = client.get("/quizzes/user/me", headers=access_token)
         data: QuizWithTopicData = response.json()[0]
 
         # Each list item of primary and subtopic generators is of type <class 'sqlalchemy.engine.row.Row'>
@@ -145,7 +145,7 @@ class TestQuizRoutesSuccess:
     def test_read_quiz_with_topic_data_by_quiz_id(
         self,
         client: TestClient,
-        token_headers: dict[str, str],
+        access_token: dict[str, str],
         create_test_quiz: QuizId,
         create_test_questions: list[Question],
         create_test_primary_topics: list[Topic],
@@ -153,7 +153,7 @@ class TestQuizRoutesSuccess:
         create_test_quiz_questions: list[QuizQuestion],
         generate_test_user: User,
     ) -> None:
-        response = client.get(f"/quizzes/{create_test_quiz}", headers=token_headers)
+        response = client.get(f"/quizzes/{create_test_quiz}", headers=access_token)
         data: QuizWithTopicData = response.json()
 
         # Each list item of primary and subtopic generators is of type <class 'sqlalchemy.engine.row.Row'>
@@ -170,7 +170,7 @@ class TestQuizRoutesSuccess:
     def test_read_quiz_with_all_questions_answers_and_topics(
         self,
         client: TestClient,
-        token_headers: dict[str, str],
+        access_token: dict[str, str],
         create_test_quiz_for_qq_with_all_answers: QuizId,
         create_test_questions: list[Question],
         create_test_primary_topics: list[Topic],
@@ -180,7 +180,7 @@ class TestQuizRoutesSuccess:
     ) -> None:
         response = client.get(
             f"/quizzes/{create_test_quiz_for_qq_with_all_answers}/review",
-            headers=token_headers,
+            headers=access_token,
         )
         data: QuizAllData = response.json()
 
@@ -207,7 +207,7 @@ class TestQuizRoutesSuccess:
         self,
         db: Session,
         client: TestClient,
-        token_headers: dict[str, str],
+        access_token: dict[str, str],
         create_test_quiz: QuizId,
         create_test_quiz_questions: list[QuizQuestion],
     ) -> None:
@@ -221,7 +221,7 @@ class TestQuizRoutesSuccess:
 
         response = client.delete(
             f"/quizzes/{create_test_quiz}",
-            headers=token_headers,
+            headers=access_token,
         )
 
         deleted_quiz_record = crud_quizzes.get_quiz_by_id(db, quiz_id=create_test_quiz)

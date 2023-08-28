@@ -55,7 +55,7 @@ class TestUserRoutesFailure:
         self,
         client: TestClient,
         generate_test_user: User,
-        token_headers: dict[str, str],
+        access_token: dict[str, str],
     ) -> None:
         user_id = generate_test_user.id
         user_input = {
@@ -66,7 +66,7 @@ class TestUserRoutesFailure:
         }
 
         response = client.put(
-            f"/users/{user_id}", headers=token_headers, json=user_input
+            f"/users/{user_id}", headers=access_token, json=user_input
         )
 
         assert response.status_code == 422
@@ -75,7 +75,7 @@ class TestUserRoutesFailure:
         self,
         client: TestClient,
         generate_test_user: User,
-        token_headers: dict[str, str],
+        access_token: dict[str, str],
     ) -> None:
         user_id = generate_test_user.id
         user_input = {
@@ -86,7 +86,7 @@ class TestUserRoutesFailure:
         }
 
         response = client.put(
-            f"/users/{user_id}", headers=token_headers, json=user_input
+            f"/users/{user_id}", headers=access_token, json=user_input
         )
 
         assert response.status_code == 400
@@ -98,7 +98,7 @@ class TestUserRoutesFailure:
         self,
         client: TestClient,
         generate_test_user: User,
-        token_headers: dict[str, str],
+        access_token: dict[str, str],
     ) -> None:
         user_id = generate_test_user.id
         user_input = {
@@ -109,7 +109,7 @@ class TestUserRoutesFailure:
         }
 
         response = client.put(
-            f"/users/{user_id}", headers=token_headers, json=user_input
+            f"/users/{user_id}", headers=access_token, json=user_input
         )
 
         assert response.status_code == 400
@@ -122,13 +122,16 @@ class TestUserRoutesFailure:
         client: TestClient,
         generate_test_user: User,
     ) -> None:
-        response_get = client.get("users/me")
+        client_without_cookies = client
+        client_without_cookies.cookies = None
+
+        response_get = client_without_cookies.get("users/me")
         assert response_get.status_code == 401
 
-        response_put = client.put(f"/users/{uuid4()}")
+        response_put = client_without_cookies.put(f"/users/{uuid4()}")
         assert response_put.status_code == 401
 
-        response_delete = client.delete(f"/users/{uuid4()}")
+        response_delete = client_without_cookies.delete(f"/users/{uuid4()}")
         assert response_delete.status_code == 401
 
 
@@ -161,9 +164,9 @@ class TestUserRoutesSuccess:
         self,
         client: TestClient,
         generate_test_user: User,
-        token_headers: dict[str, str],
+        access_token: dict[str, str],
     ) -> None:
-        response = client.get("/users/me", headers=token_headers)
+        response = client.get("/users/me", headers=access_token)
         user = response.json()
 
         assert response.status_code == 200
@@ -174,7 +177,7 @@ class TestUserRoutesSuccess:
         self,
         client: TestClient,
         generate_test_user: User,
-        token_headers: dict[str, str],
+        access_token: dict[str, str],
     ) -> None:
         user_id = generate_test_user.id
         new_password = "MatchingNewPassword"
@@ -186,7 +189,7 @@ class TestUserRoutesSuccess:
         }
 
         response = client.put(
-            f"/users/{user_id}", headers=token_headers, json=user_input
+            f"/users/{user_id}", headers=access_token, json=user_input
         )
         updated_user = response.json()
 
@@ -200,11 +203,11 @@ class TestUserRoutesSuccess:
         db: Session,
         client: TestClient,
         generate_test_user: User,
-        token_headers: dict[str, str],
+        access_token: dict[str, str],
     ) -> None:
         try:
             response = client.delete(
-                f"/users/{generate_test_user.id}", headers=token_headers
+                f"/users/{generate_test_user.id}", headers=access_token
             )
             response_message = response.json()
             user_marked_deleted = crud_users.get_user_by_id(
@@ -225,12 +228,12 @@ class TestUserRoutesSuccess:
         db: Session,
         client: TestClient,
         generate_test_user: User,
-        token_headers: dict[str, str],
+        access_token: dict[str, str],
     ) -> None:
         try:
             response = client.delete(
                 f"/users/{generate_test_user.id}?is_hard_delete=True",
-                headers=token_headers,
+                headers=access_token,
             )
             response_message = response.json()
 

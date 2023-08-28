@@ -1,14 +1,17 @@
 from datetime import timedelta
 from typing import Annotated
 
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException, Response, status
+from fastapi.responses import JSONResponse
 from fastapi.security import OAuth2PasswordRequestForm
 from sqlalchemy.orm import Session
 
 from app.config import get_settings
 from app.crud import crud_users
 from app.database import get_db
+from app.dependencies import get_current_user
 from app.schemas.token import Token
+from app.schemas.user import UserCurrent
 from app.security import create_access_token
 
 
@@ -26,6 +29,7 @@ router = APIRouter(
 # OAuth2PasswordRequestForm is a class dependency that declares a form body
 # with "username" and "password" and the spec requires us to use those names exactly
 def login_for_access_token(
+    response: Response,
     form_data: Annotated[OAuth2PasswordRequestForm, Depends()],
     db: Session = Depends(get_db),
 ):
@@ -40,6 +44,24 @@ def login_for_access_token(
     access_token = create_access_token(
         data={"sub": user.email}, expires_delta=access_token_expires
     )
-    # Be sure to use these actual JSON keys (it's by spec)
-    # It's the only thing we really need to remember on our own - FastAPI handles the rest
-    return {"access_token": access_token, "token_type": "bearer"}
+    response = JSONResponse({"isAuthorized": True})
+    response.set_cookie(
+        key="access_token",
+        value=access_token,
+        secure=False,
+        httponly=True,
+        samesite="lax",
+    )
+
+    return response
+
+
+@router.post("/sign-out", response_model=Token)
+def delete_access_token_cookie(
+    response: Response,
+    current_user: UserCurrent = Depends(get_current_user),
+):
+    response = JSONResponse({"isAuthorized": False})
+    response.delete_cookie(key="access_token")
+
+    return response

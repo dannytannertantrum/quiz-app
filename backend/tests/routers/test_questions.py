@@ -18,18 +18,18 @@ from tests.utils.kitchen_sink import random_lower_string
 
 class TestQuestionRoutesFailure:
     def test_read_all_questions_returning_empty_list_returns_not_found_error(
-        self, client: TestClient, token_headers: dict[str, str]
+        self, client: TestClient, access_token: dict[str, str]
     ):
-        response = client.get("/questions/", headers=token_headers)
+        response = client.get("/questions/", headers=access_token)
 
         assert response.status_code == 404
         assert response.json() == {"detail": "No questions found"}
 
     def test_read_question_by_id_returning_empty_list_returns_not_found_error(
-        self, client: TestClient, token_headers: dict[str, str]
+        self, client: TestClient, access_token: dict[str, str]
     ) -> None:
         random_uuid = uuid4()
-        response = client.get(f"/questions/{random_uuid}", headers=token_headers)
+        response = client.get(f"/questions/{random_uuid}", headers=access_token)
 
         assert response.status_code == 404
         assert response.json() == {
@@ -41,7 +41,7 @@ class TestQuestionRoutesFailure:
         client: TestClient,
         db: Session,
         create_test_subtopics: list[Topic],
-        token_headers: dict[str, str],
+        access_token: dict[str, str],
     ) -> None:
         horror_subtopic = create_test_subtopics[0]
         try:
@@ -55,7 +55,7 @@ class TestQuestionRoutesFailure:
                 topic_id=horror_subtopic.id,
             )
 
-            response = client.get("/questions/", headers=token_headers)
+            response = client.get("/questions/", headers=access_token)
 
             assert response.status_code == 404
             assert response.json() == {"detail": "No questions found"}
@@ -67,7 +67,7 @@ class TestQuestionRoutesFailure:
         client: TestClient,
         db: Session,
         create_deleted_test_subtopic: Topic,
-        token_headers: dict[str, str],
+        access_token: dict[str, str],
     ) -> None:
         deleted_subtopic = create_deleted_test_subtopic
         try:
@@ -81,7 +81,7 @@ class TestQuestionRoutesFailure:
                 topic_id=deleted_subtopic.id,
             )
 
-            response = client.get("/questions/", headers=token_headers)
+            response = client.get("/questions/", headers=access_token)
 
             assert response.status_code == 404
             assert response.json() == {"detail": "No questions found"}
@@ -93,7 +93,7 @@ class TestQuestionRoutesFailure:
         client: TestClient,
         db: Session,
         create_deleted_test_primary_topic: Topic,
-        token_headers: dict[str, str],
+        access_token: dict[str, str],
     ) -> None:
         subtopic_with_deleted_primary_topic = create_test_topic(
             db,
@@ -113,7 +113,7 @@ class TestQuestionRoutesFailure:
                 topic_id=subtopic_with_deleted_primary_topic.id,
             )
 
-            response = client.get("/questions/", headers=token_headers)
+            response = client.get("/questions/", headers=access_token)
 
             assert response.status_code == 404
             assert response.json() == {"detail": "No questions found"}
@@ -128,9 +128,9 @@ class TestQuestionRoutesSuccess:
         db: Session,
         client: TestClient,
         create_test_questions: list[Question],
-        token_headers: dict[str, str],
+        access_token: dict[str, str],
     ) -> None:
-        response = client.get("/questions/", headers=token_headers)
+        response = client.get("/questions/", headers=access_token)
         questions: list[Question] = response.json()
 
         assert response.status_code == 200
@@ -144,10 +144,10 @@ class TestQuestionRoutesSuccess:
         self,
         client: TestClient,
         create_test_questions: list[Question],
-        token_headers: dict[str, str],
+        access_token: dict[str, str],
     ) -> None:
         response = client.get(
-            f"/questions/{create_test_questions[0].id}", headers=token_headers
+            f"/questions/{create_test_questions[0].id}", headers=access_token
         )
         question: Question = response.json()
 
@@ -168,11 +168,11 @@ class TestQuestionRoutesSuccess:
         create_test_primary_topics: list[Topic],
         create_test_subtopics: list[Topic],
         create_test_questions: list[Question],
-        token_headers: dict[str, str],
+        access_token: dict[str, str],
     ) -> None:
         response = client.get(
             f"/questions/topic/{app_config.TEST_PRIMARY_TOPIC_MOVIES_UUID}",
-            headers=token_headers,
+            headers=access_token,
         )
         questions: list[QuestionBase] = response.json()
 
@@ -191,11 +191,11 @@ class TestQuestionRoutesSuccess:
         create_test_primary_topics: list[Topic],
         create_test_subtopics: list[Topic],
         create_test_questions: list[Question],
-        token_headers: dict[str, str],
+        access_token: dict[str, str],
     ) -> None:
         response = client.get(
             f"/questions/topic/{app_config.TEST_PRIMARY_TOPIC_MOVIES_UUID}?subtopic_ids={app_config.TEST_SUBTOPIC_HORROR_UUID},{app_config.TEST_SUBTOPIC_DRAMA_UUID}",
-            headers=token_headers,
+            headers=access_token,
         )
         questions: list[QuestionBase] = response.json()
 

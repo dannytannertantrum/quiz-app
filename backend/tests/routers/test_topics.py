@@ -11,28 +11,28 @@ from tests.utils.topic import create_test_topic, delete_test_topics
 
 class TestTopicRoutesFailure:
     def test_read_all_topics_returning_empty_list_raises_not_found_error(
-        self, client: TestClient, token_headers: dict[str, str]
+        self, client: TestClient, access_token: dict[str, str]
     ):
-        response = client.get("/topics/", headers=token_headers)
+        response = client.get("/topics/", headers=access_token)
 
         assert response.status_code == 404
         assert response.json() == {"detail": "No topics found"}
 
     def test_read_primary_topics_returning_empty_list_raises_not_found_error(
-        self, client: TestClient, token_headers: dict[str, str]
+        self, client: TestClient, access_token: dict[str, str]
     ):
-        response = client.get("/topics/primary-topics", headers=token_headers)
+        response = client.get("/topics/primary-topics", headers=access_token)
 
         assert response.status_code == 404
         assert response.json() == {"detail": "No primary topics found"}
 
     def test_read_subtopics_returning_empty_list_raises_not_found_error(
-        self, client: TestClient, token_headers: dict[str, str]
+        self, client: TestClient, access_token: dict[str, str]
     ) -> None:
         random_uuid = uuid4()
 
         response = client.get(
-            f"/topics/primary-topics/{random_uuid}", headers=token_headers
+            f"/topics/primary-topics/{random_uuid}", headers=access_token
         )
 
         assert response.status_code == 404
@@ -41,11 +41,11 @@ class TestTopicRoutesFailure:
         }
 
     def test_read_topic_by_id_that_does_not_exist_raises_not_found_error(
-        self, client: TestClient, token_headers: dict[str, str]
+        self, client: TestClient, access_token: dict[str, str]
     ) -> None:
         random_uuid = uuid4()
 
-        response = client.get(f"/topics/{random_uuid}", headers=token_headers)
+        response = client.get(f"/topics/{random_uuid}", headers=access_token)
 
         assert response.status_code == 404
         assert response.json() == {
@@ -53,12 +53,12 @@ class TestTopicRoutesFailure:
         }
 
     def test_read_primary_topics_marked_is_deleted_returns_no_results(
-        self, client: TestClient, db: Session, token_headers: dict[str, str]
+        self, client: TestClient, db: Session, access_token: dict[str, str]
     ) -> None:
         try:
             create_test_topic(db, title="This should not be returned", is_deleted=True)
 
-            response = client.get("/topics/primary-topics", headers=token_headers)
+            response = client.get("/topics/primary-topics", headers=access_token)
 
             assert response.status_code == 404
             assert response.json() == {"detail": "No primary topics found"}
@@ -66,7 +66,7 @@ class TestTopicRoutesFailure:
             delete_test_topics(db)
 
     def test_read_subtopics_with_primary_marked_is_deleted_returns_no_results(
-        self, client: TestClient, db: Session, token_headers: dict[str, str]
+        self, client: TestClient, db: Session, access_token: dict[str, str]
     ) -> None:
         try:
             primary_topic = create_test_topic(
@@ -76,7 +76,7 @@ class TestTopicRoutesFailure:
             create_test_topic(db, title="My subtopic", parent_topic_id=primary_topic.id)
 
             response = client.get(
-                f"/topics/primary-topics/{primary_topic.id}", headers=token_headers
+                f"/topics/primary-topics/{primary_topic.id}", headers=access_token
             )
 
             assert response.status_code == 404
@@ -87,7 +87,7 @@ class TestTopicRoutesFailure:
             delete_test_topics(db)
 
     def test_read_subtopics_with_subtopic_marked_is_deleted_returns_no_results(
-        self, client: TestClient, db: Session, token_headers: dict[str, str]
+        self, client: TestClient, db: Session, access_token: dict[str, str]
     ) -> None:
         try:
             primary_topic = create_test_topic(db, title="My primary topic")
@@ -100,7 +100,7 @@ class TestTopicRoutesFailure:
             )
 
             response = client.get(
-                f"/topics/primary-topics/{primary_topic.id}", headers=token_headers
+                f"/topics/primary-topics/{primary_topic.id}", headers=access_token
             )
 
             assert response.status_code == 404
@@ -117,10 +117,10 @@ class TestTopicRoutesSuccess:
         client: TestClient,
         create_test_primary_topics: list[Topic],
         create_test_subtopics: list[Topic],
-        token_headers: dict[str, str],
+        access_token: dict[str, str],
     ) -> None:
         totalNumOfTopics = len(create_test_primary_topics) + len(create_test_subtopics)
-        response = client.get("/topics/", headers=token_headers)
+        response = client.get("/topics/", headers=access_token)
         topics: list[TopicWithDescription] = response.json()
 
         assert response.status_code == 200
@@ -135,9 +135,9 @@ class TestTopicRoutesSuccess:
         client: TestClient,
         create_test_primary_topics: list[Topic],
         create_test_subtopics: list[Topic],
-        token_headers: dict[str, str],
+        access_token: dict[str, str],
     ) -> None:
-        response = client.get("/topics/primary-topics", headers=token_headers)
+        response = client.get("/topics/primary-topics", headers=access_token)
         topics: list[TopicWithDescription] = response.json()
 
         assert response.status_code == 200
@@ -153,11 +153,11 @@ class TestTopicRoutesSuccess:
         client: TestClient,
         create_test_primary_topics: list[Topic],
         create_test_subtopics: list[Topic],
-        token_headers: dict[str, str],
+        access_token: dict[str, str],
     ) -> None:
         response = client.get(
             f"/topics/primary-topics/{app_config.TEST_PRIMARY_TOPIC_MOVIES_UUID}",
-            headers=token_headers,
+            headers=access_token,
         )
         subtopics: list[TopicWithDescription] = response.json()
 
@@ -171,12 +171,12 @@ class TestTopicRoutesSuccess:
         self,
         client: TestClient,
         create_test_primary_topics: list[Topic],
-        token_headers: dict[str, str],
+        access_token: dict[str, str],
     ) -> None:
         primary_topic_movies: Topic = create_test_primary_topics[0]
 
         response = client.get(
-            f"/topics/{primary_topic_movies.id}", headers=token_headers
+            f"/topics/{primary_topic_movies.id}", headers=access_token
         )
         topic: TopicWithDescription = response.json()
 

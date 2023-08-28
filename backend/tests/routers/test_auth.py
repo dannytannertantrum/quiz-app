@@ -26,7 +26,19 @@ class TestAuthRoutesSuccess:
             "password": app_config.TEST_USER_PLAIN_TEXT_PASSWORD,
         }
         response = client.post("/auth/token", data=login_data)
-        tokens = response.json()
+
         assert response.status_code == 200
-        assert "access_token" in tokens
-        assert tokens["access_token"]
+        assert response.json() == {"isAuthorized": True}
+        assert response.cookies["access_token"] is not None
+
+    def test_delete_access_token_cookie(
+        self, client: TestClient, generate_test_user: User, access_token: dict[str, str]
+    ) -> None:
+        assert client.cookies["access_token"] is not None
+        assert len(client.cookies) > 0
+
+        response = client.post("/auth/sign-out", headers=access_token)
+
+        assert response.status_code == 200
+        assert response.json() == {"isAuthorized": False}
+        assert len(response.cookies) == 0
