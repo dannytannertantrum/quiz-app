@@ -1,27 +1,15 @@
 'use client';
 
-import { useReducer, useRef, useState } from 'react';
+import { useContext, useRef, useState } from 'react';
 
-import { BaseUserData, UserState } from '../../types/users';
+import { AuthContext } from '../../context/AuthContext';
+import { BaseUserData } from '../../types/users';
 import { Button } from '../atoms/Button';
 import { checkForDuplicateEmail } from '../../utils/helperFunctions';
-import { CREATE_USER, FETCH_ERROR, FETCH_IN_PROGRESS } from '../../utils/constants';
-import { createUser } from '../../api/users/route';
 import { Fieldset } from '../atoms/Fieldset';
 import { QuizLoader } from '../atoms/QuizLoader';
 import { TextInput } from '../molecules/TextInput';
 import { useInput } from '../../hooks/fieldValidation';
-import { userReducer } from '../../reducers/user';
-
-// Initial state with functions help avoid mutability
-const initialUserState = () =>
-  ({
-    error: undefined,
-    isLoading: false,
-    data: undefined,
-    status: undefined,
-    statusText: undefined,
-  } satisfies UserState);
 
 export const AuthForm = ({ userEmails }: { userEmails: BaseUserData['email'][] }) => {
   const [isSignIn, setIsSignIn] = useState(true);
@@ -30,8 +18,8 @@ export const AuthForm = ({ userEmails }: { userEmails: BaseUserData['email'][] }
     { required: true, name: 'Password', maxLength: 64, minLength: 8 },
     ''
   );
-  const [state, dispatch] = useReducer(userReducer, initialUserState());
   const emailInputRef = useRef<HTMLInputElement>(null);
+  const { createAccount, signIn, userState } = useContext(AuthContext);
 
   // We want to erase data when toggling to make it clear what action someone is taking
   const toggleSignIn = () => {
@@ -56,32 +44,14 @@ export const AuthForm = ({ userEmails }: { userEmails: BaseUserData['email'][] }
     const formJson = JSON.stringify(Object.fromEntries(formData.entries()));
 
     if (isSignIn) {
-      dispatch({ type: FETCH_IN_PROGRESS, isLoading: true });
-      try {
-        const response = await createUser(form.method, formJson);
-        if (!(response instanceof Error)) {
-          dispatch({
-            type: CREATE_USER,
-            isLoading: false,
-            payload: response.data,
-            status: response.status,
-          });
-
-          // TODO: wire up redirect once auth in place
-        }
-      } catch (error: any) {
-        dispatch({
-          type: FETCH_ERROR,
-          isLoading: false,
-          error,
-        });
-      }
+      signIn(form, formData);
     } else {
       const emailExists = checkForDuplicateEmail(userEmails, emailInput.value);
       if (emailExists) {
         emailInput.setError('A user with this email already exists; please use another email.');
         return;
       }
+      createAccount(form, formJson);
     }
   };
 
@@ -96,7 +66,7 @@ export const AuthForm = ({ userEmails }: { userEmails: BaseUserData['email'][] }
       noValidate
     >
       <h2 className='text-4xl mb-6'>{isSignIn ? 'Sign in' : 'Create account'}</h2>
-      <Fieldset disabled={state.isLoading}>
+      <Fieldset disabled={userState?.isLoading}>
         <TextInput
           errorMessage={emailInput.error}
           handleOnBlur={emailInput.handleBlur}
@@ -124,14 +94,14 @@ export const AuthForm = ({ userEmails }: { userEmails: BaseUserData['email'][] }
         />
         <div className='flex flex-col gap-4 justify-between md:flex-row'>
           <Button type='submit' styles={{ minWidth: '150px' }}>
-            {state.isLoading ? <QuizLoader center /> : 'Submit'}
+            {userState?.isLoading ? <QuizLoader center /> : 'Submit'}
           </Button>
           <Button type='button' onClick={toggleSignIn} secondary>
             {isSignIn ? 'Create a new account' : 'Already have an account? Sign in'}
           </Button>
         </div>
       </Fieldset>
-      {state.error && (
+      {userState?.error && (
         <p className='pt-5 text-rose-900 dark:text-rose-300'>
           There was a problem processing your request; please try again.
         </p>

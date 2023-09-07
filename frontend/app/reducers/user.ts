@@ -3,18 +3,26 @@ import {
   FETCH_ERROR,
   FETCH_IN_PROGRESS,
   FETCH_UNKNOWN_ERROR,
+  GET_USER,
+  USER_SIGN_IN,
 } from '../utils/constants';
-import { BaseActions } from '../utils/commonTypes';
-import { CreateUserData, UserState } from '../types/users';
+import { ActionData, BaseActions } from '../utils/commonTypes';
+import { CreateUserData, CurrentUser, UserSignIn, UserState } from '../types/users';
 
-interface UserAction {
+interface CreateUserAction extends ActionData<CreateUserData> {
   type: 'CREATE_USER';
-  isLoading: boolean;
-  payload: CreateUserData;
-  status: number;
+}
+interface GetUserAction extends ActionData<CurrentUser> {
+  type: 'GET_USER';
+}
+interface UserSignInAction extends ActionData<UserSignIn> {
+  type: 'USER_SIGN_IN';
 }
 
-export const userReducer = (state: UserState, action: BaseActions | UserAction): UserState => {
+export const userReducer = (
+  state: UserState,
+  action: BaseActions | CreateUserAction | GetUserAction | UserSignInAction
+): UserState => {
   switch (action.type) {
     case FETCH_ERROR:
       return {
@@ -25,6 +33,8 @@ export const userReducer = (state: UserState, action: BaseActions | UserAction):
     case FETCH_IN_PROGRESS:
       return { ...state, isLoading: true };
     case CREATE_USER:
+    case GET_USER:
+    case USER_SIGN_IN:
       return {
         ...state,
         isLoading: false,

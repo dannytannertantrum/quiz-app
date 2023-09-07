@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
 
+import { AuthProvider } from './context/AuthContext';
 import { Header } from './components/molecules/Header';
 import './globals.css';
 import { ThemeProvider } from './context/Theme';
@@ -12,21 +13,15 @@ export const metadata: Metadata = {
   description: 'Take a quiz; get results',
 };
 
-export default function RootLayout({
-  authHome,
-  signIn,
-}: {
-  authHome: React.ReactNode;
-  signIn: React.ReactNode;
-}) {
-  const isSignedIn = false; // Will change this after wiring up auth
-
+export default async function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang='en' suppressHydrationWarning>
       <body className={`${inter.variable} min-h-screen`}>
         <ThemeProvider attribute='class' defaultTheme='system' enableSystem>
-          <Header />
-          {isSignedIn ? authHome : signIn}
+          <AuthProvider>
+            <Header />
+            {children}
+          </AuthProvider>
         </ThemeProvider>
       </body>
     </html>

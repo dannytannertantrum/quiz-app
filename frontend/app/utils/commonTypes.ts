@@ -3,6 +3,12 @@ export interface ResponseSuccess<T> {
   status: number;
 }
 
+export interface ActionData<T> {
+  isLoading: boolean;
+  payload: T;
+  status: number;
+}
+
 export type BaseActions =
   | { type: 'FETCH_ERROR'; isLoading: boolean; error: Error }
   | { type: 'FETCH_IN_PROGRESS'; isLoading: boolean }

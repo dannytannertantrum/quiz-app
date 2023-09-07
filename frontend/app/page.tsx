@@ -1,6 +1,6 @@
-import { BaseUserData } from '../types/users';
-import { AuthForm } from '../components/organisms/AuthForm';
-import { BASE_SERVER_URL } from '../utils/constants';
+import { BaseUserData } from './types/users';
+import { AuthForm } from './components/organisms/AuthForm';
+import { BASE_SERVER_URL } from './utils/constants';
 
 async function getUserEmails() {
   const response = await fetch(`${BASE_SERVER_URL}/users/`);
