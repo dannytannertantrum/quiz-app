@@ -10,7 +10,7 @@ from app.config import get_settings
 from app.crud import crud_users
 from app.database import get_db
 from app.dependencies import get_current_user
-from app.schemas.token import Token
+from app.schemas.token import Token, TokenSignIn
 from app.schemas.user import UserCurrent
 from app.security import create_access_token
 
@@ -25,7 +25,7 @@ router = APIRouter(
 )
 
 
-@router.post("/token", response_model=Token)
+@router.post("/token", response_model=TokenSignIn)
 # OAuth2PasswordRequestForm is a class dependency that declares a form body
 # with "username" and "password" and the spec requires us to use those names exactly
 def login_for_access_token(
@@ -44,7 +44,9 @@ def login_for_access_token(
     access_token = create_access_token(
         data={"sub": user.email}, expires_delta=access_token_expires
     )
-    response = JSONResponse({"isAuthorized": True})
+    response = JSONResponse(
+        {"email": user.email, "id": str(user.id), "isAuthorized": True}
+    )
     response.set_cookie(
         key="access_token",
         value=access_token,
