@@ -10,6 +10,7 @@ export const signInUser = async (
   const response = await fetch(`${BASE_URL}/auth/token`, {
     method,
     body: formData,
+    credentials: 'include',
   });
 
   const responseData = await handleResponse<UserSignIn>(response);
