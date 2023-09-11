@@ -1,3 +1,4 @@
+import { AuthRedirectMessage } from './components/atoms/AuthRedirectMessage';
 import { BaseUserData } from './types/users';
 import { AuthForm } from './components/organisms/AuthForm';
 import { BASE_SERVER_URL } from './utils/constants';
@@ -20,6 +21,7 @@ export default async function SignInPage() {
 
   return (
     <main className='flex flex-col items-center gap-4 md:p-8'>
+      <AuthRedirectMessage />
       <AuthForm userEmails={emails} />
     </main>
   );
