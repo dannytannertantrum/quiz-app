@@ -16,15 +16,15 @@ import { UserState } from '../types/users';
 import { userReducer } from '../reducers/user';
 
 export interface AuthContextProps {
-  createAccount: (form: HTMLFormElement, formJson: string) => void;
-  signIn: (form: HTMLFormElement, formData: FormData) => void;
+  createAccount: (form: HTMLFormElement, formJson: string) => Promise<void>;
+  signIn: (form: HTMLFormElement, formData: FormData) => Promise<void>;
   userState: UserState | null;
 }
 
 const defaultAuthContextProps = () =>
   ({
-    createAccount: () => {},
-    signIn: () => {},
+    createAccount: async () => {},
+    signIn: async () => {},
     userState: null,
   } satisfies AuthContextProps);
 
@@ -85,7 +85,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
           payload: response.data,
           status: response.status,
         });
-        // Redirect - grab path here
       }
     } catch (error: any) {
       dispatchErrorHelper('There was a problem signing in: ', error);
@@ -103,8 +102,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
           payload: response.data,
           status: response.status,
         });
-
-        // Redirect
       }
     } catch (error: any) {
       dispatchErrorHelper('There was a problem creating a user account: ', error);

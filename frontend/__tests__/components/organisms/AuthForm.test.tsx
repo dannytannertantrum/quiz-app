@@ -1,6 +1,7 @@
+import { useRouter } from 'next/navigation';
 import '@testing-library/jest-dom';
 
-import { render, renderWithUserEvent, screen } from 'custom-rtl';
+import { render, renderWithUserEvent, screen, waitFor } from 'custom-rtl';
 import { AuthForm } from '../../../app/components/organisms/AuthForm';
 
 describe('AuthForm', () => {
@@ -65,5 +66,34 @@ describe('AuthForm', () => {
     await user.click(submitButton);
 
     expect(screen.getByText(/A user with this email already exists/)).toBeInTheDocument();
+  });
+
+  test('redirect occurs after a user signs in', async () => {
+    const { user } = renderWithUserEvent(<AuthForm userEmails={[]} />);
+    const emailInput = screen.queryAllByTestId('text-input')[0];
+    const passwordInput = screen.queryAllByTestId('text-input')[1];
+    const submitButton = screen.getByText('Submit');
+
+    await user.type(emailInput, 'user@example.com');
+    await user.type(passwordInput, 'fjdlsajrlf3495j');
+    await user.click(submitButton);
+
+    waitFor(() => expect(useRouter().push).toHaveBeenCalled());
+  });
+
+  test('redirect occurs after a user creates an account', async () => {
+    const { user } = renderWithUserEvent(<AuthForm userEmails={[]} />);
+    const emailInput = screen.queryAllByTestId('text-input')[0];
+    const passwordInput = screen.queryAllByTestId('text-input')[1];
+    const secondaryButton = screen.getByText('Create a new account');
+    const submitButton = screen.getByText('Submit');
+
+    await user.click(secondaryButton);
+
+    await user.type(emailInput, 'user@example.com');
+    await user.type(passwordInput, 'fjdlsajrlf3495j');
+    await user.click(submitButton);
+
+    waitFor(() => expect(useRouter().push).toHaveBeenCalled());
   });
 });

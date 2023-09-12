@@ -6,8 +6,8 @@ import { render, screen } from 'custom-rtl';
 import { Header } from '../../../app/components/molecules/Header';
 
 const authProviderProps = {
-  createAccount: () => {},
-  signIn: () => {},
+  createAccount: async () => {},
+  signIn: async () => {},
   userState: { isLoading: false, data: { id: 'user-id', email: 'fake@user.com' } },
 } satisfies AuthContextProps;
 

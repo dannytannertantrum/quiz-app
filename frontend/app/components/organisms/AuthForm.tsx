@@ -1,8 +1,10 @@
 'use client';
 
+import { useRouter, useSearchParams } from 'next/navigation';
 import { useContext, useRef, useState } from 'react';
 
 import { AuthContext } from '../../context/AuthContext';
+import { BASE_CLIENT_URL } from '@/utils/constants';
 import { BaseUserData } from '../../types/users';
 import { Button } from '../atoms/Button';
 import { checkForDuplicateEmail } from '../../utils/helperFunctions';
@@ -20,6 +22,14 @@ export const AuthForm = ({ userEmails }: { userEmails: BaseUserData['email'][] }
   );
   const emailInputRef = useRef<HTMLInputElement>(null);
   const { createAccount, signIn, userState } = useContext(AuthContext);
+  const router = useRouter();
+  const redirectParam = useSearchParams().get('redirect');
+
+  const redirectToTopics = () => {
+    redirectParam
+      ? router.push(`${BASE_CLIENT_URL}/${redirectParam}`)
+      : router.push(`${BASE_CLIENT_URL}/topics`);
+  };
 
   // We want to erase data when toggling to make it clear what action someone is taking
   const toggleSignIn = () => {
@@ -44,14 +54,17 @@ export const AuthForm = ({ userEmails }: { userEmails: BaseUserData['email'][] }
     const formJson = JSON.stringify(Object.fromEntries(formData.entries()));
 
     if (isSignIn) {
-      signIn(form, formData);
+      await signIn(form, formData);
+      redirectToTopics();
     } else {
       const emailExists = checkForDuplicateEmail(userEmails, emailInput.value);
       if (emailExists) {
         emailInput.setError('A user with this email already exists; please use another email.');
         return;
       }
-      createAccount(form, formJson);
+      await createAccount(form, formJson);
+      await signIn(form, formData);
+      redirectToTopics();
     }
   };
 
