@@ -15,7 +15,7 @@ import { signInUser } from '../api/tokens/route';
 import { UserState } from '../types/users';
 import { userReducer } from '../reducers/user';
 
-interface AuthContextProps {
+export interface AuthContextProps {
   createAccount: (form: HTMLFormElement, formJson: string) => void;
   signIn: (form: HTMLFormElement, formData: FormData) => void;
   userState: UserState | null;
@@ -85,8 +85,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
           payload: response.data,
           status: response.status,
         });
-
-        // Redirect
+        // Redirect - grab path here
       }
     } catch (error: any) {
       dispatchErrorHelper('There was a problem signing in: ', error);

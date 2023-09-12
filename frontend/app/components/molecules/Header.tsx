@@ -3,8 +3,9 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import { useTheme } from 'next-themes';
-import { useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 
+import { AuthContext } from '../../context/AuthContext';
 import { ThemeSwitcher } from '../atoms/ThemeSwitcher';
 import logoDarkMode from '../../../public/images/logoDarkMode.png';
 import logoLightMode from '../../../public/images/logoLightMode.png';
@@ -12,6 +13,8 @@ import logoLightMode from '../../../public/images/logoLightMode.png';
 export const Header = () => {
   const { theme } = useTheme();
   const [image, setImage] = useState(logoDarkMode);
+  const { userState } = useContext(AuthContext);
+  const homeLink = userState?.data ? '/topics' : '/';
 
   useEffect(() => {
     if (theme === 'light') {
@@ -27,7 +30,7 @@ export const Header = () => {
     dark:border-b dark:border-b-thunder-300 dark:bg-thunder-800 md:dark:bg-thunder-1000`}
     >
       <nav className='flex justify-between py-3 mx-auto max-w-7xl'>
-        <Link href='/' className='flex'>
+        <Link href={homeLink} className='flex'>
           <Image
             alt='Home'
             src={image ?? logoDarkMode}

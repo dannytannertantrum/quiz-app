@@ -1,7 +1,10 @@
+import { cookies } from 'next/headers';
+import { redirect } from 'next/navigation';
+
 import { AuthRedirectMessage } from './components/atoms/AuthRedirectMessage';
 import { BaseUserData } from './types/users';
 import { AuthForm } from './components/organisms/AuthForm';
-import { BASE_SERVER_URL } from './utils/constants';
+import { BASE_SERVER_URL, BASE_CLIENT_URL } from './utils/constants';
 
 async function getUserEmails() {
   const response = await fetch(`${BASE_SERVER_URL}/users/`);
@@ -12,11 +15,16 @@ async function getUserEmails() {
 }
 
 export default async function SignInPage() {
+  const authCookie = cookies().get('access_token');
   let emails: BaseUserData['email'][] = [];
   try {
     emails = await getUserEmails();
   } catch (error: any) {
     console.error('There was a problem getting all user emails: ', error);
+  }
+
+  if (authCookie) {
+    redirect(`${BASE_CLIENT_URL}/topics`);
   }
 
   return (

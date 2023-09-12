@@ -1,5 +1,6 @@
 // With Docker, we need to configure a separate endpoint for working within the container server-side
 // See our docker-compose.yaml file for more info
+const BASE_CLIENT_URL = process.env.NEXT_PUBLIC_CLIENT_URL;
 const BASE_SERVER_URL = process.env.NEXT_PUBLIC_SERVER_URL;
 const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
 
@@ -17,6 +18,7 @@ const EMAIL_REGEX = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/u;
 const FETCH_UNAUTHORIZED = 'Invalid authentication credentials';
 
 export {
+  BASE_CLIENT_URL,
   BASE_SERVER_URL,
   BASE_URL,
   CREATE_USER,
