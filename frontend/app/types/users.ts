@@ -15,6 +15,12 @@ export interface UserSignIn extends CurrentUser {
   isAuthorized: boolean;
 }
 
+export interface UserSignOut {
+  isAuthorized: boolean;
+  id: undefined;
+  email: undefined;
+}
+
 export interface UserState {
   isLoading: boolean;
   error?: Error;

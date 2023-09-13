@@ -8,6 +8,7 @@ import { Header } from '../../../app/components/molecules/Header';
 const authProviderProps = {
   createAccount: async () => ({ isSuccess: false }),
   signIn: async () => ({ isSuccess: false }),
+  signOut: async () => {},
   userState: { isLoading: false, data: { id: 'user-id', email: 'fake@user.com' } },
 } satisfies AuthContextProps;
 
@@ -17,24 +18,35 @@ const renderWithAuth = (ui: ReactNode) => {
 };
 
 describe('Header', () => {
-  test('loads and displays a header', () => {
-    render(<Header />);
+  describe('Signed out', () => {
+    test('loads and displays a header', () => {
+      render(<Header />);
 
-    expect(screen.getByRole('button', { name: 'toggle light and dark mode' })).toBeInTheDocument();
-    expect(screen.getByAltText('Home')).toBeInTheDocument();
+      expect(
+        screen.getByRole('button', { name: 'toggle light and dark mode' })
+      ).toBeInTheDocument();
+      expect(screen.getByAltText('Home')).toBeInTheDocument();
+    });
+
+    test('the logo link goes to "/"', () => {
+      render(<Header />);
+      const logoLink: HTMLAnchorElement | null = document.querySelector('nav a');
+
+      expect(logoLink?.pathname).toBe('/');
+    });
   });
 
-  test('when signed out, the logo link goes to "/"', () => {
-    render(<Header />);
-    const logoLink: HTMLAnchorElement | null = document.querySelector('nav a');
+  describe('signed in', () => {
+    test('the logo link goes to "/topics"', () => {
+      renderWithAuth(<Header />);
+      const logoLink: HTMLAnchorElement | null = document.querySelector('nav a');
 
-    expect(logoLink?.pathname).toBe('/');
-  });
+      expect(logoLink?.pathname).toBe('/topics');
+    });
 
-  test('when signed in, the logo link goes to "/topics"', () => {
-    renderWithAuth(<Header />);
-    const logoLink: HTMLAnchorElement | null = document.querySelector('nav a');
-
-    expect(logoLink?.pathname).toBe('/topics');
+    test('the sign out button appears', () => {
+      renderWithAuth(<Header />);
+      expect(screen.getByText('Sign out')).toBeInTheDocument();
+    });
   });
 });

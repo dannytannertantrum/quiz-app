@@ -5,9 +5,10 @@ import {
   FETCH_UNKNOWN_ERROR,
   GET_USER,
   USER_SIGN_IN,
+  USER_SIGN_OUT,
 } from '../utils/constants';
 import { ActionData, BaseActions } from '../utils/commonTypes';
-import { CreateUserData, CurrentUser, UserSignIn, UserState } from '../types/users';
+import { CreateUserData, CurrentUser, UserSignIn, UserSignOut, UserState } from '../types/users';
 
 interface CreateUserAction extends ActionData<CreateUserData> {
   type: 'CREATE_USER';
@@ -18,10 +19,13 @@ interface GetUserAction extends ActionData<CurrentUser> {
 interface UserSignInAction extends ActionData<UserSignIn> {
   type: 'USER_SIGN_IN';
 }
+interface UserSignOutAction extends ActionData<UserSignOut> {
+  type: 'USER_SIGN_OUT';
+}
 
 export const userReducer = (
   state: UserState,
-  action: BaseActions | CreateUserAction | GetUserAction | UserSignInAction
+  action: BaseActions | CreateUserAction | GetUserAction | UserSignInAction | UserSignOutAction
 ): UserState => {
   switch (action.type) {
     case FETCH_ERROR:
@@ -39,6 +43,13 @@ export const userReducer = (
         ...state,
         isLoading: false,
         data: action.payload,
+        status: action.status,
+      };
+    case USER_SIGN_OUT:
+      return {
+        ...state,
+        isLoading: false,
+        data: undefined,
         status: action.status,
       };
     case FETCH_UNKNOWN_ERROR:

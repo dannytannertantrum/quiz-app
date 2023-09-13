@@ -1,7 +1,7 @@
 'use client';
 
 import { createContext, ReactNode, useEffect, useReducer } from 'react';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 
 import {
   CREATE_USER,
@@ -9,9 +9,10 @@ import {
   FETCH_IN_PROGRESS,
   GET_USER,
   USER_SIGN_IN,
+  USER_SIGN_OUT,
 } from '../utils/constants';
 import { createUser, getCurrentUser } from '../api/users/route';
-import { signInUser } from '../api/tokens/route';
+import { signInUser, signOutUser } from '../api/tokens/route';
 import { UserState } from '../types/users';
 import { userReducer } from '../reducers/user';
 import { isSuccess } from '../utils/commonTypes';
@@ -19,6 +20,7 @@ import { isSuccess } from '../utils/commonTypes';
 export interface AuthContextProps {
   createAccount: (form: HTMLFormElement, formJson: string) => Promise<isSuccess>;
   signIn: (form: HTMLFormElement, formData: FormData) => Promise<isSuccess>;
+  signOut: () => Promise<void>;
   userState: UserState | null;
 }
 
@@ -26,6 +28,7 @@ const defaultAuthContextProps = () =>
   ({
     createAccount: async () => ({ isSuccess: false }),
     signIn: async () => ({ isSuccess: false }),
+    signOut: async () => {},
     userState: null,
   } satisfies AuthContextProps);
 
@@ -43,6 +46,7 @@ export const AuthContext = createContext<AuthContextProps>(defaultAuthContextPro
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [userState, userDispatch] = useReducer(userReducer, initialUserState());
   const path = usePathname();
+  const router = useRouter();
 
   const dispatchErrorHelper = (message: string, error: any): void => {
     userDispatch({
@@ -94,6 +98,27 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
+  const signOut = async (): Promise<void> => {
+    userDispatch({ type: FETCH_IN_PROGRESS, isLoading: true });
+    try {
+      const response = await signOutUser();
+      if (!(response instanceof Error)) {
+        userDispatch({
+          type: USER_SIGN_OUT,
+          isLoading: false,
+          payload: response.data,
+          status: response.status,
+        });
+      }
+      router.push('/');
+    } catch (error: any) {
+      dispatchErrorHelper(
+        `There was a problem signing out with user id: ${userState?.data?.id}`,
+        error
+      );
+    }
+  };
+
   const createAccount = async (form: HTMLFormElement, formJson: string): Promise<isSuccess> => {
     userDispatch({ type: FETCH_IN_PROGRESS, isLoading: true });
     try {
@@ -114,7 +139,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   };
 
   return (
-    <AuthContext.Provider value={{ createAccount, signIn, userState }}>
+    <AuthContext.Provider value={{ createAccount, signIn, signOut, userState }}>
       {children}
     </AuthContext.Provider>
   );

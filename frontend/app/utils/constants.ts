@@ -12,6 +12,7 @@ const FETCH_UNKNOWN_ERROR = 'FETCH_UNKNOWN_ERROR';
 const GET_TOPICS = 'GET_TOPICS';
 const GET_USER = 'GET_USER';
 const USER_SIGN_IN = 'USER_SIGN_IN';
+const USER_SIGN_OUT = 'USER_SIGN_OUT';
 
 // Miscellaneous
 const EMAIL_REGEX = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/u;
@@ -30,4 +31,5 @@ export {
   GET_TOPICS,
   GET_USER,
   USER_SIGN_IN,
+  USER_SIGN_OUT,
 };
