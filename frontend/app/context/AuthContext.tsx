@@ -59,11 +59,14 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   useEffect(() => {
     if (path !== '/') {
+      // Make sure to cleanup after fetching
+      // https://react.dev/learn/synchronizing-with-effects#fetching-data
+      let ignore = false;
       const checkUser = async () => {
         userDispatch({ type: FETCH_IN_PROGRESS, isLoading: true });
         try {
           const response = await getCurrentUser();
-          if (!(response instanceof Error)) {
+          if (!(response instanceof Error) && !ignore) {
             userDispatch({
               type: GET_USER,
               isLoading: false,
@@ -76,6 +79,10 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         }
       };
       checkUser();
+
+      return () => {
+        ignore = true;
+      };
     }
   }, [path]);
 
