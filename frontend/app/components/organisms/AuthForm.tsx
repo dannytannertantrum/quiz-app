@@ -25,8 +25,12 @@ export const AuthForm = ({ userEmails }: { userEmails: BaseUserData['email'][] }
   const router = useRouter();
   const redirectParam = useSearchParams().get('redirect');
 
-  const redirectToTopics = () => {
-    redirectParam
+  const redirectToTopics = (isCreateAccount?: boolean) => {
+    if (isCreateAccount) {
+      return router.push(`${BASE_CLIENT_URL}/topics?welcome=true`);
+    }
+
+    return redirectParam
       ? router.push(`${BASE_CLIENT_URL}/${redirectParam}`)
       : router.push(`${BASE_CLIENT_URL}/topics`);
   };
@@ -53,18 +57,25 @@ export const AuthForm = ({ userEmails }: { userEmails: BaseUserData['email'][] }
     const formData = new FormData(form);
     const formJson = JSON.stringify(Object.fromEntries(formData.entries()));
 
+    const handleSignIn = async (
+      form: HTMLFormElement,
+      formData: FormData,
+      accountCreation = false
+    ): Promise<void> => {
+      const signInResult = await signIn(form, formData);
+      if (signInResult.isSuccess) redirectToTopics(accountCreation);
+    };
+
     if (isSignIn) {
-      await signIn(form, formData);
-      redirectToTopics();
+      handleSignIn(form, formData);
     } else {
       const emailExists = checkForDuplicateEmail(userEmails, emailInput.value);
       if (emailExists) {
         emailInput.setError('A user with this email already exists; please use another email.');
         return;
       }
-      await createAccount(form, formJson);
-      await signIn(form, formData);
-      redirectToTopics();
+      const createAccountResult = await createAccount(form, formJson);
+      if (createAccountResult.isSuccess) handleSignIn(form, formData, true);
     }
   };
 

@@ -1,3 +1,7 @@
+export interface isSuccess {
+  isSuccess: boolean;
+}
+
 export interface ResponseSuccess<T> {
   data: T;
   status: number;

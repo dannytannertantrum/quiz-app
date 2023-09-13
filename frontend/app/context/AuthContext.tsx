@@ -14,17 +14,18 @@ import { createUser, getCurrentUser } from '../api/users/route';
 import { signInUser } from '../api/tokens/route';
 import { UserState } from '../types/users';
 import { userReducer } from '../reducers/user';
+import { isSuccess } from '../utils/commonTypes';
 
 export interface AuthContextProps {
-  createAccount: (form: HTMLFormElement, formJson: string) => Promise<void>;
-  signIn: (form: HTMLFormElement, formData: FormData) => Promise<void>;
+  createAccount: (form: HTMLFormElement, formJson: string) => Promise<isSuccess>;
+  signIn: (form: HTMLFormElement, formData: FormData) => Promise<isSuccess>;
   userState: UserState | null;
 }
 
 const defaultAuthContextProps = () =>
   ({
-    createAccount: async () => {},
-    signIn: async () => {},
+    createAccount: async () => ({ isSuccess: false }),
+    signIn: async () => ({ isSuccess: false }),
     userState: null,
   } satisfies AuthContextProps);
 
@@ -74,7 +75,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     }
   }, [path]);
 
-  const signIn = async (form: HTMLFormElement, formData: FormData) => {
+  const signIn = async (form: HTMLFormElement, formData: FormData): Promise<isSuccess> => {
     userDispatch({ type: FETCH_IN_PROGRESS, isLoading: true });
     try {
       const response = await signInUser(form.method, formData);
@@ -86,12 +87,14 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
           status: response.status,
         });
       }
+      return { isSuccess: true };
     } catch (error: any) {
       dispatchErrorHelper('There was a problem signing in: ', error);
+      return { isSuccess: false };
     }
   };
 
-  const createAccount = async (form: HTMLFormElement, formJson: string) => {
+  const createAccount = async (form: HTMLFormElement, formJson: string): Promise<isSuccess> => {
     userDispatch({ type: FETCH_IN_PROGRESS, isLoading: true });
     try {
       const response = await createUser(form.method, formJson);
@@ -103,8 +106,10 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
           status: response.status,
         });
       }
+      return { isSuccess: true };
     } catch (error: any) {
       dispatchErrorHelper('There was a problem creating a user account: ', error);
+      return { isSuccess: false };
     }
   };
 
