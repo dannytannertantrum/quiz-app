@@ -68,6 +68,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
           const response = await getCurrentUser();
           if (!(response instanceof Error) && !ignore) {
             userDispatch({
+              error: undefined,
               type: GET_USER,
               isLoading: false,
               payload: response.data,
@@ -90,12 +91,13 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     userDispatch({ type: FETCH_IN_PROGRESS, isLoading: true });
     try {
       const response = await signInUser(form.method, formData);
-      if (!(response instanceof Error)) {
+      if (!(response instanceof Error) && response?.data?.id) {
         userDispatch({
-          type: USER_SIGN_IN,
+          error: undefined,
           isLoading: false,
           payload: response.data,
           status: response.status,
+          type: USER_SIGN_IN,
         });
       }
       return { isSuccess: true };
@@ -109,12 +111,13 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     userDispatch({ type: FETCH_IN_PROGRESS, isLoading: true });
     try {
       const response = await signOutUser();
-      if (!(response instanceof Error)) {
+      if (!(response instanceof Error) && typeof response?.data?.id === 'undefined') {
         userDispatch({
-          type: USER_SIGN_OUT,
+          error: undefined,
           isLoading: false,
           payload: response.data,
           status: response.status,
+          type: USER_SIGN_OUT,
         });
       }
       router.push('/');
@@ -132,10 +135,11 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       const response = await createUser(form.method, formJson);
       if (!(response instanceof Error)) {
         userDispatch({
-          type: CREATE_USER,
+          error: undefined,
           isLoading: false,
           payload: response.data,
           status: response.status,
+          type: CREATE_USER,
         });
       }
       return { isSuccess: true };

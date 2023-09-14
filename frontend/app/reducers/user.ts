@@ -41,6 +41,7 @@ export const userReducer = (
     case USER_SIGN_IN:
       return {
         ...state,
+        error: undefined,
         isLoading: false,
         data: action.payload,
         status: action.status,
@@ -48,6 +49,7 @@ export const userReducer = (
     case USER_SIGN_OUT:
       return {
         ...state,
+        error: undefined,
         isLoading: false,
         data: undefined,
         status: action.status,

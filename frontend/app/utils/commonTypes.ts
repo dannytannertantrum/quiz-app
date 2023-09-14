@@ -11,6 +11,7 @@ export interface ActionData<T> {
   isLoading: boolean;
   payload: T;
   status: number;
+  error?: Error;
 }
 
 export type BaseActions =
