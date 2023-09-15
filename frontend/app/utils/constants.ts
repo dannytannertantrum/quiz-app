@@ -17,6 +17,7 @@ const USER_SIGN_OUT = 'USER_SIGN_OUT';
 // Miscellaneous
 const EMAIL_REGEX = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/u;
 const FETCH_UNAUTHORIZED = 'Invalid authentication credentials';
+const RESPONSE_ERROR = 'Network response was not OK';
 
 export {
   BASE_CLIENT_URL,
@@ -30,6 +31,7 @@ export {
   FETCH_UNKNOWN_ERROR,
   GET_TOPICS,
   GET_USER,
+  RESPONSE_ERROR,
   USER_SIGN_IN,
   USER_SIGN_OUT,
 };

@@ -4,12 +4,12 @@ import { redirect } from 'next/navigation';
 import { AuthRedirectMessage } from './components/atoms/AuthRedirectMessage';
 import { BaseUserData } from './types/users';
 import { AuthForm } from './components/organisms/AuthForm';
-import { BASE_SERVER_URL, BASE_CLIENT_URL } from './utils/constants';
+import { BASE_SERVER_URL, BASE_CLIENT_URL, RESPONSE_ERROR } from './utils/constants';
 
 async function getUserEmails() {
   const response = await fetch(`${BASE_SERVER_URL}/users/`);
   if (!response.ok) {
-    throw new Error('Failed to fetch data');
+    throw new Error(RESPONSE_ERROR);
   }
   return await response.json();
 }
