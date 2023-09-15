@@ -1,7 +1,13 @@
 import { cookies } from 'next/headers';
+import type { Metadata } from 'next';
 
 import { BASE_SERVER_URL, RESPONSE_ERROR } from '../../utils/constants';
 import { BaseTopicData } from '../../types/topics';
+
+export const metadata: Metadata = {
+  title: 'Subtopics | Quiz App',
+  description: 'Select your subtopics',
+};
 
 export async function getSubTopics(id: string) {
   const response = await fetch(`${BASE_SERVER_URL}/topics/primary-topics/${id}`, {

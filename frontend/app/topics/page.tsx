@@ -1,9 +1,15 @@
 import { cookies } from 'next/headers';
 import Link from 'next/link';
+import type { Metadata } from 'next';
 
 import { BASE_SERVER_URL, RESPONSE_ERROR } from '../utils/constants';
 import { WelcomeMessage } from '../components/atoms/WelcomeMessage';
 import { BaseTopicData } from '../types/topics';
+
+export const metadata: Metadata = {
+  title: 'Topics | Quiz App',
+  description: 'Select a topic!',
+};
 
 const getTopics = async () => {
   const response = await fetch(`${BASE_SERVER_URL}/topics/primary-topics`, {
