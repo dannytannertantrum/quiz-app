@@ -11,8 +11,8 @@ import {
   USER_SIGN_IN,
   USER_SIGN_OUT,
 } from '../utils/constants';
-import { createUser, getCurrentUser } from '../api/users/route';
-import { signInUser, signOutUser } from '../api/tokens/route';
+import { createUser, getCurrentUser } from '../api/users';
+import { signInUser, signOutUser } from '../api/auth';
 import { UserState } from '../types/users';
 import { userReducer } from '../reducers/user';
 import { isSuccess } from '../utils/commonTypes';

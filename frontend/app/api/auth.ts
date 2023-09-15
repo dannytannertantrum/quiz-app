@@ -1,7 +1,7 @@
-import { BASE_URL } from '../../utils/constants';
-import { UserSignIn, UserSignOut } from '../../types/users';
-import { handleResponse } from '../commonResponse';
-import { ResponseSuccess } from '../../utils/commonTypes';
+import { BASE_URL } from '../utils/constants';
+import { UserSignIn, UserSignOut } from '../types/users';
+import { handleResponse } from './commonResponse';
+import { ResponseSuccess } from '../utils/commonTypes';
 
 export const signInUser = async (
   method: string,
