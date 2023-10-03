@@ -4,7 +4,7 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import { useContext, useRef, useState } from 'react';
 
 import { AuthContext } from '../../context/AuthContext';
-import { BASE_CLIENT_URL } from '@/utils/constants';
+import { BASE_CLIENT_URL } from '../../utils/constants';
 import { BaseUserData } from '../../types/users';
 import { Button } from '../atoms/Button';
 import { checkForDuplicateEmail } from '../../utils/helperFunctions';
@@ -84,8 +84,8 @@ export const AuthForm = ({ userEmails }: { userEmails: BaseUserData['email'][] }
       autoComplete='off'
       method='post'
       onSubmit={handleSubmit}
-      className={`w-full bg-thunder-100 border-y border-thunder-800 p-7 shadow-lg shadow-thunder-500
-      dark:bg-thunder-1000 dark:border-thunder-300 dark:shadow-thunder-800
+      className={`w-full bg-thunder-200 border-y border-thunder-800 p-7 shadow-lg shadow-thunder-500
+      dark:bg-thunder-950 dark:border-thunder-300 dark:shadow-thunder-800
       md:w-[500px] md:border md:rounded-xl`}
       noValidate
     >

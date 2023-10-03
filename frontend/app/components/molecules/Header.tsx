@@ -27,8 +27,8 @@ export const Header = () => {
 
   return (
     <header
-      className={`px-4 border-b border-b-thunder-800 bg-thunder-300 md:bg-thunder-100
-    dark:border-b dark:border-b-thunder-300 dark:bg-thunder-800 md:dark:bg-thunder-1000`}
+      className={`px-4 border-b border-b-thunder-800 bg-thunder-100
+    dark:border-b dark:border-b-thunder-300 dark:bg-thunder-1000`}
     >
       <nav className='flex justify-between py-3 mx-auto max-w-7xl gap-4'>
         <Link href={homeLink} className='flex mr-auto'>

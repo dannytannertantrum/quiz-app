@@ -1,4 +1,5 @@
 import { cookies } from 'next/headers';
+import { Fragment } from 'react';
 import Link from 'next/link';
 import type { Metadata } from 'next';
 
@@ -34,7 +35,7 @@ export default async function Topics() {
   if (primaryTopics.length === 0) return <h2 className='text-3xl'>No topics found</h2>;
 
   return (
-    <>
+    <Fragment>
       <WelcomeMessage />
       <h2 className='text-3xl'>Select a topic</h2>
       <ul>
@@ -44,6 +45,6 @@ export default async function Topics() {
           </li>
         ))}
       </ul>
-    </>
+    </Fragment>
   );
 }
