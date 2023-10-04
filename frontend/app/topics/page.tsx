@@ -1,9 +1,9 @@
 import { cookies } from 'next/headers';
 import { Fragment } from 'react';
-import Link from 'next/link';
 import type { Metadata } from 'next';
 
 import { BASE_SERVER_URL, RESPONSE_ERROR } from '../utils/constants';
+import { TopicList } from '../components/organisms/TopicList';
 import { WelcomeMessage } from '../components/atoms/WelcomeMessage';
 import { BaseTopicData } from '../types/topics';
 
@@ -38,13 +38,7 @@ export default async function Topics() {
     <Fragment>
       <WelcomeMessage />
       <h2 className='text-3xl'>Select a topic</h2>
-      <ul>
-        {primaryTopics.map((topic) => (
-          <li key={topic.id}>
-            <Link href={`/topics/${topic.id}`}>{topic.title}</Link>
-          </li>
-        ))}
-      </ul>
+      <TopicList primaryTopics={primaryTopics} />
     </Fragment>
   );
 }
