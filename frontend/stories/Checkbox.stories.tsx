@@ -8,6 +8,7 @@ const meta = {
   args: {
     id: 'drama',
     name: 'Drama',
+    value: 'fake-uuid',
   },
 } satisfies Meta<typeof Checkbox>;
 

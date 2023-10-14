@@ -5,7 +5,7 @@ import { Checkbox } from '../../../app/components/molecules/Checkbox';
 
 describe('Checkbox', () => {
   test('loads and displays an input checkbox', () => {
-    render(<Checkbox id='drama' name='Drama' />);
+    render(<Checkbox id='drama' name='Drama' value='fake-uuid' />);
 
     expect(screen.getByText('Drama')).toBeInTheDocument();
   });
