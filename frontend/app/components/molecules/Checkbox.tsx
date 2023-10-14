@@ -11,8 +11,8 @@ export interface CheckboxProps {
  */
 export const Checkbox = ({ id, name }: CheckboxProps) => {
   return (
-    <label className='text-2xl cursor-pointer' htmlFor={id}>
-      <input className='mr-2 h-5 w-5 accent-current' type='checkbox' id={id} name={name} />
+    <label className='capitalize text-2xl cursor-pointer' htmlFor={id}>
+      <input className='mr-4 h-5 w-5 accent-current' type='checkbox' id={id} name={name} />
       {name}
     </label>
   );
