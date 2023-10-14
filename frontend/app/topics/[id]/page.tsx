@@ -3,6 +3,7 @@ import type { Metadata } from 'next';
 
 import { BASE_SERVER_URL, RESPONSE_ERROR } from '../../utils/constants';
 import { BaseTopicData } from '../../types/topics';
+import { SubtopicList } from '../../components/organisms/SubtopicList';
 
 export const metadata: Metadata = {
   title: 'Subtopics | Quiz App',
@@ -35,11 +36,7 @@ export default async function SubTopics({ params }: { params: { id: string } }) 
   return (
     <>
       <h2 className='text-3xl'>Select subtopics</h2>
-      <ul>
-        {subTopics.map((topic) => (
-          <li key={topic.id}>{topic.title}</li>
-        ))}
-      </ul>
+      <SubtopicList subtopics={subTopics} />
     </>
   );
 }
