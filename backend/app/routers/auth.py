@@ -9,9 +9,7 @@ from sqlalchemy.orm import Session
 from app.config import get_settings
 from app.crud import crud_users
 from app.database import get_db
-from app.dependencies import get_current_user
 from app.schemas.token import Token, TokenSignIn
-from app.schemas.user import UserCurrent
 from app.security import create_access_token
 
 
@@ -59,10 +57,7 @@ def login_for_access_token(
 
 
 @router.post("/sign-out", response_model=Token)
-def delete_access_token_cookie(
-    response: Response,
-    current_user: UserCurrent = Depends(get_current_user),
-):
+def delete_access_token_cookie(response: Response):
     response = JSONResponse({"isAuthorized": False})
     response.delete_cookie(key="access_token")
 
