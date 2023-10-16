@@ -46,8 +46,8 @@ export const SubtopicList = ({ subtopics }: { subtopics: BaseTopicData[] }) => {
       method='put'
       onSubmit={handleSubmit}
       className={`w-full bg-thunder-200 border rounded-xl border-thunder-800 p-7 shadow-lg shadow-thunder-500
-    dark:bg-thunder-950 dark:border-thunder-300 dark:shadow-thunder-800
-    md:w-[500px] ${error && 'border-rose-900 dark:border-rose-300'}`}
+      dark:bg-thunder-950 dark:border-thunder-300 dark:shadow-thunder-800 md:w-[500px] 
+      ${error ? '!border-rose-900 dark:!border-rose-300' : ''}`}
       noValidate
     >
       <Fieldset disabled={false}>
