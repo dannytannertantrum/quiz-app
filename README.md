@@ -24,9 +24,11 @@ source .venv/bin/activate
 (.venv) $ docker-compose up -d --build
 ```
 
-Now that the app is running, check out the docs and play around with the API endpoints: [http://127.0.0.1:8004/docs](http://127.0.0.1:8004/docs)
+Now that the app is running, check out the docs and play around with the API endpoints: [http://127.0.0.1:8004/docs](http://127.0.0.1:8004/docs) (though it'll certainly help to run migrations and seed the data first! See below.)
 
-## Running Database Migrations
+## Database
+
+### Running Database Migrations
 
 We're using [SQLAlchemy](https://docs.sqlalchemy.org/en/20/index.html) as our ORM and [Alembic](https://alembic.sqlalchemy.org/en/latest/) to manage migrations. With the commands above in _Getting Started_, you should have...
 
@@ -44,6 +46,16 @@ We manage our `dev` database migrations with alembic. For tests, we bind the mod
 - **Downgrade per migrations:** `docker compose exec backend alembic downgrade -1`
 - **Get the current version:** `docker compose exec backend alembic current`
 - **After creating a new model and you want to autogenerate SQL:** `docker compose exec backend alembic revision --autogenerate -m "Your commit message here"`
+
+### Seeding The Data
+
+With the containers up and running, make sure you are on the latest migration. If you haven't already, run the script above for migrating to the latest version. Once that is taken care of, `cd` into the `./backend/database` directory and run the following command in your terminal:
+
+```
+./seed-db.sh
+```
+
+Our local database (not test) should have some data we can play around with now.
 
 ## Testing
 
