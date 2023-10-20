@@ -21,6 +21,49 @@ html.dark body {
   background: var(--background-hex-dark);
 }
 
+@keyframes request-loader-bg-animation {
+  0% {
+    background-position-y: 16vh;
+  }
+  40% {
+    background-position-y: -3vh;
+  }
+  90% {
+    background-position-y: -10vh;
+  }
+  100% {
+    background-position-y: -14vh;
+  }
+}
+
+.requestLoader {
+  font-size: 12rem;
+  color: transparent;
+  -webkit-text-stroke: 2px var(--foreground-hex-light);
+  background-image: linear-gradient(
+    to bottom,
+    transparent,
+    transparent 50%,
+    var(--foreground-hex-light) 50%,
+    var(--foreground-hex-light)
+  );
+  background-clip: text;
+  background-size: cover;
+  animation: request-loader-bg-animation 5s ease-out;
+  background-position-y: -14vh;
+}
+
+html.dark .requestLoader {
+  background-image: linear-gradient(
+    to bottom,
+    transparent,
+    transparent 50%,
+    var(--foreground-hex-dark) 50%,
+    var(--foreground-hex-dark)
+  );
+  -webkit-text-stroke: 2px var(--foreground-hex-dark);
+}
+
 @layer base {
   fieldset label:last-of-type {
     margin-bottom: 1em;
