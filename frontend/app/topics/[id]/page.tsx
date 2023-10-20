@@ -52,8 +52,9 @@ export default async function SubTopics({ params }: { params: { id: string } }) 
 
   return (
     <>
-      <h2 className='text-3xl'>{parentTopicTitle}</h2>
-      <h3 className='text-2xl'>Select subtopics for questions</h3>
+      <h2 className='text-3xl'>
+        Select subtopics for <span className='capitalize'>{parentTopicTitle}</span>
+      </h2>
       <SubtopicList subtopics={subTopics} />
     </>
   );
