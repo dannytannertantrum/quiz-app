@@ -6,19 +6,25 @@ import { render, renderWithUserEvent, screen, waitFor } from 'custom-rtl';
 import { SubtopicList } from '../../../app/components/organisms/SubtopicList';
 
 describe('SubtopicList', () => {
-  test('loads and displays a list of subtopics', () => {
-    render(<SubtopicList parentTopicTitle='movies' subtopics={subtopicsTestData} />);
+  describe('Non-events', () => {
+    beforeEach(() => {
+      render(<SubtopicList parentTopicTitle='movies' subtopics={subtopicsTestData} />);
+    });
 
-    expect(screen.getByText('comedy')).toBeInTheDocument();
-    expect(screen.getByText('drama')).toBeInTheDocument();
-    expect(screen.getByText('horror')).toBeInTheDocument();
-    expect(screen.getByText('sci-fi')).toBeInTheDocument();
-  });
+    test('loads and displays a list of subtopics', () => {
+      expect(screen.getByText('comedy')).toBeInTheDocument();
+      expect(screen.getByText('drama')).toBeInTheDocument();
+      expect(screen.getByText('horror')).toBeInTheDocument();
+      expect(screen.getByText('sci-fi')).toBeInTheDocument();
+    });
 
-  test('displays the parent topic title', () => {
-    render(<SubtopicList parentTopicTitle='movies' subtopics={subtopicsTestData} />);
+    test('displays the parent topic title', () => {
+      expect(screen.getByText('movies')).toBeInTheDocument();
+    });
 
-    expect(screen.getByText('movies')).toBeInTheDocument();
+    test('displays a link to get back to the topics page', () => {
+      expect(screen.getByText(/Back to topics/)).toBeInTheDocument();
+    });
   });
 
   test('error message displays when user tries to submit the form without info', async () => {

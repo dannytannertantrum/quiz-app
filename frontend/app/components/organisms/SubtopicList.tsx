@@ -1,7 +1,8 @@
 'use client';
 
+import { Fragment, useEffect, useState } from 'react';
+import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { Fragment, useState } from 'react';
 
 import { BASE_CLIENT_URL } from '../../utils/constants';
 import { BaseTopicData } from '../../types/topics';
@@ -44,9 +45,11 @@ export const SubtopicList = ({
   let checkboxNodes: NodeListOf<HTMLInputElement> | null = null;
   let checkboxes: HTMLInputElement[] = [];
 
-  if (state.animationEnd && state.quizQuestions) {
-    router.push(`${BASE_CLIENT_URL}/quizzes/${state.quizQuestions.data.id}`);
-  }
+  useEffect(() => {
+    if (state.animationEnd && state.quizQuestions) {
+      router.push(`${BASE_CLIENT_URL}/quizzes/${state.quizQuestions.data.id}`);
+    }
+  }, [router, state.animationEnd, state.quizQuestions]);
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -149,6 +152,13 @@ export const SubtopicList = ({
           )}
         </Fieldset>
       </form>
+      <Link
+        href={'/topics'}
+        className='bg-transparent underline text-outer-space-900 text-xl hover:text-outer-space-1000
+  dark:text-outer-space-300 dark:hover:text-outer-space-200 transition-colors'
+      >
+        {'< '}Back to topics
+      </Link>
     </Fragment>
   );
 };

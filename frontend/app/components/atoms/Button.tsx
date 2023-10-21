@@ -17,7 +17,7 @@ export const Button = ({ children, disabled, onClick, secondary, styles, type }:
   dark:border dark:border-thunder-300 dark:bg-thunder-800 dark:text-thunder-200
   dark:hover:bg-thunder-700 dark:hover:transition-colors dark:hover:duration-300 dark:hover:text-thunder-100
   dark:disabled:bg-slate-500 dark:disabled:border-slate-300`;
-  const secondaryClasses = `bg-transparent underline text-outer-space-800 text-lg hover:text-outer-space-1000
+  const secondaryClasses = `bg-transparent underline text-outer-space-900 text-lg hover:text-outer-space-1000
   dark:text-outer-space-300 dark:hover:text-outer-space-200 transition-colors`;
   const appliedClasses = secondary
     ? baseButtonClasses + secondaryClasses
