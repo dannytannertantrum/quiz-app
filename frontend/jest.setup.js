@@ -22,3 +22,11 @@ jest.mock('next/navigation', () => ({
     get: jest.fn(),
   }),
 }));
+
+global.fetch = jest.fn(() =>
+  Promise.resolve({
+    json: () => Promise.resolve({ test: 100 }),
+    ok: true,
+    status: 200,
+  })
+);
