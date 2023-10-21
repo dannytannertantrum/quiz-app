@@ -7,7 +7,13 @@ const meta = {
   title: 'Components/Organisms/SubtopicList',
   component: SubtopicList,
   args: {
+    parentTopicTitle: 'Title',
     subtopics: subtopicsTestData,
+  },
+  parameters: {
+    nextjs: {
+      appDirectory: true,
+    },
   },
   render: (args) => <SubtopicList {...args} />,
 } satisfies Meta<typeof SubtopicList>;

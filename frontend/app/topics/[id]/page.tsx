@@ -1,5 +1,6 @@
 import { cookies } from 'next/headers';
 import type { Metadata } from 'next';
+import { Fragment } from 'react';
 
 import { BASE_SERVER_URL, RESPONSE_ERROR } from '../../utils/constants';
 import { BaseTopicData } from '../../types/topics';
@@ -51,11 +52,8 @@ export default async function SubTopics({ params }: { params: { id: string } }) 
   if (subTopics.length === 0) return <h2 className='text-3xl'>No subtopics found</h2>;
 
   return (
-    <>
-      <h2 className='text-3xl'>
-        Select subtopics for <span className='capitalize'>{parentTopicTitle}</span>
-      </h2>
-      <SubtopicList subtopics={subTopics} />
-    </>
+    <Fragment>
+      <SubtopicList parentTopicTitle={parentTopicTitle} subtopics={subTopics} />
+    </Fragment>
   );
 }

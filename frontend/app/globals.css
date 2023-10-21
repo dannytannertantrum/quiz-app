@@ -23,16 +23,16 @@ html.dark body {
 
 @keyframes request-loader-bg-animation {
   0% {
-    background-position-y: 16vh;
+    background-position-y: 82px;
   }
   40% {
-    background-position-y: -3vh;
+    background-position-y: -7px;
   }
   90% {
-    background-position-y: -10vh;
+    background-position-y: -60px;
   }
   100% {
-    background-position-y: -14vh;
+    background-position-y: -70px;
   }
 }
 
@@ -50,7 +50,7 @@ html.dark body {
   background-clip: text;
   background-size: cover;
   animation: request-loader-bg-animation 5s ease-out;
-  background-position-y: -14vh;
+  background-position-y: -70px;
 }
 
 html.dark .requestLoader {
