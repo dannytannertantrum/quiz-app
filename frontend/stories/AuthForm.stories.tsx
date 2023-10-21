@@ -10,6 +10,9 @@ const meta = {
   },
   parameters: {
     layout: 'fullscreen',
+    nextjs: {
+      appDirectory: true,
+    },
   },
   render: () => (
     <div style={{ maxWidth: '500px', margin: '0 auto', paddingTop: '20px' }}>
