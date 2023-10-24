@@ -89,8 +89,11 @@ export const AuthForm = ({ userEmails }: { userEmails: BaseUserData['email'][] }
       md:w-[500px] md:border md:rounded-xl`}
       noValidate
     >
-      <h2 className='text-4xl mb-6'>{isSignIn ? 'Sign in' : 'Create account'}</h2>
-      <Fieldset disabled={userState?.isLoading}>
+      <Fieldset
+        disabled={userState?.isLoading}
+        legend={isSignIn ? 'Sign in' : 'Create account'}
+        legendSize='large'
+      >
         <TextInput
           errorMessage={emailInput.error}
           handleOnBlur={emailInput.handleBlur}

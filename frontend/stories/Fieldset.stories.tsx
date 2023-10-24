@@ -12,7 +12,9 @@ export default meta;
 type Story = StoryObj<typeof meta>;
 
 export const PrimaryWithLabelsAndInputs: Story = {
-  args: {},
+  args: {
+    legend: 'My Legend',
+  },
   render: (args) => (
     <Fieldset {...args}>
       <TextInput
@@ -28,7 +30,9 @@ export const PrimaryWithLabelsAndInputs: Story = {
 };
 
 export const Disabled: Story = {
-  args: {},
+  args: {
+    legend: 'My legend',
+  },
   render: (args) => (
     <Fieldset {...args} disabled>
       <TextInput

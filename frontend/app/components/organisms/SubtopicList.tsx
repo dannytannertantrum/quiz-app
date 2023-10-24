@@ -119,9 +119,7 @@ export const SubtopicList = ({
 
   return (
     <Fragment>
-      <h2 className='text-3xl'>
-        Select subtopics for <span className='capitalize'>{parentTopicTitle}</span>
-      </h2>
+      <h2 className='text-4xl capitalize mb-2'>{parentTopicTitle}</h2>
       <form
         autoComplete='off'
         method='post'
@@ -131,7 +129,7 @@ export const SubtopicList = ({
       ${state.error ? '!border-rose-900 dark:!border-rose-300' : ''}`}
         noValidate
       >
-        <Fieldset disabled={state.isLoading}>
+        <Fieldset disabled={state.isLoading} legend='Select subtopics' legendCenter>
           <ul>
             {subtopics.map((topic) => (
               <li className='mb-4' key={topic.id}>

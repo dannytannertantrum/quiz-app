@@ -34,7 +34,7 @@ export const Checkbox = ({ id, name, handleChange, value }: CheckboxProps) => {
   return (
     <label className='capitalize text-2xl cursor-pointer' htmlFor={id}>
       <input
-        className='mr-4 h-5 w-5 accent-current'
+        className='mr-4 h-5 w-5 accent-current cursor-pointer'
         id={id}
         name={name}
         onChange={handleChange}

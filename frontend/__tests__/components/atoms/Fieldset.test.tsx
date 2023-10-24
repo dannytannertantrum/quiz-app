@@ -6,9 +6,10 @@ import { TextInput } from '../../../app/components/molecules/TextInput';
 
 describe('Fieldset', () => {
   test('loads and displays a fieldset', () => {
-    render(<Fieldset />);
+    render(<Fieldset legend='My legend' />);
 
     expect(screen.getByTestId('test-fieldset')).toBeInTheDocument();
+    expect(screen.getByText('My legend')).toBeInTheDocument();
   });
 
   test('When the fieldset is disabled, all inputs within should not be focusable', () => {

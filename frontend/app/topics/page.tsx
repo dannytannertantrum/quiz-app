@@ -37,7 +37,7 @@ export default async function Topics() {
   return (
     <Fragment>
       <WelcomeMessage />
-      <h2 className='text-3xl'>Select a topic</h2>
+      <h2 className='text-4xl mb-3'>Select a topic</h2>
       <TopicList primaryTopics={primaryTopics} />
     </Fragment>
   );

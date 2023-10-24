@@ -3,19 +3,43 @@ import { ReactNode } from 'react';
 export interface FieldsetProps {
   disabled?: boolean;
   children?: ReactNode;
+  legend?: string;
+  legendCenter?: boolean;
+  legendSize?: 'small' | 'medium' | 'large';
 }
+
+const getLegendClasses = (legendSize: string): string => {
+  switch (legendSize) {
+    case 'small':
+      return 'text-2xl mb-3';
+    case 'large':
+      return 'text-4xl mb-6';
+    default:
+      return 'text-3xl mb-4';
+  }
+};
 
 /**
  *
- * @param disabled optional and great for disabling the whole fieldset group
+ * @param disabled great for disabling the whole fieldset group
  * upon a form submission
- * We could have just used a native <fieldset> element, but this is nice for testing
- * purposes and if we want to style it
- * @returns
+ * @param legendSize small = 2xl, medium = 3xl, large = 4x defaults to medium
+ * @param legendCenter deaults to false
  */
-export const Fieldset = ({ children, disabled }: FieldsetProps) => {
+export const Fieldset = ({
+  children,
+  disabled,
+  legend,
+  legendCenter = false,
+  legendSize = 'medium',
+}: FieldsetProps) => {
+  const legendFont = getLegendClasses(legendSize);
+  const legendCenterClasses = legendCenter ? ' text-center' : '';
+  const appliedLegendClasses = legendFont + legendCenterClasses;
+
   return (
     <fieldset data-testid='test-fieldset' disabled={disabled}>
+      <legend className={appliedLegendClasses}>{legend}</legend>
       {children}
     </fieldset>
   );
