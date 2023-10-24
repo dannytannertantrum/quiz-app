@@ -1,3 +1,4 @@
+import { BaseQuestionData } from '@/types/questions';
 import { BaseTopicData } from '../app/types/topics';
 
 export const primaryTopicsTestData: BaseTopicData[] = [
@@ -15,4 +16,19 @@ export const subtopicsTestData: BaseTopicData[] = [
   { id: '5', description: '', title: 'drama' },
   { id: '6', description: '', title: 'horror' },
   { id: '7', description: '', title: 'sci-fi' },
+];
+
+export const questionTestData: BaseQuestionData[] = [
+  {
+    id: 'fake-uuid',
+    answer_options: [
+      { id: 1, option_1: 'Lloyd Christmas' },
+      { id: 2, option_2: 'Harry Dunne' },
+      { id: 3, option_3: 'The Gas Man' },
+      { id: 4, option_4: 'Sea Bass' },
+    ],
+    question: 'Who does Jim Carrey play in "Dumb and Dumber"?',
+    question_type: 'multiple choice',
+    topic_id: 'another-fake-uuid',
+  },
 ];
