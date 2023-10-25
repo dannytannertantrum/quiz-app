@@ -35,7 +35,7 @@ class TestCrudQuizQuestionFailure:
     def test_update_quiz_question_in_db_returns_None_if_no_record_to_update_found(
         self, db: Session
     ) -> None:
-        user_input = QuizQuestionUpdateAnswerRequest(user_answer=3)
+        user_input = QuizQuestionUpdateAnswerRequest(id=random_uuid, user_answer=3)
 
         result = crud_quiz_questions.update_quiz_question_in_db(
             db, quiz_question_id=random_uuid, user_input=user_input
@@ -102,7 +102,7 @@ class TestCrudQuizQuestionSuccess:
         create_test_quiz: QuizId,
     ) -> None:
         quiz_question_id = create_test_quiz_questions[0].id
-        user_input = QuizQuestionUpdateAnswerRequest(user_answer=3)
+        user_input = QuizQuestionUpdateAnswerRequest(id=quiz_question_id, user_answer=3)
 
         crud_quiz_questions.update_quiz_question_in_db(
             db, quiz_question_id=quiz_question_id, user_input=user_input

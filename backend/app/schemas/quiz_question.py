@@ -13,11 +13,17 @@ class QuizQuestionFullResponse(QuizQuestionId):
     user_answer: Optional[int] = Field(default=None, le=4)
 
 
-class QuizQuestionUpdateAnswerRequest(BaseModel):
+class QuizQuestionUpdateAnswerRequest(QuizQuestionId):
     # For now, users only have a max of 4 answer options
     user_answer: Optional[int] = Field(default=None, le=4)
 
 
-class QuizQuestionAndAnswers(QuizQuestionId, QuizQuestionUpdateAnswerRequest):
+class QuizQuestionAndAnswers(QuizQuestionUpdateAnswerRequest):
     question: str
     answer_options: list[dict[str, str | int]]
+
+
+class QuizQuestionAllData(QuizQuestionFullResponse):
+    question: str
+    answer_options: list[dict[str, str | int]]
+    question_type: str

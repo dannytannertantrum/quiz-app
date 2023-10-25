@@ -1,6 +1,7 @@
 from datetime import datetime, timezone
 
 from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi.responses import JSONResponse
 from pydantic import UUID4
 from sqlalchemy.orm import Session
 
@@ -9,10 +10,10 @@ from app.database import get_db
 from app.dependencies import get_current_user
 from app.schemas.quiz_question import (
     QuizQuestionAndAnswers,
+    QuizQuestionAllData,
     QuizQuestionUpdateAnswerRequest,
 )
 from app.schemas.user import UserCurrent
-
 
 router = APIRouter(
     prefix="/quiz-questions",
@@ -103,3 +104,26 @@ def update_quiz_question(
         quiz_id=quiz_question_record.quiz_id,
         score=score,
     )
+
+
+@router.get(
+    "/quiz/{quiz_id}",
+    response_model=list[QuizQuestionAllData],
+    status_code=status.HTTP_200_OK,
+    description="Returns all quiz questions associated with a quiz id",
+)
+def read_quiz_questions_by_quiz_id(
+    quiz_id: UUID4,
+    db: Session = Depends(get_db),
+    current_user: UserCurrent = Depends(get_current_user),
+) -> list[QuizQuestionAllData]:
+    quiz_questions_and_answers = crud_quiz_questions.get_all_quiz_questions_by_quiz_id(
+        db, quiz_id=quiz_id
+    )
+    if not quiz_questions_and_answers:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=f"No questions found associated with quiz id: {quiz_id}",
+        )
+
+    return quiz_questions_and_answers

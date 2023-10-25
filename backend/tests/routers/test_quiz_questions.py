@@ -6,7 +6,7 @@ from sqlalchemy.orm import Session
 from app.crud import crud_quizzes, crud_quiz_questions
 from app.models import QuizQuestion
 from app.schemas.quiz import QuizId
-from app.schemas.quiz_question import QuizQuestionAndAnswers
+from app.schemas.quiz_question import QuizQuestionAndAnswers, QuizQuestionAllData
 
 
 class TestQuizQuestionRoutesFailure:
@@ -28,11 +28,31 @@ class TestQuizQuestionRoutesFailure:
 
         assert response.status_code == 422
 
+    def test_read_quiz_questions_by_quiz_id_raises_exception_with_bad_request(
+        self, client: TestClient, access_token: dict[str, str]
+    ):
+        response = client.get("/quiz-questions/quiz/not-a-uuid", headers=access_token)
+
+        assert response.status_code == 422
+
+    def test_read_quiz_questions_by_quiz_id_raises_exception_with_bad_request(
+        self, client: TestClient, access_token: dict[str, str]
+    ):
+        random_uuid = uuid4()
+        response = client.get(
+            f"/quiz-questions/quiz/{random_uuid}", headers=access_token
+        )
+
+        assert response.status_code == 404
+        assert response.json() == {
+            "detail": f"No questions found associated with quiz id: {random_uuid}"
+        }
+
     def test_update_quiz_question_raises_not_found_error_when_question_not_found(
         self, client: TestClient, access_token: dict[str, str]
     ):
         random_uuid = uuid4()
-        user_input = {"user_answer": 2}
+        user_input = {"id": str(random_uuid), "user_answer": 2}
 
         response = client.put(
             f"/quiz-questions/{random_uuid}", headers=access_token, json=user_input
@@ -78,6 +98,25 @@ class TestQuizQuestionRoutesSuccess:
         assert isinstance(data["question"], str)
         assert data["answer_options"] is not None
 
+    def test_get_quiz_questions_by_quiz_id(
+        self,
+        client: TestClient,
+        access_token: dict[str, str],
+        create_test_quiz_questions: list[QuizQuestion],
+    ) -> None:
+        response = client.get(
+            f"/quiz-questions/quiz/{create_test_quiz_questions[0].quiz_id}",
+            headers=access_token,
+        )
+        data: list[QuizQuestionAllData] = response.json()
+
+        assert response.status_code == 200
+        assert isinstance(data[0]["id"], str)
+        assert isinstance(data[0]["quiz_id"], str)
+        assert isinstance(data[0]["question"], str)
+        assert data[0]["answer_options"] is not None
+        assert data[0]["question_type"] == "multiple choice"
+
     def test_update_quiz_question_with_empty_answers(
         self,
         client: TestClient,
@@ -87,7 +126,7 @@ class TestQuizQuestionRoutesSuccess:
         create_test_quiz_questions: list[QuizQuestion],
     ) -> None:
         quiz_question_id = create_test_quiz_questions[0].id
-        user_input = {"user_answer": 2}
+        user_input = {"id": str(quiz_question_id), "user_answer": 2}
 
         response = client.put(
             f"/quiz-questions/{quiz_question_id}",
@@ -118,7 +157,7 @@ class TestQuizQuestionRoutesSuccess:
         create_test_quiz_questions_with_all_answers: list[QuizQuestion],
     ) -> None:
         quiz_question_id = create_test_quiz_questions_with_all_answers[0].id
-        user_input = {"user_answer": 2}
+        user_input = {"id": str(quiz_question_id), "user_answer": 2}
 
         response = client.put(
             f"/quiz-questions/{quiz_question_id}",

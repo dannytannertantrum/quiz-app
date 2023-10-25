@@ -4,8 +4,11 @@ from pydantic import UUID4
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
-from app.models import QuizQuestion
-from app.schemas.quiz_question import QuizQuestionUpdateAnswerRequest
+from app.models import QuizQuestion, Question
+from app.schemas.quiz_question import (
+    QuizQuestionUpdateAnswerRequest,
+    QuizQuestionAllData,
+)
 
 
 def get_quiz_questions_by_quiz_id(db: Session, quiz_id: UUID4) -> list[QuizQuestion]:
@@ -17,6 +20,35 @@ def get_quiz_questions_by_quiz_id(db: Session, quiz_id: UUID4) -> list[QuizQuest
         .scalars()
         .all()
     )
+
+
+def get_all_quiz_questions_by_quiz_id(
+    db: Session, quiz_id: UUID4
+) -> list[QuizQuestionAllData]:
+    """
+    Returns a list of Quiz Question records complete with each question and answer option
+    """
+
+    rows = db.execute(
+        select(
+            QuizQuestion.id,
+            QuizQuestion.quiz_id,
+            QuizQuestion.user_answer,
+            QuizQuestion.question_id,
+            Question.question,
+            Question.answer_options,
+            Question.question_type,
+        )
+        .join(Question, QuizQuestion.question_id == Question.id)
+        .where(
+            QuizQuestion.quiz_id == quiz_id,
+            Question.is_deleted == False,
+        )
+    ).all()
+
+    data = [row._asdict() for row in rows]
+
+    return data
 
 
 def get_question_and_user_answer_by_quiz_question_id(
