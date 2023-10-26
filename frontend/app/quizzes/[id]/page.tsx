@@ -4,6 +4,7 @@ import type { Metadata } from 'next';
 import { BASE_SERVER_URL, RESPONSE_ERROR } from '../../utils/constants';
 import { BaseQuizData } from '../../types/quizzes';
 import { QuizQuestionsAllData } from '../../types/quizQuestions';
+import { Quiz } from '../../components/organisms/Quiz';
 
 // Dynamic metadata
 // https://nextjs.org/docs/app/building-your-application/optimizing/metadata#dynamic-metadata
@@ -41,14 +42,14 @@ export async function getQuizQuestions(id: string) {
   if (!response.ok) {
     throw new Error(RESPONSE_ERROR);
   }
-  const quizQuestions: QuizQuestionsAllData = await response.json();
+  const quizQuestions: QuizQuestionsAllData[] = await response.json();
 
   return quizQuestions;
 }
 
 export default async function Quizzes({ params }: { params: { id: string } }) {
   let quiz: BaseQuizData | null = null;
-  let quizQuestions: QuizQuestionsAllData | null = null;
+  let quizQuestions: QuizQuestionsAllData[] | null = null;
   try {
     [quiz, quizQuestions] = await Promise.all([getQuiz(params.id), getQuizQuestions(params.id)]);
   } catch (reason: unknown) {
@@ -57,10 +58,5 @@ export default async function Quizzes({ params }: { params: { id: string } }) {
 
   if (quiz === null || quizQuestions === null) return <h2 className='text-3xl'>No quiz found</h2>;
 
-  return (
-    <>
-      <h2>Quiz!</h2>
-      <h3>{quiz?.primary_topic}</h3>
-    </>
-  );
+  return <Quiz quiz={quiz} quizQuestions={quizQuestions} />;
 }
