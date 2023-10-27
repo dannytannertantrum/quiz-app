@@ -1,19 +1,21 @@
 import '@testing-library/jest-dom';
 
 import { render, renderWithUserEvent, screen } from 'custom-rtl';
-import { Question } from '../../../app/components/molecules/Question';
+import { Question, QuestionProps } from '../../../app/components/molecules/Question';
 import { questionTestData } from '../../../test-utils/shared-data';
 
 describe('Question Molecule', () => {
   const onChangeMock = jest.fn();
-  const props = {
+  const props: QuestionProps = {
+    handleSelectedAnswer: onChangeMock,
     id: questionTestData[0].id,
     answer_options: questionTestData[0].answer_options,
     question: questionTestData[0].question,
+    quizQuestionId: 'fake-uuid',
   };
 
   test('loads and displays a question with answers', async () => {
-    render(<Question handleSelectedAnswer={onChangeMock} {...props} />);
+    render(<Question {...props} />);
 
     expect(screen.getByText(questionTestData[0].question)).toBeInTheDocument();
     expect(screen.getByText(questionTestData[0].answer_options[0].option_1)).toBeInTheDocument();
@@ -23,9 +25,7 @@ describe('Question Molecule', () => {
   });
 
   test('user can successfully select an answer', async () => {
-    const { user } = renderWithUserEvent(
-      <Question handleSelectedAnswer={onChangeMock} {...props} />
-    );
+    const { user } = renderWithUserEvent(<Question {...props} />);
     const firstAnswerOption: HTMLButtonElement = screen.getByText(
       questionTestData[0].answer_options[0].option_1
     );
@@ -36,9 +36,7 @@ describe('Question Molecule', () => {
   });
 
   test('user cannot interact with answer options if the question is disabled', async () => {
-    const { user } = renderWithUserEvent(
-      <Question handleSelectedAnswer={onChangeMock} disabled {...props} />
-    );
+    const { user } = renderWithUserEvent(<Question disabled {...props} />);
     const firstAnswerOption: HTMLButtonElement = screen.getByText(
       questionTestData[0].answer_options[0].option_1
     );

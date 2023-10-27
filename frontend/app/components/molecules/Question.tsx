@@ -2,6 +2,7 @@
 
 import { BaseQuestionData } from '../../types/questions';
 import { Fieldset } from '../atoms/Fieldset';
+import { QuizQuestionsPutRequest } from '../../types/quizQuestions';
 
 export interface QuestionProps {
   answer_options: BaseQuestionData['answer_options'];
@@ -12,6 +13,7 @@ export interface QuestionProps {
   ) => void;
   id: BaseQuestionData['id'];
   question: BaseQuestionData['question'];
+  quizQuestionId: QuizQuestionsPutRequest['id'];
   disabled?: boolean;
 }
 
@@ -21,6 +23,7 @@ export const Question = ({
   handleSelectedAnswer,
   id,
   question,
+  quizQuestionId,
 }: QuestionProps) => {
   return (
     <Fieldset legend={question} disabled={disabled}>
@@ -35,7 +38,7 @@ export const Question = ({
               dark:enabled:hover:text-outer-space-100 dark:focus-visible:text-outer-space-100 dark:disabled:bg-slate-500 dark:disabled:border-slate-300
               dark:shadow-outer-space-950 enabled:active:scale-[0.98]`}
               onClick={(event: React.MouseEvent<HTMLButtonElement, MouseEvent>) =>
-                handleSelectedAnswer(event, id, answer.id)
+                handleSelectedAnswer(event, quizQuestionId, answer.id)
               }
             >
               {answer[`option_${answer.id}`]}

@@ -12,11 +12,11 @@ export interface CreateQuizDataResponse {
 
 export interface BaseQuizData {
   id: string;
-  created_at: Date;
+  created_at: string;
   subtopics: string[];
   primary_topic: string;
   user_id: string;
-  completed_at?: Date;
+  completed_at?: string;
   last_modified_at?: Date;
   score?: number;
 }
