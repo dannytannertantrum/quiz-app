@@ -2,22 +2,11 @@
 
 import { useState } from 'react';
 
-import { BaseQuizData } from '../../types/quizzes';
 import { QuizQuestionsAllData } from '../../types/quizQuestions';
 import { Question } from '../molecules/Question';
 import { updateQuizQuestion } from '../../api/quizQuestions';
 
 /*
-- Build the Question Carousel
-  - Loop through and display sets of questions - DONE
-  - Only show the active question and hide the others
-    - Need to add "show" boolean prop to Question - DONE
-    - Update style to be display: none - DONE
-    - Set up Click Handler to capture answer and id - DONE
-    - Pass handler down to Question molecule - DONE
-    - COMMIT
-    - Make the PUT request - DONE
-      - Once the request makes the update, hide - DONE
   - Set up previous and next buttons
     - Next only shows up if a user has backtracked
     - Previous only shows up if the answer before has been submitted
@@ -28,25 +17,25 @@ import { updateQuizQuestion } from '../../api/quizQuestions';
     - Do 
 */
 
-const findActiveQuestionIndex = (quizQuestions: QuizQuestionsAllData[]) =>
-  quizQuestions.findIndex((qq) => qq.user_answer == null);
+const getActiveNav = (quizQuestions: QuizQuestionsAllData[]) => {
+  return quizQuestions.some((val) => val.user_answer !== null);
+};
 
-export const Quiz = ({
-  quiz,
-  quizQuestions,
-}: {
-  quiz: BaseQuizData;
-  quizQuestions: QuizQuestionsAllData[];
-}) => {
+const findActiveQuestionIndex = (quizQuestions: QuizQuestionsAllData[]) =>
+  quizQuestions.findIndex((qq) => qq.user_answer === null);
+
+export const Quiz = ({ quizQuestions }: { quizQuestions: QuizQuestionsAllData[] }) => {
   const [quizQuestionsState, setQuizQuestionsState] =
     useState<QuizQuestionsAllData[]>(quizQuestions);
   const [activeQuestionIndex, setActiveQuestionIndex] = useState(
     findActiveQuestionIndex(quizQuestionsState)
   );
+  const [quizComplete, setQuizComplete] = useState(false);
+  const isNavActive = getActiveNav(quizQuestionsState);
 
-  if (activeQuestionIndex === -1) {
-    // router push happens here
-    console.log('quiz complete!');
+  if (quizComplete) {
+    // router push happens here within use effect
+    return;
   }
 
   const handleSelectedAnswer = async (
@@ -54,28 +43,42 @@ export const Quiz = ({
     quizQuestionId: string,
     answerId: number
   ) => {
+    // If answer is already selected and it's the same, just bump the activeIndex don't make a request
+    const questionAlreadyAnswered =
+      quizQuestionsState.find((qq) => qq.id === quizQuestionId)?.user_answer === answerId;
+
+    if (questionAlreadyAnswered) {
+      setActiveQuestionIndex(activeQuestionIndex + 1);
+      return;
+    }
+
     const jsonRequestObject = JSON.stringify({ id: quizQuestionId, user_answer: answerId });
     try {
       const response = await updateQuizQuestion(quizQuestionId, jsonRequestObject);
       if (!(response instanceof Error)) {
         // Straight from React Docs
         // https://react.dev/learn/updating-arrays-in-state#updating-objects-inside-arrays
-        const updatedQuestions = quizQuestionsState.map((qq) => {
-          if (qq.id === quizQuestionId) {
-            return { ...qq, user_answer: answerId };
-          } else {
-            return qq;
-          }
-        });
-        const updatedIndex = findActiveQuestionIndex(updatedQuestions);
-
-        setQuizQuestionsState(updatedQuestions);
-        setActiveQuestionIndex(updatedIndex);
+        setQuizQuestionsState(
+          quizQuestionsState.map((qq) => {
+            if (qq.id === quizQuestionId) {
+              return { ...qq, user_answer: answerId };
+            } else {
+              return qq;
+            }
+          })
+        );
+        if (activeQuestionIndex + 1 === quizQuestionsState.length) {
+          setQuizComplete(true);
+          return;
+        }
+        setActiveQuestionIndex(activeQuestionIndex + 1);
       }
     } catch (reason: unknown) {
       console.error('There was a problem updating the quiz question: ', reason);
     }
   };
+
+  if (activeQuestionIndex === -1 || quizComplete) return <h2>Looks like this quiz is finished!</h2>;
 
   return (
     <ul className='text-center max-w-5xl [text-wrap:balance]'>
@@ -91,6 +94,38 @@ export const Quiz = ({
             question={quizQuestion.question}
             quizQuestionId={quizQuestion.id}
           />
+          <div
+            className='flex justify-between max-w-2xl mx-auto'
+            style={{
+              display: isNavActive ? 'flex' : 'none',
+            }}
+          >
+            <button
+              onClick={() => setActiveQuestionIndex(activeQuestionIndex - 1)}
+              style={{
+                display:
+                  activeQuestionIndex - 1 >= 0 &&
+                  quizQuestionsState[activeQuestionIndex - 1]?.user_answer
+                    ? 'inline-block'
+                    : 'none',
+              }}
+            >
+              Back
+            </button>
+            <button
+              className='ml-auto'
+              onClick={() => setActiveQuestionIndex(activeQuestionIndex + 1)}
+              style={{
+                display:
+                  activeQuestionIndex + 1 < quizQuestionsState.length &&
+                  quizQuestionsState[activeQuestionIndex].user_answer !== null
+                    ? 'inline-block'
+                    : 'none',
+              }}
+            >
+              Forward
+            </button>
+          </div>
         </li>
       ))}
     </ul>

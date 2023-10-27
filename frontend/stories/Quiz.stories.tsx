@@ -10,7 +10,6 @@ const meta = {
   title: 'Components/Organisms/Quiz',
   component: Quiz,
   args: {
-    quiz: quizTestData,
     quizQuestions: quizQuestionsTestDataWithFirstIndexAnswered,
   },
   parameters: {
@@ -21,7 +20,7 @@ const meta = {
   },
   render: () => (
     <div style={{ maxWidth: '500px', margin: '0 auto', paddingTop: '20px' }}>
-      <Quiz quiz={quizTestData} quizQuestions={quizQuestionsTestDataWithFirstIndexAnswered} />
+      <Quiz quizQuestions={quizQuestionsTestDataWithFirstIndexAnswered} />
     </div>
   ),
 } satisfies Meta<typeof Quiz>;
