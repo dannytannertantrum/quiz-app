@@ -44,6 +44,7 @@ def get_all_quiz_questions_by_quiz_id(
             QuizQuestion.quiz_id == quiz_id,
             Question.is_deleted == False,
         )
+        .order_by(QuizQuestion.id)
     ).all()
 
     data = [row._asdict() for row in rows]
