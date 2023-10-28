@@ -8,9 +8,6 @@ import { Question } from '../molecules/Question';
 import { updateQuizQuestion } from '../../api/quizQuestions';
 
 /*
-  - Set up previous and next buttons
-    - Next only shows up if a user has backtracked
-    - Previous only shows up if the answer before has been submitted
   - Add animation
     - Do a simple 2s animation for now
     - Once animation is complete, update show/hide to only activate after that point
@@ -81,54 +78,54 @@ export const Quiz = ({ quizQuestions }: { quizQuestions: QuizQuestionsAllData[] 
 
   return (
     <ul className='text-center max-w-5xl [text-wrap:balance]'>
-      {quizQuestions?.map((quizQuestion, index) => (
-        <li
-          key={quizQuestion.id}
-          style={{ display: index === activeQuestionIndex ? 'block' : 'none' }}
-        >
-          <Question
-            answer_options={quizQuestion.answer_options}
-            handleSelectedAnswer={handleSelectedAnswer}
-            id={quizQuestion.question_id}
-            question={quizQuestion.question}
-            quizQuestionId={quizQuestion.id}
-          />
-          <div
-            className='flex justify-between max-w-2xl mx-auto'
-            style={{
-              display: isNavActive ? 'flex' : 'none',
-            }}
-          >
-            <QuizNavButton
-              direction='previous'
-              handleNavClick={() => setActiveQuestionIndex(activeQuestionIndex - 1)}
-              styles={{
-                display:
-                  activeQuestionIndex - 1 >= 0 &&
-                  quizQuestionsState[activeQuestionIndex - 1]?.user_answer
-                    ? 'flex'
-                    : 'none',
-              }}
-            >
-              Previous
-            </QuizNavButton>
-            <QuizNavButton
-              direction='next'
-              handleNavClick={() => setActiveQuestionIndex(activeQuestionIndex + 1)}
-              styles={{
-                display:
-                  activeQuestionIndex + 1 < quizQuestionsState.length &&
-                  quizQuestionsState[activeQuestionIndex].user_answer !== null
-                    ? 'flex'
-                    : 'none',
-              }}
-              twClasses='ml-auto'
-            >
-              Next
-            </QuizNavButton>
-          </div>
-        </li>
-      ))}
+      {quizQuestionsState?.map(
+        (quizQuestion, index) =>
+          index === activeQuestionIndex && (
+            <li key={quizQuestion.id}>
+              <Question
+                answer_options={quizQuestion.answer_options}
+                handleSelectedAnswer={handleSelectedAnswer}
+                question={quizQuestion.question}
+                quizQuestionId={quizQuestion.id}
+                user_answer={quizQuestion.user_answer}
+              />
+              <div
+                className='flex justify-between max-w-2xl mx-auto'
+                style={{
+                  display: isNavActive ? 'flex' : 'none',
+                }}
+              >
+                <QuizNavButton
+                  direction='previous'
+                  handleNavClick={() => setActiveQuestionIndex(activeQuestionIndex - 1)}
+                  styles={{
+                    display:
+                      activeQuestionIndex - 1 >= 0 &&
+                      quizQuestionsState[activeQuestionIndex - 1]?.user_answer
+                        ? 'flex'
+                        : 'none',
+                  }}
+                >
+                  Previous
+                </QuizNavButton>
+                <QuizNavButton
+                  direction='next'
+                  handleNavClick={() => setActiveQuestionIndex(activeQuestionIndex + 1)}
+                  styles={{
+                    display:
+                      activeQuestionIndex + 1 < quizQuestionsState.length &&
+                      quizQuestionsState[activeQuestionIndex].user_answer !== null
+                        ? 'flex'
+                        : 'none',
+                  }}
+                  twClasses='ml-auto'
+                >
+                  Next
+                </QuizNavButton>
+              </div>
+            </li>
+          )
+      )}
     </ul>
   );
 };

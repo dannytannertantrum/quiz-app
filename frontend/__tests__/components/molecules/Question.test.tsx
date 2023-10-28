@@ -8,10 +8,10 @@ describe('Question Molecule', () => {
   const onChangeMock = jest.fn();
   const props: QuestionProps = {
     handleSelectedAnswer: onChangeMock,
-    id: questionTestData[0].id,
     answer_options: questionTestData[0].answer_options,
     question: questionTestData[0].question,
     quizQuestionId: 'fake-uuid',
+    user_answer: null,
   };
 
   test('loads and displays a question with answers', async () => {

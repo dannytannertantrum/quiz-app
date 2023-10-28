@@ -9,10 +9,10 @@ const meta = {
   args: {
     answer_options: questionTestData[0].answer_options,
     handleSelectedAnswer: () => {},
-    id: questionTestData[0].id,
     question: questionTestData[0].question,
     quizQuestionId: 'fake-uuid',
     disabled: false,
+    user_answer: null,
   },
   render: (args) => (
     <div style={{ maxWidth: '800px', textAlign: 'center', paddingTop: '20px' }}>

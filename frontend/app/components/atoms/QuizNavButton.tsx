@@ -20,7 +20,7 @@ export const QuizNavButton = ({
 }: QuizNavButtonProps) => {
   return (
     <button
-      className={`flex items-center pt-2 ${twClasses && twClasses}`}
+      className={`flex items-center mt-2 ${twClasses && twClasses}`}
       onClick={handleNavClick}
       style={styles}
     >
