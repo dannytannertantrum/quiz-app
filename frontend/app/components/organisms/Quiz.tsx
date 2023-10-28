@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 
+import { QuizNavButton } from '../atoms/QuizNavButton';
 import { QuizQuestionsAllData } from '../../types/quizQuestions';
 import { Question } from '../molecules/Question';
 import { updateQuizQuestion } from '../../api/quizQuestions';
@@ -14,7 +15,6 @@ import { updateQuizQuestion } from '../../api/quizQuestions';
     - Do a simple 2s animation for now
     - Once animation is complete, update show/hide to only activate after that point
       - need useEffect (maybe useLayoutEffect?)
-    - Do 
 */
 
 const getActiveNav = (quizQuestions: QuizQuestionsAllData[]) => {
@@ -34,8 +34,7 @@ export const Quiz = ({ quizQuestions }: { quizQuestions: QuizQuestionsAllData[] 
   const isNavActive = getActiveNav(quizQuestionsState);
 
   if (quizComplete) {
-    // router push happens here within use effect
-    return;
+    // reouter push here
   }
 
   const handleSelectedAnswer = async (
@@ -100,31 +99,33 @@ export const Quiz = ({ quizQuestions }: { quizQuestions: QuizQuestionsAllData[] 
               display: isNavActive ? 'flex' : 'none',
             }}
           >
-            <button
-              onClick={() => setActiveQuestionIndex(activeQuestionIndex - 1)}
-              style={{
+            <QuizNavButton
+              direction='previous'
+              handleNavClick={() => setActiveQuestionIndex(activeQuestionIndex - 1)}
+              styles={{
                 display:
                   activeQuestionIndex - 1 >= 0 &&
                   quizQuestionsState[activeQuestionIndex - 1]?.user_answer
-                    ? 'inline-block'
+                    ? 'flex'
                     : 'none',
               }}
             >
-              Back
-            </button>
-            <button
-              className='ml-auto'
-              onClick={() => setActiveQuestionIndex(activeQuestionIndex + 1)}
-              style={{
+              Previous
+            </QuizNavButton>
+            <QuizNavButton
+              direction='next'
+              handleNavClick={() => setActiveQuestionIndex(activeQuestionIndex + 1)}
+              styles={{
                 display:
                   activeQuestionIndex + 1 < quizQuestionsState.length &&
                   quizQuestionsState[activeQuestionIndex].user_answer !== null
-                    ? 'inline-block'
+                    ? 'flex'
                     : 'none',
               }}
+              twClasses='ml-auto'
             >
-              Forward
-            </button>
+              Next
+            </QuizNavButton>
           </div>
         </li>
       ))}
