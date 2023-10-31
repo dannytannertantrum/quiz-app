@@ -1,18 +1,11 @@
 'use client';
 
-import { useState } from 'react';
+import { AnimationEvent, useState } from 'react';
 
 import { QuizNavButton } from '../atoms/QuizNavButton';
 import { QuizQuestionsAllData } from '../../types/quizQuestions';
 import { Question } from '../molecules/Question';
 import { updateQuizQuestion } from '../../api/quizQuestions';
-
-/*
-  - Add animation
-    - Do a simple 2s animation for now
-    - Once animation is complete, update show/hide to only activate after that point
-      - need useEffect (maybe useLayoutEffect?)
-*/
 
 const getActiveNav = (quizQuestions: QuizQuestionsAllData[]) => {
   return quizQuestions.some((val) => val.user_answer !== null);
@@ -28,17 +21,30 @@ export const Quiz = ({ quizQuestions }: { quizQuestions: QuizQuestionsAllData[] 
     findActiveQuestionIndex(quizQuestionsState)
   );
   const [quizComplete, setQuizComplete] = useState(false);
+  const [shouldQuestionAnimate, setShouldQuestionAnimate] = useState(true);
   const isNavActive = getActiveNav(quizQuestionsState);
 
   if (quizComplete) {
     // reouter push here
   }
 
+  const handleNavClick = (direction: 'previous' | 'next') => {
+    if (direction === 'previous') {
+      setActiveQuestionIndex(activeQuestionIndex - 1);
+    } else {
+      setActiveQuestionIndex(activeQuestionIndex + 1);
+    }
+    setShouldQuestionAnimate(false);
+  };
+
   const handleSelectedAnswer = async (
-    event: React.MouseEvent<HTMLButtonElement, MouseEvent>,
+    event: AnimationEvent<HTMLButtonElement>,
     quizQuestionId: string,
     answerId: number
   ) => {
+    event.stopPropagation(); // This doesn't seem to be working
+    setShouldQuestionAnimate(true);
+
     // If answer is already selected and it's the same, just bump the activeIndex don't make a request
     const questionAlreadyAnswered =
       quizQuestionsState.find((qq) => qq.id === quizQuestionId)?.user_answer === answerId;
@@ -87,6 +93,7 @@ export const Quiz = ({ quizQuestions }: { quizQuestions: QuizQuestionsAllData[] 
                 handleSelectedAnswer={handleSelectedAnswer}
                 question={quizQuestion.question}
                 quizQuestionId={quizQuestion.id}
+                shouldAnimate={shouldQuestionAnimate}
                 user_answer={quizQuestion.user_answer}
               />
               <div
@@ -97,7 +104,7 @@ export const Quiz = ({ quizQuestions }: { quizQuestions: QuizQuestionsAllData[] 
               >
                 <QuizNavButton
                   direction='previous'
-                  handleNavClick={() => setActiveQuestionIndex(activeQuestionIndex - 1)}
+                  handleNavClick={() => handleNavClick('previous')}
                   styles={{
                     display:
                       activeQuestionIndex - 1 >= 0 &&
@@ -110,7 +117,7 @@ export const Quiz = ({ quizQuestions }: { quizQuestions: QuizQuestionsAllData[] 
                 </QuizNavButton>
                 <QuizNavButton
                   direction='next'
-                  handleNavClick={() => setActiveQuestionIndex(activeQuestionIndex + 1)}
+                  handleNavClick={() => handleNavClick('next')}
                   styles={{
                     display:
                       activeQuestionIndex + 1 < quizQuestionsState.length &&

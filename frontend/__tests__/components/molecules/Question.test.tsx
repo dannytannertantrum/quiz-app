@@ -1,6 +1,6 @@
 import '@testing-library/jest-dom';
 
-import { render, renderWithUserEvent, screen } from 'custom-rtl';
+import { render, renderWithUserEvent, screen, waitFor } from 'custom-rtl';
 import { Question, QuestionProps } from '../../../app/components/molecules/Question';
 import { questionTestData } from '../../../test-utils/shared-data';
 
@@ -11,6 +11,7 @@ describe('Question Molecule', () => {
     answer_options: questionTestData[0].answer_options,
     question: questionTestData[0].question,
     quizQuestionId: 'fake-uuid',
+    shouldAnimate: true,
     user_answer: null,
   };
 
@@ -32,7 +33,7 @@ describe('Question Molecule', () => {
 
     await user.click(firstAnswerOption);
 
-    expect(onChangeMock).toHaveBeenCalled();
+    waitFor(() => expect(onChangeMock).toHaveBeenCalled());
   });
 
   test('user cannot interact with answer options if the question is disabled', async () => {
@@ -44,5 +45,20 @@ describe('Question Molecule', () => {
     await user.click(firstAnswerOption);
 
     expect(onChangeMock).not.toHaveBeenCalled();
+  });
+
+  test('user cannot interact with answer options once an answer is selected', async () => {
+    const { user } = renderWithUserEvent(<Question {...props} />);
+    const firstAnswerOption: HTMLButtonElement = screen.getByText(
+      questionTestData[0].answer_options[0].option_1
+    );
+    const secondAnswerOption: HTMLButtonElement = screen.getByText(
+      questionTestData[0].answer_options[1].option_2
+    );
+
+    await user.click(firstAnswerOption);
+    await user.click(secondAnswerOption);
+
+    waitFor(() => expect(onChangeMock).toHaveBeenCalledTimes(1));
   });
 });

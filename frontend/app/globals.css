@@ -36,6 +36,173 @@ html.dark body {
   }
 }
 
+@keyframes animate-selected-answer {
+  0% {
+    transform: scale(0, 1);
+  }
+  20% {
+    transform: scale(1, 1);
+  }
+  100% {
+    transform: scale(1, 1);
+  }
+}
+
+@keyframes box-shadow-animate {
+  0% {
+    box-shadow: none;
+  }
+  15% {
+    box-shadow: none;
+    scale: 1;
+  }
+  20% {
+    box-shadow: 0px 0px 0px 1px rgba(49, 8, 51, 0.9);
+  }
+  30% {
+    box-shadow: 0px 0px 50px 1px rgba(49, 8, 51, 0.9);
+  }
+  40% {
+    box-shadow: 0px 0px 90px 1px rgba(49, 8, 51, 0.9);
+    scale: 1.05;
+  }
+  45% {
+    box-shadow: 0px 0px 25px 1px rgba(49, 8, 51, 0.9);
+  }
+  50% {
+    box-shadow: 0px 0px 90px 1px rgba(49, 8, 51, 0.9);
+  }
+  55% {
+    box-shadow: 0px 0px 25px 1px rgba(49, 8, 51, 0.9);
+  }
+  60% {
+    box-shadow: 0px 0px 90px 1px rgba(49, 8, 51, 0.9);
+  }
+  65% {
+    box-shadow: 0px 0px 25px 1px rgba(49, 8, 51, 0.9);
+  }
+  70% {
+    box-shadow: 0px 0px 90px 1px rgba(49, 8, 51, 0.9);
+  }
+  75% {
+    box-shadow: 0px 0px 25px 1px rgba(49, 8, 51, 0.9);
+    scale: 1;
+  }
+  90% {
+    box-shadow: 0px 0px 25px 1px rgba(49, 8, 51, 0.9);
+  }
+  100% {
+    box-shadow: none;
+  }
+}
+
+@keyframes dark-box-shadow-animate {
+  0% {
+    box-shadow: none;
+  }
+  15% {
+    box-shadow: none;
+    scale: 1;
+  }
+  20% {
+    box-shadow: 0px 0px 0px 1px rgba(251, 167, 255, 0.9);
+  }
+  30% {
+    box-shadow: 0px 0px 50px 1px rgba(251, 167, 255, 0.9);
+  }
+  40% {
+    box-shadow: 0px 0px 90px 1px rgba(251, 167, 255, 0.9);
+    scale: 1.05;
+  }
+  45% {
+    box-shadow: 0px 0px 25px 1px rgba(251, 167, 255, 0.9);
+  }
+  50% {
+    box-shadow: 0px 0px 90px 1px rgba(251, 167, 255, 0.9);
+  }
+  55% {
+    box-shadow: 0px 0px 25px 1px rgba(251, 167, 255, 0.9);
+  }
+  60% {
+    box-shadow: 0px 0px 90px 1px rgba(251, 167, 255, 0.9);
+  }
+  65% {
+    box-shadow: 0px 0px 25px 1px rgba(251, 167, 255, 0.9);
+  }
+  70% {
+    box-shadow: 0px 0px 90px 1px rgba(251, 167, 255, 0.9);
+  }
+  75% {
+    box-shadow: 0px 0px 25px 1px rgba(251, 167, 255, 0.9);
+    scale: 1;
+  }
+  90% {
+    box-shadow: 0px 0px 25px 1px rgba(251, 167, 255, 0.9);
+  }
+  100% {
+    box-shadow: none;
+  }
+}
+
+@keyframes question-flyoff {
+  0% {
+    transform: translateX(0px);
+    opacity: 1;
+  }
+  75% {
+    transform: translateX(0px);
+    opacity: 1;
+  }
+  100% {
+    transform: translateX(-400px);
+    opacity: 0;
+  }
+}
+
+@keyframes question-appear {
+  0% {
+    opacity: 0;
+    scale: 0.75;
+  }
+  100% {
+    opacity: 1;
+    scale: 1;
+  }
+}
+
+.answerSelected {
+  animation: box-shadow-animate 1s ease-out;
+  box-shadow: 0px 0px 15px 1px rgba(49, 8, 51, 0.9);
+  scale: 1;
+}
+
+html.dark .answerSelected {
+  animation: dark-box-shadow-animate 1s ease-out;
+  box-shadow: 0px 0px 15px 1px rgba(251, 167, 255, 0.9);
+}
+
+.answerSelected:after {
+  animation: animate-selected-answer 1s;
+  transform: scale(1, 1);
+  background-color: #dee9e6;
+}
+
+html.dark .answerSelected:after {
+  background-color: #1a2322;
+}
+
+.animateQuestionFlyoff {
+  animation: question-flyoff 1s;
+  opacity: 0;
+  transform: translateX(-400px);
+}
+
+.animateQuestionAppear {
+  animation: question-appear 150ms;
+  opacity: 1;
+  scale: 1;
+}
+
 .requestLoader {
   font-size: 12rem;
   color: transparent;

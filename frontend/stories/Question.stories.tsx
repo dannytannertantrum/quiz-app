@@ -12,6 +12,7 @@ const meta = {
     question: questionTestData[0].question,
     quizQuestionId: 'fake-uuid',
     disabled: false,
+    shouldAnimate: true,
     user_answer: null,
   },
   render: (args) => (

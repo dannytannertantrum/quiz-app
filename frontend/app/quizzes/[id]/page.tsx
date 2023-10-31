@@ -15,7 +15,7 @@ export async function generateMetadata({ params }: { params: { id: string } }): 
 
   return {
     title: `${
-      quiz?.primary_topic.charAt(0).toUpperCase() + quiz?.primary_topic.slice(1)
+      quiz?.primary_topic?.charAt(0)?.toUpperCase() + quiz?.primary_topic?.slice(1)
     } | Quiz App`,
     description: 'You can do it!',
   };

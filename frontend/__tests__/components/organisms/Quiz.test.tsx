@@ -1,6 +1,6 @@
 import '@testing-library/jest-dom';
 
-import { render, screen, waitFor } from 'custom-rtl';
+import { render, renderWithUserEvent, screen, waitFor } from 'custom-rtl';
 import { Quiz } from '../../../app/components/organisms/Quiz';
 import {
   quizQuestionsTestDataAllNullAnswers,
@@ -44,6 +44,59 @@ describe('Quiz', () => {
       expect(
         screen.queryByText(quizQuestionsTestDataWithFirstIndexAnswered[1].question)
       ).not.toBeInTheDocument();
+    });
+  });
+
+  test('it displays a previous button if at least the first question has been answered', () => {
+    render(<Quiz quizQuestions={quizQuestionsTestDataWithFirstIndexAnswered} />);
+
+    expect(screen.getByText('Previous')).toBeInTheDocument();
+  });
+
+  test('it displays a next button if a user back tracks to a previously answered question', async () => {
+    const { user } = renderWithUserEvent(
+      <Quiz quizQuestions={quizQuestionsTestDataWithFirstIndexAnswered} />
+    );
+    const previousButton: HTMLButtonElement = screen.getByText('Previous');
+
+    await user.click(previousButton);
+
+    waitFor(() => expect(screen.getByText('Next')).toBeInTheDocument());
+  });
+
+  test('it displays the previous question after clicking the previous button', async () => {
+    const { user } = renderWithUserEvent(
+      <Quiz quizQuestions={quizQuestionsTestDataWithFirstIndexAnswered} />
+    );
+    const previousButton: HTMLButtonElement = screen.getByText('Previous');
+
+    await user.click(previousButton);
+
+    waitFor(() =>
+      expect(
+        screen.getByText(quizQuestionsTestDataWithFirstIndexAnswered[0].question)
+      ).toBeInTheDocument()
+    );
+  });
+
+  test('it displays the next question after clicking the next button', async () => {
+    const { user } = renderWithUserEvent(
+      <Quiz quizQuestions={quizQuestionsTestDataWithFirstIndexAnswered} />
+    );
+    const previousButton: HTMLButtonElement = screen.getByText('Previous');
+
+    await user.click(previousButton);
+
+    waitFor(async () => {
+      expect(
+        screen.getByText(quizQuestionsTestDataWithFirstIndexAnswered[0].question)
+      ).toBeInTheDocument();
+      const nextButton: HTMLButtonElement = screen.getByText('Next');
+
+      await user.click(nextButton);
+      expect(
+        screen.getByText(quizQuestionsTestDataWithFirstIndexAnswered[1].question)
+      ).toBeInTheDocument();
     });
   });
 });
