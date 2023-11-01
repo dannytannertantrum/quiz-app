@@ -4,7 +4,7 @@ from pydantic import UUID4
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
-from app.models import QuizQuestion, Question
+from app.models import QuizQuestion, Question, Topic
 from app.schemas.quiz_question import (
     QuizQuestionUpdateAnswerRequest,
     QuizQuestionAllData,
@@ -22,7 +22,7 @@ def get_quiz_questions_by_quiz_id(db: Session, quiz_id: UUID4) -> list[QuizQuest
     )
 
 
-def get_all_quiz_questions_by_quiz_id(
+def get_all_quiz_questions_data_by_quiz_id(
     db: Session, quiz_id: UUID4
 ) -> list[QuizQuestionAllData]:
     """
@@ -38,8 +38,10 @@ def get_all_quiz_questions_by_quiz_id(
             Question.question,
             Question.answer_options,
             Question.question_type,
+            Topic.title.label("topic"),
         )
         .join(Question, QuizQuestion.question_id == Question.id)
+        .join(Topic, Question.topic_id == Topic.id)
         .where(
             QuizQuestion.quiz_id == quiz_id,
             Question.is_deleted == False,

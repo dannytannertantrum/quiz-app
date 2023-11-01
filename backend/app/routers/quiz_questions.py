@@ -1,7 +1,6 @@
 from datetime import datetime, timezone
 
 from fastapi import APIRouter, Depends, HTTPException, status
-from fastapi.responses import JSONResponse
 from pydantic import UUID4
 from sqlalchemy.orm import Session
 
@@ -117,8 +116,8 @@ def read_quiz_questions_by_quiz_id(
     db: Session = Depends(get_db),
     current_user: UserCurrent = Depends(get_current_user),
 ) -> list[QuizQuestionAllData]:
-    quiz_questions_and_answers = crud_quiz_questions.get_all_quiz_questions_by_quiz_id(
-        db, quiz_id=quiz_id
+    quiz_questions_and_answers = (
+        crud_quiz_questions.get_all_quiz_questions_data_by_quiz_id(db, quiz_id=quiz_id)
     )
     if not quiz_questions_and_answers:
         raise HTTPException(

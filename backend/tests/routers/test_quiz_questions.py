@@ -31,13 +31,6 @@ class TestQuizQuestionRoutesFailure:
     def test_read_quiz_questions_by_quiz_id_raises_exception_with_bad_request(
         self, client: TestClient, access_token: dict[str, str]
     ):
-        response = client.get("/quiz-questions/quiz/not-a-uuid", headers=access_token)
-
-        assert response.status_code == 422
-
-    def test_read_quiz_questions_by_quiz_id_raises_exception_with_bad_request(
-        self, client: TestClient, access_token: dict[str, str]
-    ):
         random_uuid = uuid4()
         response = client.get(
             f"/quiz-questions/quiz/{random_uuid}", headers=access_token
@@ -114,8 +107,10 @@ class TestQuizQuestionRoutesSuccess:
         assert isinstance(data[0]["id"], str)
         assert isinstance(data[0]["quiz_id"], str)
         assert isinstance(data[0]["question"], str)
+        assert isinstance(data[0]["topic"], str)
         assert data[0]["answer_options"] is not None
         assert data[0]["question_type"] == "multiple choice"
+        assert "user_answer" in data[0]
 
     def test_update_quiz_question_with_empty_answers(
         self,

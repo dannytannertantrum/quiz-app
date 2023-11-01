@@ -6,7 +6,10 @@ from sqlalchemy.orm import Session
 from app.crud import crud_questions, crud_quiz_questions
 from app.models import Question, QuizQuestion
 from app.schemas.quiz import QuizId
-from app.schemas.quiz_question import QuizQuestionUpdateAnswerRequest
+from app.schemas.quiz_question import (
+    QuizQuestionUpdateAnswerRequest,
+    QuizQuestionAllData,
+)
 from tests.utils import quiz_question
 
 
@@ -31,6 +34,15 @@ class TestCrudQuizQuestionFailure:
         )
 
         assert result is None
+
+    def test_get_all_quiz_questions_data_by_quiz_id_returns_empty_list_if_no_records_found(
+        self, db: Session
+    ) -> None:
+        result = crud_quiz_questions.get_all_quiz_questions_data_by_quiz_id(
+            db, quiz_id=random_uuid
+        )
+
+        assert result == []
 
     def test_update_quiz_question_in_db_returns_None_if_no_record_to_update_found(
         self, db: Session
@@ -94,6 +106,25 @@ class TestCrudQuizQuestionSuccess:
 
         assert isinstance(question_info.question_id, UUID)
         assert question is not None
+
+    def test_get_all_quiz_questions_data_by_quiz_id(
+        self,
+        db: Session,
+        create_test_quiz_questions: list[QuizQuestion],
+        create_test_quiz: QuizId,
+    ) -> None:
+        quiz_questions: list[
+            QuizQuestionAllData
+        ] = crud_quiz_questions.get_all_quiz_questions_data_by_quiz_id(
+            db, quiz_id=create_test_quiz
+        )
+
+        assert isinstance(quiz_questions[0]["question_id"], UUID)
+        assert isinstance(quiz_questions[0]["topic"], str)
+        assert quiz_questions[0]["answer_options"] is not None
+        assert isinstance(quiz_questions[0]["id"], UUID)
+        assert quiz_questions[0]["question_type"] == "multiple choice"
+        assert "user_answer" in quiz_questions[0]
 
     def test_update_quiz_question_in_db(
         self,

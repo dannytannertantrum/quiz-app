@@ -27,3 +27,4 @@ class QuizQuestionAllData(QuizQuestionFullResponse):
     question: str
     answer_options: list[dict[str, str | int]]
     question_type: str
+    topic: str
