@@ -44,6 +44,7 @@ export const quizQuestionsTestDataAllNullAnswers: QuizQuestionsAllData[] = [
     question_id: 'question-uuid',
     quiz_id: 'quiz-uuid',
     user_answer: null,
+    topic: 'comedy',
   },
   {
     id: 'quizQuestion2-uuid',
@@ -58,6 +59,7 @@ export const quizQuestionsTestDataAllNullAnswers: QuizQuestionsAllData[] = [
     question_id: 'question2-uuid',
     quiz_id: 'quiz-uuid',
     user_answer: null,
+    topic: 'drama',
   },
 ];
 
@@ -75,6 +77,7 @@ export const quizQuestionsTestDataWithFirstIndexAnswered: QuizQuestionsAllData[]
     question_id: 'question2-uuid',
     quiz_id: 'quiz-uuid',
     user_answer: 2,
+    topic: 'comedy',
   },
   ...quizQuestionsTestDataAllNullAnswers,
 ];

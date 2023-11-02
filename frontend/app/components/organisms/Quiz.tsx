@@ -14,7 +14,13 @@ const getActiveNav = (quizQuestions: QuizQuestionsAllData[]) => {
 const findActiveQuestionIndex = (quizQuestions: QuizQuestionsAllData[]) =>
   quizQuestions.findIndex((qq) => qq.user_answer === null);
 
-export const Quiz = ({ quizQuestions }: { quizQuestions: QuizQuestionsAllData[] }) => {
+export const Quiz = ({
+  primaryTopic,
+  quizQuestions,
+}: {
+  primaryTopic: string;
+  quizQuestions: QuizQuestionsAllData[];
+}) => {
   const [quizQuestionsState, setQuizQuestionsState] =
     useState<QuizQuestionsAllData[]>(quizQuestions);
   const [activeQuestionIndex, setActiveQuestionIndex] = useState(
@@ -83,7 +89,7 @@ export const Quiz = ({ quizQuestions }: { quizQuestions: QuizQuestionsAllData[] 
   if (activeQuestionIndex === -1 || quizComplete) return <h2>Looks like this quiz is finished!</h2>;
 
   return (
-    <ul className='text-center max-w-5xl [text-wrap:balance]'>
+    <ul className='text-left max-w-5xl'>
       {quizQuestionsState?.map(
         (quizQuestion, index) =>
           index === activeQuestionIndex && (
@@ -91,9 +97,11 @@ export const Quiz = ({ quizQuestions }: { quizQuestions: QuizQuestionsAllData[] 
               <Question
                 answer_options={quizQuestion.answer_options}
                 handleSelectedAnswer={handleSelectedAnswer}
+                primaryTopic={primaryTopic}
                 question={quizQuestion.question}
                 quizQuestionId={quizQuestion.id}
                 shouldAnimate={shouldQuestionAnimate}
+                subtopic={quizQuestion.topic}
                 user_answer={quizQuestion.user_answer}
               />
               <div

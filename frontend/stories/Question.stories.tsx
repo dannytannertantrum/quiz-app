@@ -8,11 +8,13 @@ const meta = {
   component: Question,
   args: {
     answer_options: questionTestData[0].answer_options,
+    disabled: false,
     handleSelectedAnswer: () => {},
+    primaryTopic: 'movies',
     question: questionTestData[0].question,
     quizQuestionId: 'fake-uuid',
-    disabled: false,
     shouldAnimate: true,
+    subtopic: 'comedy',
     user_answer: null,
   },
   render: (args) => (

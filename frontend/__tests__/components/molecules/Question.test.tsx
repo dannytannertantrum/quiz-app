@@ -9,9 +9,11 @@ describe('Question Molecule', () => {
   const props: QuestionProps = {
     handleSelectedAnswer: onChangeMock,
     answer_options: questionTestData[0].answer_options,
+    primaryTopic: 'movies',
     question: questionTestData[0].question,
     quizQuestionId: 'fake-uuid',
     shouldAnimate: true,
+    subtopic: 'comedy',
     user_answer: null,
   };
 
@@ -19,6 +21,8 @@ describe('Question Molecule', () => {
     render(<Question {...props} />);
 
     expect(screen.getByText(questionTestData[0].question)).toBeInTheDocument();
+    expect(screen.getByText(/movies/)).toBeInTheDocument();
+    expect(screen.getByText(/comedy/)).toBeInTheDocument();
     expect(screen.getByText(questionTestData[0].answer_options[0].option_1)).toBeInTheDocument();
     expect(screen.getByText(questionTestData[0].answer_options[1].option_2)).toBeInTheDocument();
     expect(screen.getByText(questionTestData[0].answer_options[2].option_3)).toBeInTheDocument();

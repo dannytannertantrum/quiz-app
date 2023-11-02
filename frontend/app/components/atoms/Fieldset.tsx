@@ -6,6 +6,7 @@ export interface FieldsetProps {
   legend?: string;
   legendCenter?: boolean;
   legendSize?: 'small' | 'medium' | 'large';
+  twClasses?: string;
 }
 
 const getLegendClasses = (legendSize: string): string => {
@@ -15,7 +16,7 @@ const getLegendClasses = (legendSize: string): string => {
     case 'large':
       return 'text-4xl mb-6';
     default:
-      return 'text-3xl mb-4';
+      return 'text-2xl sm:text-3xl mb-4';
   }
 };
 
@@ -32,13 +33,14 @@ export const Fieldset = ({
   legend,
   legendCenter = false,
   legendSize = 'medium',
+  twClasses = '',
 }: FieldsetProps) => {
   const legendFont = getLegendClasses(legendSize);
   const legendCenterClasses = legendCenter ? ' text-center' : '';
   const appliedLegendClasses = legendFont + legendCenterClasses;
 
   return (
-    <fieldset data-testid='test-fieldset' disabled={disabled}>
+    <fieldset data-testid='test-fieldset' disabled={disabled} className={twClasses}>
       <legend className={appliedLegendClasses}>{legend}</legend>
       {children}
     </fieldset>

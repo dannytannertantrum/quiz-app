@@ -9,7 +9,7 @@ import {
 
 describe('Quiz', () => {
   test('loads and displays a Quiz organism', () => {
-    render(<Quiz quizQuestions={quizQuestionsTestDataAllNullAnswers} />);
+    render(<Quiz primaryTopic='movies' quizQuestions={quizQuestionsTestDataAllNullAnswers} />);
 
     expect(screen.getByText(quizQuestionsTestDataAllNullAnswers[0].question)).toBeInTheDocument();
     expect(
@@ -18,7 +18,7 @@ describe('Quiz', () => {
   });
 
   test('it only displays the question at the active index', () => {
-    render(<Quiz quizQuestions={quizQuestionsTestDataAllNullAnswers} />);
+    render(<Quiz primaryTopic='movies' quizQuestions={quizQuestionsTestDataAllNullAnswers} />);
 
     waitFor(() => {
       expect(screen.getByText(quizQuestionsTestDataAllNullAnswers[0].question)).toBeInTheDocument();
@@ -32,7 +32,9 @@ describe('Quiz', () => {
   });
 
   test('it correctly finds and returns the first question with a null answer', async () => {
-    render(<Quiz quizQuestions={quizQuestionsTestDataWithFirstIndexAnswered} />);
+    render(
+      <Quiz primaryTopic='movies' quizQuestions={quizQuestionsTestDataWithFirstIndexAnswered} />
+    );
 
     waitFor(() => {
       expect(
@@ -48,14 +50,22 @@ describe('Quiz', () => {
   });
 
   test('it displays a previous button if at least the first question has been answered', () => {
-    render(<Quiz quizQuestions={quizQuestionsTestDataWithFirstIndexAnswered} />);
+    render(
+      <Quiz primaryTopic='movies' quizQuestions={quizQuestionsTestDataWithFirstIndexAnswered} />
+    );
 
     expect(screen.getByText('Previous')).toBeInTheDocument();
   });
 
+  test('it displays the topic and subtopic for the question', () => {
+    render(<Quiz primaryTopic='movies' quizQuestions={quizQuestionsTestDataAllNullAnswers} />);
+
+    expect(screen.getByText('movies | comedy')).toBeInTheDocument();
+  });
+
   test('it displays a next button if a user back tracks to a previously answered question', async () => {
     const { user } = renderWithUserEvent(
-      <Quiz quizQuestions={quizQuestionsTestDataWithFirstIndexAnswered} />
+      <Quiz primaryTopic='movies' quizQuestions={quizQuestionsTestDataWithFirstIndexAnswered} />
     );
     const previousButton: HTMLButtonElement = screen.getByText('Previous');
 
@@ -66,7 +76,7 @@ describe('Quiz', () => {
 
   test('it displays the previous question after clicking the previous button', async () => {
     const { user } = renderWithUserEvent(
-      <Quiz quizQuestions={quizQuestionsTestDataWithFirstIndexAnswered} />
+      <Quiz primaryTopic='movies' quizQuestions={quizQuestionsTestDataWithFirstIndexAnswered} />
     );
     const previousButton: HTMLButtonElement = screen.getByText('Previous');
 
@@ -81,7 +91,7 @@ describe('Quiz', () => {
 
   test('it displays the next question after clicking the next button', async () => {
     const { user } = renderWithUserEvent(
-      <Quiz quizQuestions={quizQuestionsTestDataWithFirstIndexAnswered} />
+      <Quiz primaryTopic='movies' quizQuestions={quizQuestionsTestDataWithFirstIndexAnswered} />
     );
     const previousButton: HTMLButtonElement = screen.getByText('Previous');
 

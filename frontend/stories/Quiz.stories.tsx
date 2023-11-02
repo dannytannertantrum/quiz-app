@@ -1,16 +1,14 @@
 import type { Meta, StoryObj } from '@storybook/react';
 
 import { Quiz } from '../app/components/organisms/Quiz';
-import {
-  quizTestData,
-  quizQuestionsTestDataWithFirstIndexAnswered,
-} from '../test-utils/shared-data';
+import { quizQuestionsTestDataWithFirstIndexAnswered } from '../test-utils/shared-data';
 
 const meta = {
   title: 'Components/Organisms/Quiz',
   component: Quiz,
   args: {
     quizQuestions: quizQuestionsTestDataWithFirstIndexAnswered,
+    primaryTopic: 'movies',
   },
   parameters: {
     layout: 'fullscreen',
@@ -20,7 +18,7 @@ const meta = {
   },
   render: () => (
     <div style={{ maxWidth: '500px', margin: '0 auto', paddingTop: '20px' }}>
-      <Quiz quizQuestions={quizQuestionsTestDataWithFirstIndexAnswered} />
+      <Quiz primaryTopic='movies' quizQuestions={quizQuestionsTestDataWithFirstIndexAnswered} />
     </div>
   ),
 } satisfies Meta<typeof Quiz>;

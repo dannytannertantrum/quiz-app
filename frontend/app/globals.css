@@ -171,18 +171,18 @@ html.dark body {
 }
 
 .answerSelected {
-  animation: box-shadow-animate 1s ease-out;
+  animation: box-shadow-animate 1.5s ease-out;
   box-shadow: 0px 0px 15px 1px rgba(49, 8, 51, 0.9);
   scale: 1;
 }
 
 html.dark .answerSelected {
-  animation: dark-box-shadow-animate 1s ease-out;
+  animation: dark-box-shadow-animate 1.5s ease-out;
   box-shadow: 0px 0px 15px 1px rgba(251, 167, 255, 0.9);
 }
 
 .answerSelected:after {
-  animation: animate-selected-answer 1s;
+  animation: animate-selected-answer 1.5s ease-in-out;
   transform: scale(1, 1);
   background-color: #dee9e6;
 }
@@ -192,7 +192,7 @@ html.dark .answerSelected:after {
 }
 
 .animateQuestionFlyoff {
-  animation: question-flyoff 1s;
+  animation: question-flyoff 1.5s;
   opacity: 0;
   transform: translateX(-400px);
 }

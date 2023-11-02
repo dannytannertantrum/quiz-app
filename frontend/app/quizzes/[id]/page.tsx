@@ -21,6 +21,18 @@ export async function generateMetadata({ params }: { params: { id: string } }): 
   };
 }
 
+export async function getQuiz(id: string) {
+  const response = await fetch(`${BASE_SERVER_URL}/quizzes/${id}`, {
+    headers: { Cookie: cookies().toString() },
+  });
+  if (response.status === 404) return null;
+  if (!response.ok) {
+    throw new Error(RESPONSE_ERROR);
+  }
+  const quiz: BaseQuizData = await response.json();
+  return quiz;
+}
+
 export async function getQuizQuestions(id: string) {
   const response = await fetch(`${BASE_SERVER_URL}/quiz-questions/quiz/${id}`, {
     headers: { Cookie: cookies().toString() },
@@ -35,14 +47,15 @@ export async function getQuizQuestions(id: string) {
 }
 
 export default async function Quizzes({ params }: { params: { id: string } }) {
+  let quiz: BaseQuizData | null = null;
   let quizQuestions: QuizQuestionsAllData[] | null = null;
   try {
-    quizQuestions = await getQuizQuestions(params.id);
+    [quiz, quizQuestions] = await Promise.all([getQuiz(params.id), getQuizQuestions(params.id)]);
   } catch (reason: unknown) {
     console.error('There was a problem getting the quiz: ', reason);
   }
 
-  if (quizQuestions === null) return <h2 className='text-3xl'>No quiz found</h2>;
+  if (quizQuestions === null || quiz === null) return <h2 className='text-3xl'>No quiz found</h2>;
 
-  return <Quiz quizQuestions={quizQuestions} />;
+  return <Quiz primaryTopic={quiz.primary_topic} quizQuestions={quizQuestions} />;
 }
