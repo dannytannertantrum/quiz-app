@@ -5,6 +5,7 @@ import { AnimationEvent, useState } from 'react';
 import { QuizNavButton } from '../atoms/QuizNavButton';
 import { QuizQuestionsAllData } from '../../types/quizQuestions';
 import { Question } from '../molecules/Question';
+import { ProgressBar } from '../atoms/ProgressBar';
 import { updateQuizQuestion } from '../../api/quizQuestions';
 
 const getActiveNav = (quizQuestions: QuizQuestionsAllData[]) => {
@@ -89,58 +90,61 @@ export const Quiz = ({
   if (activeQuestionIndex === -1 || quizComplete) return <h2>Looks like this quiz is finished!</h2>;
 
   return (
-    <ul className='text-left max-w-5xl'>
-      {quizQuestionsState?.map(
-        (quizQuestion, index) =>
-          index === activeQuestionIndex && (
-            <li key={quizQuestion.id}>
-              <Question
-                answer_options={quizQuestion.answer_options}
-                handleSelectedAnswer={handleSelectedAnswer}
-                primaryTopic={primaryTopic}
-                question={quizQuestion.question}
-                quizQuestionId={quizQuestion.id}
-                shouldAnimate={shouldQuestionAnimate}
-                subtopic={quizQuestion.topic}
-                user_answer={quizQuestion.user_answer}
-              />
-              <div
-                className='flex justify-between max-w-2xl mx-auto'
-                style={{
-                  display: isNavActive ? 'flex' : 'none',
-                }}
-              >
-                <QuizNavButton
-                  direction='previous'
-                  handleNavClick={() => handleNavClick('previous')}
-                  styles={{
-                    display:
-                      activeQuestionIndex - 1 >= 0 &&
-                      quizQuestionsState[activeQuestionIndex - 1]?.user_answer
-                        ? 'flex'
-                        : 'none',
+    <div className='text-left max-w-5xl'>
+      <ProgressBar max={quizQuestionsState.length} value={activeQuestionIndex} />
+      <ul>
+        {quizQuestionsState?.map(
+          (quizQuestion, index) =>
+            index === activeQuestionIndex && (
+              <li key={quizQuestion.id}>
+                <Question
+                  answer_options={quizQuestion.answer_options}
+                  handleSelectedAnswer={handleSelectedAnswer}
+                  primaryTopic={primaryTopic}
+                  question={quizQuestion.question}
+                  quizQuestionId={quizQuestion.id}
+                  shouldAnimate={shouldQuestionAnimate}
+                  subtopic={quizQuestion.topic}
+                  user_answer={quizQuestion.user_answer}
+                />
+                <div
+                  className='flex justify-between max-w-2xl mx-auto'
+                  style={{
+                    display: isNavActive ? 'flex' : 'none',
                   }}
                 >
-                  Previous
-                </QuizNavButton>
-                <QuizNavButton
-                  direction='next'
-                  handleNavClick={() => handleNavClick('next')}
-                  styles={{
-                    display:
-                      activeQuestionIndex + 1 < quizQuestionsState.length &&
-                      quizQuestionsState[activeQuestionIndex].user_answer !== null
-                        ? 'flex'
-                        : 'none',
-                  }}
-                  twClasses='ml-auto'
-                >
-                  Next
-                </QuizNavButton>
-              </div>
-            </li>
-          )
-      )}
-    </ul>
+                  <QuizNavButton
+                    direction='previous'
+                    handleNavClick={() => handleNavClick('previous')}
+                    styles={{
+                      display:
+                        activeQuestionIndex - 1 >= 0 &&
+                        quizQuestionsState[activeQuestionIndex - 1]?.user_answer
+                          ? 'flex'
+                          : 'none',
+                    }}
+                  >
+                    Previous
+                  </QuizNavButton>
+                  <QuizNavButton
+                    direction='next'
+                    handleNavClick={() => handleNavClick('next')}
+                    styles={{
+                      display:
+                        activeQuestionIndex + 1 < quizQuestionsState.length &&
+                        quizQuestionsState[activeQuestionIndex].user_answer !== null
+                          ? 'flex'
+                          : 'none',
+                    }}
+                    twClasses='ml-auto'
+                  >
+                    Next
+                  </QuizNavButton>
+                </div>
+              </li>
+            )
+        )}
+      </ul>
+    </div>
   );
 };

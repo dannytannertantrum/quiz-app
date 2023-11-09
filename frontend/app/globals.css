@@ -269,4 +269,45 @@ html.dark .requestLoader {
   .dark :focus {
     outline: 2px solid var(--foreground-hex-dark);
   }
+
+  progress {
+    background-color: var(--background-hex-dark);
+    border-color: var(--background-hex-dark);
+    border-width: 0.4em 0;
+    height: 1.5em;
+  }
+  progress::-webkit-progress-bar {
+    background-color: var(--background-hex-dark);
+  }
+  progress::-webkit-progress-value {
+    background-color: #1fe5c4;
+    transition: width 0.5s;
+  }
+  progress::-moz-progress-bar {
+    background-color: #1fe5c4;
+    transition: width 0.5s;
+  }
+  html.dark progress {
+    background-color: #1a141a;
+    border-color: #1a141a;
+  }
+  html.dark progress::-webkit-progress-bar {
+    background-color: #1a141a;
+  }
+}
+
+@media (min-width: 640px) {
+  progress {
+    border-radius: 1em;
+    border-width: 0.4em;
+  }
+  progress::-moz-progress-bar {
+    border-radius: 1em;
+  }
+  progress::-webkit-progress-bar {
+    border-radius: 1em;
+  }
+  progress::-webkit-progress-value {
+    border-radius: 1em;
+  }
 }

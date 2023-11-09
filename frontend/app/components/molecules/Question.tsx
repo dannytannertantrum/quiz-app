@@ -46,7 +46,7 @@ export const Question = ({
         disabledFieldset ? 'animateQuestionFlyoff' : shouldAnimate ? 'animateQuestionAppear' : ''
       }
     >
-      <h3 className='text-md sm:text-xl capitalize mb-4 text-indigo-950 dark:text-cyan-300'>{`${primaryTopic} | ${subtopic}`}</h3>
+      <h3 className='pt-12 sm:pt-0 text-md sm:text-xl capitalize mb-4 text-indigo-950 dark:text-cyan-300'>{`${primaryTopic} | ${subtopic}`}</h3>
       <Fieldset legend={question} disabled={disabledFieldset} twClasses='max-w-xl'>
         <ul>
           {answer_options?.map((answer) => (
