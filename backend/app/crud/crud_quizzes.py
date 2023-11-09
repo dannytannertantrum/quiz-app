@@ -184,6 +184,8 @@ def get_quiz_with_all_questions_answers_and_topics(
                     Question.answer_options,
                     "correct_answer",
                     Question.correct_answer,
+                    "topic",
+                    t1.title,
                     "user_answer",
                     QuizQuestion.user_answer,
                 )

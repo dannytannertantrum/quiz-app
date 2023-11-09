@@ -202,6 +202,7 @@ class TestQuizRoutesSuccess:
         assert isinstance(data["questions_data"][0]["question_id"], str)
         assert data["primary_topic"] in primary_topics
         assert data["subtopics"][0] in subtopics
+        assert isinstance(data["questions_data"][0]["topic"], str)
 
     def test_delete_quiz(
         self,

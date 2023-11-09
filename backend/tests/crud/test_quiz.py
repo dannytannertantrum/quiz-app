@@ -196,3 +196,4 @@ class TestCrudQuizReturningData:
         assert isinstance(quiz_with_all_data.questions_data[0]["question_id"], str)
         assert isinstance(quiz_with_all_data.subtopics, list)
         assert isinstance(quiz_with_all_data.primary_topic, str)
+        assert isinstance(quiz_with_all_data.questions_data[0]["topic"], str)

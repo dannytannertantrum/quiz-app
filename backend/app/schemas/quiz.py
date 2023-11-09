@@ -37,6 +37,7 @@ class QuestionsAnswersAndUserAnswer(BaseModel):
     correct_answer: int = Field(default=None, gt=0, le=4)
     question: str
     question_id: UUID4
+    topic: str
     user_answer: Optional[int] = Field(default=None, gt=0, le=4)
 
 
