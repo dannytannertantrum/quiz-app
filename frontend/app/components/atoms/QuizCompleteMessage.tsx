@@ -19,7 +19,8 @@ const getScoreMessage = (topic: string, score: number) => {
 };
 
 export const QuizCompleteMessage = ({ primaryTopic, score }: QuizCompleteMessageProps) => {
-  const baseClasses = '[font-size:_clamp(1.25rem,5vw,2.5rem)] [text-wrap:balance] mb-4 ';
+  const baseClasses =
+    '[font-size:_clamp(1.25rem,5vw,2.5rem)] [text-wrap:balance] mb-1 text-center ';
   const message = getScoreMessage(primaryTopic, score);
   let gradientText = '';
   if (score > 95) {
