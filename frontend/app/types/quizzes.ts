@@ -1,3 +1,4 @@
+import { AnswerOptions } from './questions';
 import { QuizQuestions } from './quizQuestions';
 
 export interface CreateQuizDataRequest {
@@ -17,6 +18,17 @@ export interface BaseQuizData {
   primary_topic: string;
   user_id: string;
   completed_at?: string;
-  last_modified_at?: Date;
+  last_modified_at?: string;
   score?: number;
+}
+
+export interface QuizCompleteData extends BaseQuizData {
+  questions_data: {
+    answer_options: AnswerOptions[];
+    correct_answer: number;
+    question: string;
+    question_id: string;
+    topic: string;
+    user_answer: number;
+  }[];
 }
