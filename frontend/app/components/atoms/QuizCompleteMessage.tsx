@@ -7,11 +7,11 @@ export interface QuizCompleteMessageProps {
 
 const getScoreMessage = (topic: string, score: number) => {
   switch (true) {
-    case score < 60:
-      return `Wow...you're really terrible at ${topic} 🤦`;
+    case score <= 60:
+      return `Wow...you're pretty terrible at ${topic} 🤦`;
     // There are only 5 questions, so anything over 80 will be a perfect score
     // But doing this in case we want to increase the number of questions later on
-    case score >= 60 && score <= 95:
+    case score >= 61 && score <= 95:
       return `Looks like you know a thing or two about ${topic}! Not bad 👏`;
     default:
       return `Woo hoo! You're a ${topic} superstar ⭐`;

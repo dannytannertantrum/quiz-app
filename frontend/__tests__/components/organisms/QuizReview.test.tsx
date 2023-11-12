@@ -55,10 +55,22 @@ describe('QuizReview', () => {
   });
 
   describe('When complete search param is not true', () => {
-    test('loads and displays a QuizReview organism', () => {
+    beforeEach(() => {
       render(<QuizReview quizCompleteData={quizReviewTestData} />);
+    });
 
+    test('loads and displays a QuizReview organism', () => {
       expect(screen.getByText(/Score/)).toBeInTheDocument();
+      expect(screen.getByText(`Quiz: ${quizReviewTestData.primary_topic}`)).toBeInTheDocument();
+    });
+
+    test('displays questions and answers', () => {
+      expect(
+        screen.getByText(`Q1: ${quizReviewTestData.questions_data[0].question}`)
+      ).toBeInTheDocument();
+      expect(
+        screen.getByText(quizReviewTestData.questions_data[2].answer_options[0].option_1)
+      ).toBeInTheDocument();
     });
   });
 });

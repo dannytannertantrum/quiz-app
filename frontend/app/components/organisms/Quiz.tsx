@@ -1,7 +1,9 @@
 'use client';
 
 import { AnimationEvent, useState } from 'react';
+import { useRouter } from 'next/navigation';
 
+import { BASE_CLIENT_URL } from '../../utils/constants';
 import { QuizNavButton } from '../atoms/QuizNavButton';
 import { QuizQuestionsAllData } from '../../types/quizQuestions';
 import { Question } from '../molecules/Question';
@@ -30,10 +32,7 @@ export const Quiz = ({
   const [quizComplete, setQuizComplete] = useState(false);
   const [shouldQuestionAnimate, setShouldQuestionAnimate] = useState(true);
   const isNavActive = getActiveNav(quizQuestionsState);
-
-  if (quizComplete) {
-    // reouter push here
-  }
+  const router = useRouter();
 
   const handleNavClick = (direction: 'previous' | 'next') => {
     if (direction === 'previous') {
@@ -87,7 +86,9 @@ export const Quiz = ({
     }
   };
 
-  if (activeQuestionIndex === -1 || quizComplete) return <h2>Looks like this quiz is finished!</h2>;
+  if (activeQuestionIndex === -1 || quizComplete) {
+    router.push(`${BASE_CLIENT_URL}/quizzes/${quizQuestionsState[0].quiz_id}/review?complete=true`);
+  }
 
   return (
     <div className='text-left max-w-5xl'>

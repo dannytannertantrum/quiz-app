@@ -7,7 +7,7 @@ import { useSearchParams } from 'next/navigation';
 import { Button } from '../atoms/Button';
 import { QuizCompleteData } from '../../types/quizzes';
 import { QuizCompleteMessage } from '../atoms/QuizCompleteMessage';
-import { ReviewQuestions } from './ReviewQuestions';
+import { ReviewQuestions } from '../molecules/ReviewQuestions';
 
 export const QuizReview = ({ quizCompleteData }: { quizCompleteData: QuizCompleteData }) => {
   const searchParams = useSearchParams();
@@ -44,7 +44,8 @@ export const QuizReview = ({ quizCompleteData }: { quizCompleteData: QuizComplet
       <h2 className='[font-size:_clamp(1.25rem,5vw,2.5rem)] [text-wrap:balance] capitalize'>
         Quiz: {quizCompleteData.primary_topic}
       </h2>
-      <h3 className='text-xl text-indigo-950 dark:text-cyan-300'>Score: {safeScore}%</h3>
+      <h3 className='text-lg text-indigo-950 dark:text-cyan-300 mb-4'>Score: {safeScore}%</h3>
+      <hr className='mb-4 border-thunder-900 dark:border-thunder-700' />
       <ReviewQuestions questions={quizCompleteData.questions_data} />
     </div>
   );

@@ -1,10 +1,10 @@
 import type { Meta, StoryObj } from '@storybook/react';
 
-import { ReviewQuestions } from '../app/components/organisms/ReviewQuestions';
+import { ReviewQuestions } from '../app/components/molecules/ReviewQuestions';
 import { quizReviewTestData } from '../test-utils/shared-data';
 
 const meta = {
-  title: 'Components/Organisms/ReviewQuestions',
+  title: 'Components/Molecules/ReviewQuestions',
   component: ReviewQuestions,
   args: {
     questions: quizReviewTestData.questions_data,

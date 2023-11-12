@@ -46,7 +46,7 @@ export const Question = ({
         disabledFieldset ? 'animateQuestionFlyoff' : shouldAnimate ? 'animateQuestionAppear' : ''
       }
     >
-      <h3 className='pt-12 sm:pt-0 text-md sm:text-xl capitalize mb-4 text-indigo-950 dark:text-cyan-300'>{`${primaryTopic} | ${subtopic}`}</h3>
+      <h3 className='pt-12 sm:pt-0 text-md sm:text-xl capitalize mb-4 text-indigo-800 dark:text-cyan-300'>{`${primaryTopic} | ${subtopic}`}</h3>
       <Fieldset legend={question} disabled={disabledFieldset} twClasses='max-w-xl'>
         <ul>
           {answer_options?.map((answer) => (
@@ -54,7 +54,7 @@ export const Question = ({
               <button
                 autoFocus={answer.id === user_answer}
                 className={`relative isolate capitalize cursor-pointer p-4 rounded-md w-full text-xl sm:text-2xl text-left transition-all
-              bg-outer-space-300 enabled:hover:bg-outer-space-200 focus-visible:bg-outer-space-100 text-outer-space-900 enabled:hover:text-outer-space-950
+              bg-outer-space-300 enabled:hover:bg-outer-space-200 focus-visible:bg-outer-space-200 text-outer-space-900 enabled:hover:text-outer-space-950
               focus-visible:text-outer-space-950 shadow-md shadow-outer-space-500 
               dark:bg-outer-space-800 dark:enabled:hover:bg-outer-space-900 dark:focus-visible:bg-outer-space-900 dark:text-outer-space-300
               dark:enabled:hover:text-outer-space-100 dark:focus-visible:text-outer-space-100 
