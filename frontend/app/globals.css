@@ -4,8 +4,8 @@
 
 :root {
   --background-hex-dark: #2a202a; /* thunder-975 */
-  --background-hex-light: #c8b1c8; /* thunder-100 */
-  --foreground-hex-dark: #c8b1c8; /* thunder-100 */
+  --background-hex-light: #e2d5e1; /* thunder-200 */
+  --foreground-hex-dark: #e2d5e1; /* thunder-200 */
   --foreground-hex-light: #2a202a; /* thunder-975 */
 }
 
@@ -184,7 +184,7 @@ html.dark .answerSelected {
 .answerSelected:after {
   animation: animate-selected-answer 1.5s ease-in-out;
   transform: scale(1, 1);
-  background-color: #dee9e6;
+  background-color: #dee9e6; /* outer-space-100 */
 }
 
 html.dark .answerSelected:after {

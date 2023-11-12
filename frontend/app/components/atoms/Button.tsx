@@ -12,7 +12,7 @@ export interface LabelProps {
 export const Button = ({ children, disabled, onClick, secondary, styles, type }: LabelProps) => {
   const baseButtonClasses = `cursor-pointer disabled:cursor-not-allowed disabled:text-slate-500
   dark:disabled:text-slate-300 `;
-  const primaryClasses = `py-3 px-7 bg-thunder-200 border border-thunder-800 rounded-xl text-lg sm:text-xl text-thunder-950
+  const primaryClasses = `py-3 px-7 bg-thunder-300 border border-thunder-800 rounded-xl text-lg sm:text-xl text-thunder-950
   hover:bg-thunder-400 hover:transition-colors hover:duration-300 hover:text-thunder-1000 disabled:bg-slate-300 disabled:border-slate-500
   dark:border dark:border-thunder-300 dark:bg-thunder-800 dark:text-thunder-200
   dark:hover:bg-thunder-700 dark:hover:transition-colors dark:hover:duration-300 dark:hover:text-thunder-100
