@@ -33,7 +33,7 @@ export const ReviewQuestions = ({
                   : 'text-amber-900 dark:text-amber-400'
               }`}
             >
-              Q{index + 1}: {question.question}{' '}
+              Q: {question.question}{' '}
             </h4>
             <span
               aria-labelledby={
@@ -49,9 +49,6 @@ export const ReviewQuestions = ({
           <ul className='ml-4'>
             {question.answer_options.map((answer, index) => (
               <li
-                aria-labelledby={
-                  index + 1 === question.correct_answer ? 'Correct answer' : 'Incorrect answer'
-                }
                 className={getQuestionTwClasses(
                   index + 1,
                   question.correct_answer,
@@ -59,6 +56,7 @@ export const ReviewQuestions = ({
                 )}
                 key={answer.id}
               >
+                {index + 1 === question.correct_answer ? 'A: ' : ''}
                 {answer[`option_${index + 1}`]}
                 {index + 1 === question.user_answer && index + 1 !== question.correct_answer
                   ? ' (X)'

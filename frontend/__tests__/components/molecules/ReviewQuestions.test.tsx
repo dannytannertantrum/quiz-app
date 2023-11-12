@@ -11,7 +11,7 @@ describe('ReviewQuestions', () => {
 
   test('loads and displays a ReviewQuestions organism', () => {
     expect(
-      screen.getByText(`Q1: ${quizReviewTestData.questions_data[0].question}`)
+      screen.getByText(`Q: ${quizReviewTestData.questions_data[0].question}`)
     ).toBeInTheDocument();
   });
 

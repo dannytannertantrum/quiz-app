@@ -1,6 +1,6 @@
 'use client';
 
-import { AnimationEvent, useState } from 'react';
+import { AnimationEvent, useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 
 import { BASE_CLIENT_URL } from '../../utils/constants';
@@ -9,6 +9,7 @@ import { QuizQuestionsAllData } from '../../types/quizQuestions';
 import { Question } from '../molecules/Question';
 import { ProgressBar } from '../atoms/ProgressBar';
 import { updateQuizQuestion } from '../../api/quizQuestions';
+import { QuizLoader } from '../atoms/QuizLoader';
 
 const getActiveNav = (quizQuestions: QuizQuestionsAllData[]) => {
   return quizQuestions.some((val) => val.user_answer !== null);
@@ -33,6 +34,14 @@ export const Quiz = ({
   const [shouldQuestionAnimate, setShouldQuestionAnimate] = useState(true);
   const isNavActive = getActiveNav(quizQuestionsState);
   const router = useRouter();
+
+  useEffect(() => {
+    if (quizComplete || activeQuestionIndex === -1) {
+      router.push(
+        `${BASE_CLIENT_URL}/quizzes/${quizQuestionsState[0].quiz_id}/review?complete=true`
+      );
+    }
+  }, [router, quizComplete, quizQuestionsState, activeQuestionIndex]);
 
   const handleNavClick = (direction: 'previous' | 'next') => {
     if (direction === 'previous') {
@@ -86,8 +95,8 @@ export const Quiz = ({
     }
   };
 
-  if (activeQuestionIndex === -1 || quizComplete) {
-    router.push(`${BASE_CLIENT_URL}/quizzes/${quizQuestionsState[0].quiz_id}/review?complete=true`);
+  if (quizComplete || activeQuestionIndex === -1) {
+    return <QuizLoader styles={{ fontSize: '8rem' }} />;
   }
 
   return (

@@ -66,7 +66,7 @@ describe('QuizReview', () => {
 
     test('displays questions and answers', () => {
       expect(
-        screen.getByText(`Q1: ${quizReviewTestData.questions_data[0].question}`)
+        screen.getByText(`Q: ${quizReviewTestData.questions_data[0].question}`)
       ).toBeInTheDocument();
       expect(
         screen.getByText(quizReviewTestData.questions_data[2].answer_options[0].option_1)
