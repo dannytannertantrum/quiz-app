@@ -129,7 +129,7 @@ export const SubtopicList = ({
       ${state.error ? '!border-rose-900 dark:!border-rose-300' : ''}`}
         noValidate
       >
-        <Fieldset disabled={state.isLoading} legend='Select subtopics' legendCenter>
+        <Fieldset disabled={state.isLoading} legend='Select one or more subtopics' legendCenter>
           <ul>
             {subtopics.map((topic) => (
               <li className='mb-4' key={topic.id}>
