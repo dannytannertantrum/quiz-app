@@ -1,21 +1,8 @@
 import React, { ReactNode } from 'react';
 import '@testing-library/jest-dom';
 
-import { AuthContext, AuthContextProps } from '../../../app/context/AuthContext';
-import { render, screen } from 'custom-rtl';
+import { render, renderWithAuth, screen } from 'custom-rtl';
 import { Header } from '../../../app/components/molecules/Header';
-
-const authProviderProps = {
-  createAccount: async () => ({ isSuccess: false }),
-  signIn: async () => ({ isSuccess: false }),
-  signOut: async () => {},
-  userState: { isLoading: false, data: { id: 'user-id', email: 'fake@user.com' } },
-} satisfies AuthContextProps;
-
-// https://testing-library.com/docs/example-react-context/
-const renderWithAuth = (ui: ReactNode) => {
-  return render(<AuthContext.Provider value={authProviderProps}>{ui}</AuthContext.Provider>);
-};
 
 describe('Header', () => {
   describe('Signed out', () => {

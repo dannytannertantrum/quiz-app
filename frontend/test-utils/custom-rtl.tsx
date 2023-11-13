@@ -3,13 +3,29 @@ import { render, RenderOptions } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
 import { ThemeProvider } from '../app/context/Theme';
+import { AuthContext, AuthContextProps } from '../app/context/AuthContext';
+
+export const testAuthProviderProps = {
+  createAccount: async () => ({ isSuccess: false }),
+  signIn: async () => ({ isSuccess: false }),
+  signOut: async () => {},
+  userState: { isLoading: false, data: { id: 'user-id', email: 'fake@user.com' } },
+} satisfies AuthContextProps;
 
 // Custom setup provided straight from RTL:
 // https://testing-library.com/docs/react-testing-library/setup
-const AllTheProviders = ({ children }: { children: React.ReactNode }) => {
+const WithThemeProvider = ({ children }: { children: React.ReactNode }) => {
   return (
     <ThemeProvider attribute='class' defaultTheme='system' enableSystem>
       {children}
+    </ThemeProvider>
+  );
+};
+
+const AllTheProviders = ({ children }: { children: React.ReactNode }) => {
+  return (
+    <ThemeProvider attribute='class' defaultTheme='system' enableSystem>
+      <AuthContext.Provider value={testAuthProviderProps}>{children}</AuthContext.Provider>
     </ThemeProvider>
   );
 };
@@ -30,7 +46,10 @@ const renderWithUserEvent = (jsx: ReactElement) => {
 };
 
 const customRender = (ui: ReactElement, options?: Omit<RenderOptions, 'wrapper'>) =>
+  render(ui, { wrapper: WithThemeProvider, ...options });
+
+const customRenderWithAuth = (ui: ReactElement, options?: Omit<RenderOptions, 'wrapper'>) =>
   render(ui, { wrapper: AllTheProviders, ...options });
 
 export * from '@testing-library/react';
-export { customRender as render, renderWithUserEvent };
+export { customRenderWithAuth as renderWithAuth, customRender as render, renderWithUserEvent };

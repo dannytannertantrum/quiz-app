@@ -3,7 +3,7 @@ import { NextRequest, NextResponse } from 'next/server';
 // Reminder: changes to this file require a fresh build in Docker
 export const config = {
   // We could do a negative match, but I'd rather be explicit on what we SHOULD match
-  matcher: ['/quizzes', '/quizzes/:id*', '/topics', '/topics/:id*'],
+  matcher: ['/account', '/quizzes', '/quizzes/:id*', '/topics', '/topics/:id*'],
 };
 
 export function middleware(request: NextRequest) {
