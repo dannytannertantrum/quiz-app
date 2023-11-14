@@ -9,5 +9,6 @@ describe('Account', () => {
     renderWithAuth(<Account quizzes={[quizTestData]} />);
 
     expect(screen.getByText(testAuthProviderProps.userState.data.email)).toBeInTheDocument();
+    expect(screen.getByText('Sign out')).toBeInTheDocument();
   });
 });

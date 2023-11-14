@@ -30,10 +30,5 @@ describe('Header', () => {
 
       expect(logoLink?.pathname).toBe('/topics');
     });
-
-    test('the sign out button appears', () => {
-      renderWithAuth(<Header />);
-      expect(screen.getByText('Sign out')).toBeInTheDocument();
-    });
   });
 });

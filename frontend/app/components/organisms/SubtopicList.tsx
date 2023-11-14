@@ -1,7 +1,6 @@
 'use client';
 
 import { Fragment, useEffect, useState } from 'react';
-import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 
 import { BASE_CLIENT_URL } from '../../utils/constants';
@@ -11,6 +10,7 @@ import { Checkbox } from '../molecules/Checkbox';
 import { createQuiz } from '../../api/quizzes';
 import { CreateQuizDataRequest, CreateQuizDataResponse } from '../../types/quizzes';
 import { Fieldset } from '../atoms/Fieldset';
+import { QLink } from '../atoms/QLink';
 import { QuizLoader } from '../atoms/QuizLoader';
 import { RequestLoader } from '../atoms/RequestLoader';
 import { ResponseSuccess } from '../../utils/commonTypes';
@@ -150,13 +150,7 @@ export const SubtopicList = ({
           )}
         </Fieldset>
       </form>
-      <Link
-        href={'/topics'}
-        className='bg-transparent underline text-outer-space-900 text-xl hover:text-outer-space-1000
-        dark:text-outer-space-300 dark:hover:text-outer-space-200 transition-colors underline-offset-4 decoration-2'
-      >
-        {'< '}Back to topics
-      </Link>
+      <QLink href={'/topics'}>{'< '}Back to topics</QLink>
     </Fragment>
   );
 };

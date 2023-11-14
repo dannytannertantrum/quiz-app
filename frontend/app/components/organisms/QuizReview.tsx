@@ -1,12 +1,12 @@
 'use client';
 
 import { Fragment, useState } from 'react';
-import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
 
 import { Button } from '../atoms/Button';
 import { QuizCompleteData } from '../../types/quizzes';
 import { QuizCompleteMessage } from '../atoms/QuizCompleteMessage';
+import { QLink } from '../atoms/QLink';
 import { ReviewQuestions } from '../molecules/ReviewQuestions';
 
 export const QuizReview = ({ quizCompleteData }: { quizCompleteData: QuizCompleteData }) => {
@@ -27,13 +27,7 @@ export const QuizReview = ({ quizCompleteData }: { quizCompleteData: QuizComplet
           >
             Review Answers
           </Button>
-          <Link
-            className='bg-transparent underline underline-offset-4 decoration-2 text-outer-space-900 text-xl hover:text-outer-space-1000
-            dark:text-outer-space-300 dark:hover:text-outer-space-200 transition-colors'
-            href={'/topics'}
-          >
-            Home
-          </Link>
+          <QLink href={'/topics'}>Home</QLink>
         </div>
       </Fragment>
     );
