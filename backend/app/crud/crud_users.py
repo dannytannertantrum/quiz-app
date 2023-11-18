@@ -6,7 +6,7 @@ from sqlalchemy import delete, select, update
 from sqlalchemy.orm import Session
 
 from app.models.user import User
-from app.schemas.user import UserCreate, UserInDB, UserUpdate
+from app.schemas.user import UserCreate, UserByEmail, UserInDB, UserUpdate
 from app.security import get_password_hash, verify_password
 
 
@@ -37,12 +37,12 @@ def get_user_by_id(
         ).first()
 
 
-def get_user_by_email(db: Session, email: EmailStr) -> UserInDB:
+def get_user_by_email(db: Session, email: EmailStr) -> UserByEmail:
     """
     Returns user id, email and hashed password if user is active or None if no record found
     """
     return db.execute(
-        select(User.id, User.email, User.hashed_password).where(
+        select(User.id, User.email, User.hashed_password, User.created_at).where(
             User.email == email, User.is_deleted == False
         )
     ).first()

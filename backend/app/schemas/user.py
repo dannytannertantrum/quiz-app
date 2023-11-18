@@ -1,3 +1,4 @@
+from datetime import datetime
 from pydantic import BaseModel, EmailStr, Field, UUID4
 
 
@@ -23,6 +24,11 @@ class UserInDB(UserBase):
 
 class UserCurrent(UserBase):
     id: UUID4
+    created_at: datetime
+
+
+class UserByEmail(UserInDB):
+    created_at: datetime
 
 
 class UserDelete(UserBase):

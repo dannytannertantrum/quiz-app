@@ -172,6 +172,7 @@ class TestUserRoutesSuccess:
         assert response.status_code == 200
         assert user["id"] is not None
         assert user["email"] == generate_test_user.email
+        assert user["created_at"] is not None
 
     def test_update_user(
         self,

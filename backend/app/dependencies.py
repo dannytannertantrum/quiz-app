@@ -88,4 +88,4 @@ def get_current_user(
     user = crud_users.get_user_by_email(db, email=token_data.email)
     if user is None:
         raise credentials_exception
-    return {"id": user.id, "email": user.email}
+    return {"id": user.id, "email": user.email, "created_at": user.created_at}
