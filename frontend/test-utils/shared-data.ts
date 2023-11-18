@@ -85,6 +85,8 @@ export const quizQuestionsTestDataWithFirstIndexAnswered: QuizQuestionsAllData[]
 export const quizTestData: BaseQuizData = {
   id: 'quiz-uuid',
   created_at: '2023-10-27T14:25:36.514294Z',
+  completed_at: '2023-11-11T23:58:19.913201Z',
+  score: 80,
   subtopics: ['comedy', 'drama'],
   primary_topic: 'movies',
   user_id: 'user-uuid',

@@ -13,3 +13,12 @@ export const checkForDuplicateEmail = (
   const emailSet = new Set(emails);
   return emailSet.has(newUserEmail);
 };
+
+export const transformDate = (dateString?: string): string => {
+  const date = new Date(dateString ?? '');
+  return date.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
+};
+
+export const parseSubtopics = (subtopics: string[]): string => {
+  return subtopics.join(', ');
+};

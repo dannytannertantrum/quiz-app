@@ -7,7 +7,7 @@ const meta = {
   title: 'Components/Organisms/Account',
   component: Account,
   args: {
-    quizzes: [quizTestData],
+    quizzes: [quizTestData, quizTestData, quizTestData, quizTestData],
   },
   parameters: {
     layout: 'fullscreen',
@@ -16,7 +16,7 @@ const meta = {
     },
   },
   render: (args) => (
-    <div style={{ maxWidth: '500px', margin: '0 auto', paddingTop: '20px' }}>
+    <div style={{ maxWidth: '1000px', margin: '0 auto', paddingTop: '20px' }}>
       <Account {...args} />
     </div>
   ),
