@@ -4,10 +4,12 @@ export interface BaseUserData {
 
 export interface CurrentUser extends BaseUserData {
   id: string;
+  created_at: string;
 }
 
 export interface CreateUserData extends BaseUserData {
   id: string;
+  created_at: string;
   hashed_password: string;
 }
 

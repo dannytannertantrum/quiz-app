@@ -14,6 +14,7 @@ export const Account = ({ quizzes }: { quizzes: BaseQuizData[] }) => {
   return (
     <>
       <h2>{userState?.data?.email}</h2>
+      <h3>{transformDate(userState?.data?.created_at)}</h3>
       {/* All other table classes are in globals */}
       {/* Because we are using display: grid in mobile, we need to add roles for a11y */}
       {/* Captions need to be the first child of a table */}
