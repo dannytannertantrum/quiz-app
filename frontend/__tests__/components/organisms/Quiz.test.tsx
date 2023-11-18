@@ -104,9 +104,11 @@ describe('Quiz', () => {
       const nextButton: HTMLButtonElement = screen.getByText('Next');
 
       await user.click(nextButton);
-      expect(
-        screen.getByText(quizQuestionsTestDataWithFirstIndexAnswered[1].question)
-      ).toBeInTheDocument();
+      waitFor(() =>
+        expect(
+          screen.getByText(quizQuestionsTestDataWithFirstIndexAnswered[1].question)
+        ).toBeInTheDocument()
+      );
     });
   });
 });

@@ -42,6 +42,10 @@ module.exports = {
           '1000': '#1a2322',
         },
       },
+      gridTemplateRows: {
+        '0fr': '0fr',
+        '1fr': '1fr'
+      }
     },
   },
   plugins: [],
