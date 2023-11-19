@@ -82,15 +82,44 @@ export const quizQuestionsTestDataWithFirstIndexAnswered: QuizQuestionsAllData[]
   ...quizQuestionsTestDataAllNullAnswers,
 ];
 
-export const quizTestData: BaseQuizData = {
-  id: 'quiz-uuid',
-  created_at: '2023-10-27T14:25:36.514294Z',
-  completed_at: '2023-11-11T23:58:19.913201Z',
-  score: 80,
-  subtopics: ['comedy', 'drama'],
-  primary_topic: 'movies',
-  user_id: 'user-uuid',
-};
+export const quizTestData: BaseQuizData[] = [
+  {
+    id: 'quiz-uuid',
+    created_at: '2023-10-27T14:25:36.514294Z',
+    completed_at: '2023-11-11T23:58:19.913201Z',
+    score: 60,
+    subtopics: ['comedy', 'drama'],
+    primary_topic: 'movies',
+    user_id: 'user-uuid',
+  },
+  {
+    id: 'quiz-uuid2',
+    created_at: '2023-10-28T14:25:36.514294Z',
+    completed_at: '2023-11-12T23:58:19.913201Z',
+    score: 40,
+    subtopics: ['hip/hop', 'EDM'],
+    primary_topic: 'music',
+    user_id: 'user-uuid',
+  },
+  {
+    id: 'quiz-uuid3',
+    created_at: '2023-10-29T14:25:36.514294Z',
+    completed_at: '2023-11-13T23:58:19.913201Z',
+    score: 80,
+    subtopics: ['comedy', 'horrir', 'sci-fi'],
+    primary_topic: 'movies',
+    user_id: 'user-uuid',
+  },
+  {
+    id: 'quiz-uuid4',
+    created_at: '2023-10-30T14:25:36.514294Z',
+    completed_at: '2023-11-14T23:58:19.913201Z',
+    score: 100,
+    subtopics: ['hockey', 'football'],
+    primary_topic: 'sportsball',
+    user_id: 'user-uuid',
+  },
+];
 
 export const quizReviewTestData: QuizCompleteData = {
   id: '3c99c4f7-21fe-4e0b-960e-cf178de94e21',

@@ -7,7 +7,7 @@ const meta = {
   title: 'Components/Organisms/Account',
   component: Account,
   args: {
-    quizzes: [quizTestData, quizTestData, quizTestData, quizTestData],
+    quizzes: quizTestData,
   },
   parameters: {
     layout: 'fullscreen',

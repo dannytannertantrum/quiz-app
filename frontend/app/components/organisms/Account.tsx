@@ -1,6 +1,6 @@
 'use client';
 
-import { Fragment, useContext } from 'react';
+import { Fragment, useContext, useEffect, useState } from 'react';
 
 import { Accordion } from '../molecules/Accordion';
 import { AuthContext } from '../../context/AuthContext';
@@ -9,8 +9,43 @@ import { BaseQuizData } from '../../types/quizzes';
 import { parseSubtopics, transformDate } from '../../utils/helperFunctions';
 import { QLink } from '../atoms/QLink';
 
+interface sortMap {
+  topic: (a: BaseQuizData, b: BaseQuizData) => 1 | -1;
+  topicDesc: (a: BaseQuizData, b: BaseQuizData) => 1 | -1;
+  subtopic: (a: BaseQuizData, b: BaseQuizData) => 1 | -1;
+  subtopicDesc: (a: BaseQuizData, b: BaseQuizData) => 1 | -1;
+  completed: (a: BaseQuizData, b: BaseQuizData) => 1 | -1;
+  completedDesc: (a: BaseQuizData, b: BaseQuizData) => 1 | -1;
+  score: (a: BaseQuizData, b: BaseQuizData) => 1 | -1;
+  scoreDesc: (a: BaseQuizData, b: BaseQuizData) => 1 | -1;
+}
+
+const sortMap: sortMap = {
+  topic: (a, b) => (a.primary_topic < b.primary_topic ? -1 : 1),
+  topicDesc: (a, b) => (a.primary_topic > b.primary_topic ? -1 : 1),
+  subtopic: (a, b) => (a.subtopics < b.subtopics ? -1 : 1),
+  subtopicDesc: (a, b) => (a.subtopics > b.subtopics ? -1 : 1),
+  completed: (a, b) =>
+    a.completed_at && b.completed_at && a.completed_at < b.completed_at ? -1 : 1,
+  completedDesc: (a, b) =>
+    a.completed_at && b.completed_at && a.completed_at > b.completed_at ? -1 : 1,
+  score: (a, b) => (a.score && b.score && a.score < b.score ? -1 : 1),
+  scoreDesc: (a, b) => (a.score && b.score && a.score > b.score ? -1 : 1),
+};
+
+const initialSortByCompletedDate = (quizzes: BaseQuizData[]) => {
+  return quizzes.sort(sortMap['completedDesc']);
+};
+
 export const Account = ({ quizzes }: { quizzes: BaseQuizData[] }) => {
   const { signOut, userState } = useContext(AuthContext);
+  const [sortedQuizzes, setSortedQuizzes] = useState(initialSortByCompletedDate(quizzes));
+  const [sortBy, setSortBy] = useState<keyof sortMap>('completedDesc');
+
+  const handleSortBy = (sortByKey: keyof sortMap) => {
+    setSortBy(sortByKey);
+    setSortedQuizzes([...sortedQuizzes].sort(sortMap[sortByKey]));
+  };
 
   return (
     <Fragment>
@@ -32,15 +67,38 @@ export const Account = ({ quizzes }: { quizzes: BaseQuizData[] }) => {
         <table role='table'>
           <thead role='rowgroup'>
             <tr role='row'>
-              <th role='columnheader'>Topic</th>
-              <th role='columnheader'>Subtopics</th>
-              <th role='columnheader'>Completed</th>
-              <th role='columnheader'>Score</th>
+              <th role='columnheader'>
+                <button onClick={() => handleSortBy(sortBy === 'topic' ? 'topicDesc' : 'topic')}>
+                  Topic{sortBy === 'topic' ? ' ⬆️' : sortBy === 'topicDesc' ? ' ⬇️' : ''}
+                </button>
+              </th>
+              <th role='columnheader'>
+                <button
+                  onClick={() => handleSortBy(sortBy === 'subtopic' ? 'subtopicDesc' : 'subtopic')}
+                >
+                  Subtopics{sortBy === 'subtopic' ? ' ⬆️' : sortBy === 'subtopicDesc' ? ' ⬇️' : ''}
+                </button>
+              </th>
+              <th role='columnheader'>
+                <button
+                  onClick={() =>
+                    handleSortBy(sortBy === 'completed' ? 'completedDesc' : 'completed')
+                  }
+                >
+                  Completed
+                  {sortBy === 'completed' ? ' ⬆️' : sortBy === 'completedDesc' ? ' ⬇️' : ''}
+                </button>
+              </th>
+              <th role='columnheader'>
+                <button onClick={() => handleSortBy(sortBy === 'score' ? 'scoreDesc' : 'score')}>
+                  Score{sortBy === 'score' ? ' ⬆️' : sortBy === 'scoreDesc' ? ' ⬇️' : ''}
+                </button>
+              </th>
               <th role='columnheader'>Review</th>
             </tr>
           </thead>
           <tbody role='rowgroup'>
-            {quizzes.map((quiz) => (
+            {sortedQuizzes.map((quiz) => (
               <tr key={quiz.id} role='row'>
                 <td role='cell' data-cell='Topic' className='capitalize'>
                   {quiz.primary_topic}

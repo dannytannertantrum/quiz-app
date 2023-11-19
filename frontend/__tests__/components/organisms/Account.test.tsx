@@ -7,7 +7,7 @@ import { quizTestData } from '../../../test-utils/shared-data';
 describe('Account', () => {
   describe('general', () => {
     beforeEach(() => {
-      renderWithAuth(<Account quizzes={[quizTestData]} />);
+      renderWithAuth(<Account quizzes={quizTestData} />);
     });
 
     test('loads and displays an Account organism', () => {
@@ -21,11 +21,11 @@ describe('Account', () => {
     test('loads and displays quiz data', () => {
       expect(screen.getByText('Topic')).toBeInTheDocument();
       expect(screen.getByText('Subtopics')).toBeInTheDocument();
-      expect(screen.getByText('Completed')).toBeInTheDocument();
+      expect(screen.getByText(/Completed/)).toBeInTheDocument();
       expect(screen.getByText('Score')).toBeInTheDocument();
       expect(screen.getByText('Review')).toBeInTheDocument();
-      expect(screen.getByText(quizTestData.primary_topic)).toBeInTheDocument();
-      expect(screen.getByText(`${quizTestData.score}%`)).toBeInTheDocument();
+      expect(screen.getAllByText('movies')).toHaveLength(2);
+      expect(screen.getByText(`${quizTestData[0].score}%`)).toBeInTheDocument();
     });
 
     test('correctly parses the subtopics', () => {
@@ -41,7 +41,7 @@ describe('Account', () => {
   // would seemingly disappear when tabbing from "Quiz History" to "Manage Account"
   describe('correct keyboard navigation tabbing behavior', () => {
     test('when accordions are shut, they correctly tab to the next accordion', async () => {
-      const { user } = renderWithUserEvent(<Account quizzes={[quizTestData]} />);
+      const { user } = renderWithUserEvent(<Account quizzes={quizTestData} />);
       const quizHistory: HTMLButtonElement = screen.getByText('Quiz History');
       await user.click(quizHistory); // open
       await user.click(quizHistory); // shut
@@ -50,13 +50,21 @@ describe('Account', () => {
       expect(screen.getByText('Manage Account').parentElement).toHaveFocus();
     });
 
-    test('when quiz history accordion is open, it correctly tabs to the first link for review', async () => {
-      const { user } = renderWithUserEvent(<Account quizzes={[quizTestData]} />);
+    test('when quiz history accordion is open, it correctly tabs to the first button for sorting', async () => {
+      const { user } = renderWithUserEvent(<Account quizzes={quizTestData} />);
       const quizHistory: HTMLButtonElement = screen.getByText('Quiz History');
       await user.click(quizHistory); // open
       await user.tab();
 
-      expect(screen.getByText('Link')).toHaveFocus();
+      expect(screen.getByText('Topic')).toHaveFocus();
+    });
+  });
+
+  describe('sorting', () => {
+    test('initial sort is by completed_at desc', () => {
+      renderWithAuth(<Account quizzes={quizTestData} />);
+
+      expect(screen.getByText('Completed ⬇️')).toBeInTheDocument();
     });
   });
 });
