@@ -32,4 +32,5 @@ class UserByEmail(UserInDB):
 
 
 class UserDelete(UserBase):
+    id: UUID4
     message: str

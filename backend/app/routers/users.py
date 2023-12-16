@@ -89,4 +89,8 @@ def delete_user(
         if is_hard_delete
         else f"Account with email {current_user['email']} has been deactivated"
     )
-    return {"email": current_user["email"], "message": message}
+    return {
+        "email": current_user["email"],
+        "id": current_user["id"],
+        "message": message,
+    }
