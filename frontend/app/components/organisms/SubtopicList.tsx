@@ -6,7 +6,7 @@ import { useRouter } from 'next/navigation';
 import { BASE_CLIENT_URL } from '../../utils/constants';
 import { BaseTopicData } from '../../types/topics';
 import { Button } from '../atoms/Button';
-import { Checkbox } from '../molecules/Checkbox';
+import { Checkbox } from '../atoms/Checkbox';
 import { createQuiz } from '../../api/quizzes';
 import { CreateQuizDataRequest, CreateQuizDataResponse } from '../../types/quizzes';
 import { Fieldset } from '../atoms/Fieldset';

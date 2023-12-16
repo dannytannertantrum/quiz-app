@@ -11,7 +11,7 @@ export interface CheckboxProps {
  *
  * @param id must be unique to set the id of the input and htmlFor attr of the label
  * @param name is the text you want displayed to the user
- * @param name is the uuid so we can easily access it from the form
+ * @param value is the uuid so we can easily access it from the form
  * @returns
  */
 export const Checkbox = ({ id, name, handleChange, value }: CheckboxProps) => {

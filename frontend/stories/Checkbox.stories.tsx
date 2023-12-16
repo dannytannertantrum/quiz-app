@@ -1,9 +1,9 @@
 import type { Meta, StoryObj } from '@storybook/react';
 
-import { Checkbox } from '../app/components/molecules/Checkbox';
+import { Checkbox } from '../app/components/atoms/Checkbox';
 
 const meta = {
-  title: 'Components/Molecules/Checkbox',
+  title: 'Components/Atoms/Checkbox',
   component: Checkbox,
   args: {
     id: 'drama',
