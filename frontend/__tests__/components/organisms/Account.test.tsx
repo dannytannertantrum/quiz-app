@@ -5,7 +5,7 @@ import { Account } from '../../../app/components/organisms/Account';
 import { quizTestData } from '../../../test-utils/shared-data';
 
 describe('Account', () => {
-  describe('general', () => {
+  describe('general with quiz data', () => {
     beforeEach(() => {
       renderWithAuth(<Account quizzes={quizTestData} />);
     });
@@ -34,6 +34,14 @@ describe('Account', () => {
 
     test('correctly parses completed_at date', () => {
       expect(screen.getByText('Nov 11, 2023')).toBeInTheDocument();
+    });
+  });
+
+  describe('general with no quiz data', () => {
+    test('displays a message when no quizzes have been taken yet', () => {
+      renderWithAuth(<Account quizzes={[]} />);
+
+      expect(screen.getByText(/take a quiz/)).toBeInTheDocument();
     });
   });
 

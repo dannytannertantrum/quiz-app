@@ -64,64 +64,73 @@ export const Account = ({ quizzes }: { quizzes: BaseQuizData[] }) => {
         {/* Because we are using display: grid in mobile, we need to add roles for a11y */}
         {/* Captions need to be the first child of a table */}
         {/* https://youtube.com/watch?v=czZ1PvNW5hk */}
-        <table role='table'>
-          <thead role='rowgroup'>
-            <tr role='row'>
-              <th role='columnheader'>
-                <button onClick={() => handleSortBy(sortBy === 'topic' ? 'topicDesc' : 'topic')}>
-                  Topic{sortBy === 'topic' ? ' ⬆️' : sortBy === 'topicDesc' ? ' ⬇️' : ''}
-                </button>
-              </th>
-              <th role='columnheader'>
-                <button
-                  onClick={() => handleSortBy(sortBy === 'subtopic' ? 'subtopicDesc' : 'subtopic')}
-                >
-                  Subtopics{sortBy === 'subtopic' ? ' ⬆️' : sortBy === 'subtopicDesc' ? ' ⬇️' : ''}
-                </button>
-              </th>
-              <th role='columnheader'>
-                <button
-                  onClick={() =>
-                    handleSortBy(sortBy === 'completed' ? 'completedDesc' : 'completed')
-                  }
-                >
-                  Completed
-                  {sortBy === 'completed' ? ' ⬆️' : sortBy === 'completedDesc' ? ' ⬇️' : ''}
-                </button>
-              </th>
-              <th role='columnheader'>
-                <button onClick={() => handleSortBy(sortBy === 'score' ? 'scoreDesc' : 'score')}>
-                  Score{sortBy === 'score' ? ' ⬆️' : sortBy === 'scoreDesc' ? ' ⬇️' : ''}
-                </button>
-              </th>
-              <th role='columnheader'>Review</th>
-            </tr>
-          </thead>
-          <tbody role='rowgroup'>
-            {sortedQuizzes.map((quiz) => (
-              <tr key={quiz.id} role='row'>
-                <td role='cell' data-cell='Topic' className='capitalize'>
-                  {quiz.primary_topic}
-                </td>
-                <td role='cell' data-cell='Subtopics'>
-                  {parseSubtopics(quiz.subtopics)}
-                </td>
-                {/* https://nextjs.org/docs/messages/react-hydration-error#solution-3-using-suppresshydrationwarning */}
-                <td role='cell' data-cell='Completed' suppressHydrationWarning>
-                  {transformDate(quiz.completed_at)}
-                </td>
-                <td role='cell' data-cell='Score'>
-                  {quiz.score}%
-                </td>
-                <td role='cell' data-cell='Review'>
-                  <QLink href={`/quizzes/${quiz.id}/review`} styles={{ fontSize: '1rem' }}>
-                    Link
-                  </QLink>
-                </td>
+        {sortedQuizzes?.length === 0 ? (
+          <p className='text-xl mb-4'>
+            Nothing here yet. Go <QLink href='/topics'>take a quiz</QLink>!
+          </p>
+        ) : (
+          <table role='table'>
+            <thead role='rowgroup'>
+              <tr role='row'>
+                <th role='columnheader'>
+                  <button onClick={() => handleSortBy(sortBy === 'topic' ? 'topicDesc' : 'topic')}>
+                    Topic{sortBy === 'topic' ? ' ⬆️' : sortBy === 'topicDesc' ? ' ⬇️' : ''}
+                  </button>
+                </th>
+                <th role='columnheader'>
+                  <button
+                    onClick={() =>
+                      handleSortBy(sortBy === 'subtopic' ? 'subtopicDesc' : 'subtopic')
+                    }
+                  >
+                    Subtopics
+                    {sortBy === 'subtopic' ? ' ⬆️' : sortBy === 'subtopicDesc' ? ' ⬇️' : ''}
+                  </button>
+                </th>
+                <th role='columnheader'>
+                  <button
+                    onClick={() =>
+                      handleSortBy(sortBy === 'completed' ? 'completedDesc' : 'completed')
+                    }
+                  >
+                    Completed
+                    {sortBy === 'completed' ? ' ⬆️' : sortBy === 'completedDesc' ? ' ⬇️' : ''}
+                  </button>
+                </th>
+                <th role='columnheader'>
+                  <button onClick={() => handleSortBy(sortBy === 'score' ? 'scoreDesc' : 'score')}>
+                    Score{sortBy === 'score' ? ' ⬆️' : sortBy === 'scoreDesc' ? ' ⬇️' : ''}
+                  </button>
+                </th>
+                <th role='columnheader'>Review</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody role='rowgroup'>
+              {sortedQuizzes.map((quiz) => (
+                <tr key={quiz.id} role='row'>
+                  <td role='cell' data-cell='Topic' className='capitalize'>
+                    {quiz.primary_topic}
+                  </td>
+                  <td role='cell' data-cell='Subtopics'>
+                    {parseSubtopics(quiz.subtopics)}
+                  </td>
+                  {/* https://nextjs.org/docs/messages/react-hydration-error#solution-3-using-suppresshydrationwarning */}
+                  <td role='cell' data-cell='Completed' suppressHydrationWarning>
+                    {transformDate(quiz.completed_at)}
+                  </td>
+                  <td role='cell' data-cell='Score'>
+                    {quiz.score}%
+                  </td>
+                  <td role='cell' data-cell='Review'>
+                    <QLink href={`/quizzes/${quiz.id}/review`} styles={{ fontSize: '1rem' }}>
+                      Link
+                    </QLink>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        )}
       </Accordion>
       <Accordion title='Manage Account'>
         <p>Will complete this later</p>
