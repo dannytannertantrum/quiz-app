@@ -47,10 +47,9 @@ def read_users_me(
     return current_user
 
 
-@router.put("/{user_id}", response_model=UserInDB, status_code=status.HTTP_200_OK)
+@router.put("/me", response_model=UserInDB, status_code=status.HTTP_200_OK)
 def update_user(
     user_input: UserUpdate,
-    user_id: UUID4,
     current_user: Annotated[UserCurrent, Depends(get_current_user)],
     db: Session = Depends(get_db),
 ) -> UserInDB:
@@ -58,6 +57,7 @@ def update_user(
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND, detail="User not found"
         )
+    user_id = current_user["id"]
     successfully_updated_user = crud_users.update_user_in_db(db, user_id, user_input)
     if not successfully_updated_user:
         raise HTTPException(
@@ -67,9 +67,8 @@ def update_user(
     return successfully_updated_user
 
 
-@router.delete("/{user_id}", response_model=UserDelete, status_code=status.HTTP_200_OK)
+@router.delete("/me", response_model=UserDelete, status_code=status.HTTP_200_OK)
 def delete_user(
-    user_id: UUID4,
     current_user: Annotated[UserCurrent, Depends(get_current_user)],
     db: Session = Depends(get_db),
     is_hard_delete: Annotated[bool | None, Query()] = None,
@@ -83,11 +82,7 @@ def delete_user(
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND, detail="User not found"
         )
-    if current_user["id"] != user_id:
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED, detail="Unauthorized deletion"
-        )
-
+    user_id = current_user["id"]
     crud_users.delete_user_in_db(db, user_id, is_hard_delete)
     message = (
         f"Account with email {current_user['email']} has been fully dropped from our database records"

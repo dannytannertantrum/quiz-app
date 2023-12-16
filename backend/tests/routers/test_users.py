@@ -57,7 +57,6 @@ class TestUserRoutesFailure:
         generate_test_user: User,
         access_token: dict[str, str],
     ) -> None:
-        user_id = generate_test_user.id
         user_input = {
             "email": generate_test_user.email,
             "current_password": app_config.TEST_USER_PLAIN_TEXT_PASSWORD,
@@ -65,9 +64,7 @@ class TestUserRoutesFailure:
             "confirm_new_password": "Hello",
         }
 
-        response = client.put(
-            f"/users/{user_id}", headers=access_token, json=user_input
-        )
+        response = client.put(f"/users/me", headers=access_token, json=user_input)
 
         assert response.status_code == 422
 
@@ -77,7 +74,6 @@ class TestUserRoutesFailure:
         generate_test_user: User,
         access_token: dict[str, str],
     ) -> None:
-        user_id = generate_test_user.id
         user_input = {
             "email": generate_test_user.email,
             "current_password": "ThisIsWrong",
@@ -85,9 +81,7 @@ class TestUserRoutesFailure:
             "confirm_new_password": "TheseMatch",
         }
 
-        response = client.put(
-            f"/users/{user_id}", headers=access_token, json=user_input
-        )
+        response = client.put(f"/users/me", headers=access_token, json=user_input)
 
         assert response.status_code == 400
         assert response.json() == {
@@ -100,7 +94,6 @@ class TestUserRoutesFailure:
         generate_test_user: User,
         access_token: dict[str, str],
     ) -> None:
-        user_id = generate_test_user.id
         user_input = {
             "email": generate_test_user.email,
             "current_password": app_config.TEST_USER_PLAIN_TEXT_PASSWORD,
@@ -108,40 +101,12 @@ class TestUserRoutesFailure:
             "confirm_new_password": "DoesNotMatchThisOne",
         }
 
-        response = client.put(
-            f"/users/{user_id}", headers=access_token, json=user_input
-        )
+        response = client.put(f"/users/me", headers=access_token, json=user_input)
 
         assert response.status_code == 400
         assert response.json() == {
             "detail": "There was a problem with the request. Please try again"
         }
-
-    def test_delete_user_fails_when_id_does_not_match(
-        self,
-        db: Session,
-        client: TestClient,
-        generate_test_user: User,
-        access_token: dict[str, str],
-    ) -> None:
-        user_input = {
-            "username": "myEmail@example.com",
-            "password": "MyCoolPassword",
-        }
-        try:
-            response = client.post("/users/", json=user_input)
-            new_user: User = response.json()
-            new_user_id = new_user["id"]
-
-            response = client.delete(
-                f"/users/{new_user_id}?is_hard_delete=True",
-                headers=access_token,
-            )
-
-            assert response.status_code == 401
-            assert response.json() == {"detail": "Unauthorized deletion"}
-        finally:
-            delete_test_users(db)
 
     def test_user_routes_without_token_headers_raises_unauthorized_exception(
         self,
@@ -154,10 +119,10 @@ class TestUserRoutesFailure:
         response_get = client_without_cookies.get("users/me")
         assert response_get.status_code == 401
 
-        response_put = client_without_cookies.put(f"/users/{uuid4()}")
+        response_put = client_without_cookies.put(f"/users/me")
         assert response_put.status_code == 401
 
-        response_delete = client_without_cookies.delete(f"/users/{uuid4()}")
+        response_delete = client_without_cookies.delete(f"/users/me")
         assert response_delete.status_code == 401
 
 
@@ -206,7 +171,6 @@ class TestUserRoutesSuccess:
         generate_test_user: User,
         access_token: dict[str, str],
     ) -> None:
-        user_id = generate_test_user.id
         new_password = "MatchingNewPassword"
         user_input = {
             "email": generate_test_user.email,
@@ -215,9 +179,7 @@ class TestUserRoutesSuccess:
             "confirm_new_password": new_password,
         }
 
-        response = client.put(
-            f"/users/{user_id}", headers=access_token, json=user_input
-        )
+        response = client.put(f"/users/me", headers=access_token, json=user_input)
         updated_user = response.json()
 
         assert response.status_code == 200
@@ -233,9 +195,7 @@ class TestUserRoutesSuccess:
         access_token: dict[str, str],
     ) -> None:
         try:
-            response = client.delete(
-                f"/users/{generate_test_user.id}", headers=access_token
-            )
+            response = client.delete(f"/users/me", headers=access_token)
             response_message = response.json()
             user_marked_deleted = crud_users.get_user_by_id(
                 db, user_id=generate_test_user.id, check_for_deleted_users=True
@@ -259,7 +219,7 @@ class TestUserRoutesSuccess:
     ) -> None:
         try:
             response = client.delete(
-                f"/users/{generate_test_user.id}?is_hard_delete=True",
+                f"/users/me?is_hard_delete=True",
                 headers=access_token,
             )
             response_message = response.json()
