@@ -83,6 +83,11 @@ def delete_user(
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND, detail="User not found"
         )
+    if current_user["id"] != user_id:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED, detail="Unauthorized deletion"
+        )
+
     crud_users.delete_user_in_db(db, user_id, is_hard_delete)
     message = (
         f"Account with email {current_user['email']} has been fully dropped from our database records"

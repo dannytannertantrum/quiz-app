@@ -117,6 +117,32 @@ class TestUserRoutesFailure:
             "detail": "There was a problem with the request. Please try again"
         }
 
+    def test_delete_user_fails_when_id_does_not_match(
+        self,
+        db: Session,
+        client: TestClient,
+        generate_test_user: User,
+        access_token: dict[str, str],
+    ) -> None:
+        user_input = {
+            "username": "myEmail@example.com",
+            "password": "MyCoolPassword",
+        }
+        try:
+            response = client.post("/users/", json=user_input)
+            new_user: User = response.json()
+            new_user_id = new_user["id"]
+
+            response = client.delete(
+                f"/users/{new_user_id}?is_hard_delete=True",
+                headers=access_token,
+            )
+
+            assert response.status_code == 401
+            assert response.json() == {"detail": "Unauthorized deletion"}
+        finally:
+            delete_test_users(db)
+
     def test_user_routes_without_token_headers_raises_unauthorized_exception(
         self,
         client: TestClient,
