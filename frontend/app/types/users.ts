@@ -13,12 +13,15 @@ export interface CreateUserData extends BaseUserData {
   hashed_password: string;
 }
 
-export interface UserSignIn extends CurrentUser {
-  isAuthorized: boolean;
+export interface DeleteUser extends BaseUserData {
+  created_at?: undefined;
+  id: string;
+  message: string;
 }
 
+export interface UserSignIn extends CurrentUser {}
+
 export interface UserSignOut {
-  isAuthorized: boolean;
   id: undefined;
   email: undefined;
 }
@@ -26,7 +29,7 @@ export interface UserSignOut {
 export interface UserState {
   isLoading: boolean;
   error?: Error;
-  data?: CreateUserData | CurrentUser | UserSignIn;
+  data?: CreateUserData | CurrentUser | DeleteUser | UserSignIn;
   status?: number;
   statusText?: string;
 }

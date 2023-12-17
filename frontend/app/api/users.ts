@@ -1,5 +1,5 @@
 import { BASE_URL } from '../utils/constants';
-import { CreateUserData, CurrentUser } from '../types/users';
+import { CreateUserData, CurrentUser, DeleteUser } from '../types/users';
 import { handleResponse } from './commonResponse';
 import { ResponseSuccess } from '../utils/commonTypes';
 
@@ -23,5 +23,17 @@ export const getCurrentUser = async (): Promise<ResponseSuccess<CurrentUser> | E
   const response = await fetch(`${BASE_URL}/users/me`, { credentials: 'include' });
 
   const responseData = await handleResponse<CurrentUser>(response);
+  return responseData;
+};
+
+export const deleteUser = async (
+  isHardDelete: boolean
+): Promise<ResponseSuccess<DeleteUser> | Error> => {
+  const deleteRoute = isHardDelete
+    ? `${BASE_URL}/users/me?is_hard_delete=t`
+    : `${BASE_URL}/users/me`;
+  const response = await fetch(deleteRoute, { method: 'delete', credentials: 'include' });
+
+  const responseData = await handleResponse<DeleteUser>(response);
   return responseData;
 };

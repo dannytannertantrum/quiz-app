@@ -5,6 +5,7 @@ import { AuthRedirectMessage } from './components/atoms/AuthRedirectMessage';
 import { BaseUserData } from './types/users';
 import { AuthForm } from './components/organisms/AuthForm';
 import { BASE_SERVER_URL, BASE_CLIENT_URL, RESPONSE_ERROR } from './utils/constants';
+import { DeleteBanner } from './components/atoms/DeleteBanner';
 
 async function getUserEmails() {
   const response = await fetch(`${BASE_SERVER_URL}/users/`);
@@ -28,8 +29,9 @@ export default async function SignInPage() {
   }
 
   return (
-    <main className='flex flex-col items-center gap-4 md:p-8'>
+    <main className='flex flex-col items-center md:p-8'>
       <AuthRedirectMessage />
+      <DeleteBanner />
       <AuthForm userEmails={emails} />
     </main>
   );

@@ -5,13 +5,14 @@ import { usePathname, useRouter } from 'next/navigation';
 
 import {
   CREATE_USER,
+  DELETE_USER,
   FETCH_ERROR,
   FETCH_IN_PROGRESS,
   GET_USER,
   USER_SIGN_IN,
   USER_SIGN_OUT,
 } from '../utils/constants';
-import { createUser, getCurrentUser } from '../api/users';
+import { createUser, deleteUser, getCurrentUser } from '../api/users';
 import { signInUser, signOutUser } from '../api/auth';
 import { UserState } from '../types/users';
 import { userReducer } from '../reducers/user';
@@ -19,6 +20,7 @@ import { isSuccess } from '../utils/commonTypes';
 
 export interface AuthContextProps {
   createAccount: (form: HTMLFormElement, formJson: string) => Promise<isSuccess>;
+  deleteAccount: (isHardDelete: boolean) => Promise<void>;
   signIn: (form: HTMLFormElement, formData: FormData) => Promise<isSuccess>;
   signOut: () => Promise<void>;
   userState: UserState | null;
@@ -27,6 +29,7 @@ export interface AuthContextProps {
 const defaultAuthContextProps = () =>
   ({
     createAccount: async () => ({ isSuccess: false }),
+    deleteAccount: async () => {},
     signIn: async () => ({ isSuccess: false }),
     signOut: async () => {},
     userState: null,
@@ -107,6 +110,29 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
+  const deleteAccount = async (isHardDelete: boolean): Promise<void> => {
+    userDispatch({ type: FETCH_IN_PROGRESS, isLoading: true });
+    try {
+      const response = await deleteUser(isHardDelete);
+      if (!(response instanceof Error)) {
+        userDispatch({
+          error: undefined,
+          isLoading: false,
+          payload: response.data,
+          status: response.status,
+          type: DELETE_USER,
+        });
+        sessionStorage.setItem('quizapp-delete-account', response.data.message);
+        await signOut();
+      }
+    } catch (error: any) {
+      dispatchErrorHelper(
+        `There was a problem signing out with user id: ${userState?.data?.id}`,
+        error
+      );
+    }
+  };
+
   const signOut = async (): Promise<void> => {
     userDispatch({ type: FETCH_IN_PROGRESS, isLoading: true });
     try {
@@ -150,7 +176,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   };
 
   return (
-    <AuthContext.Provider value={{ createAccount, signIn, signOut, userState }}>
+    <AuthContext.Provider value={{ createAccount, deleteAccount, signIn, signOut, userState }}>
       {children}
     </AuthContext.Provider>
   );

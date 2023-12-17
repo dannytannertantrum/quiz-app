@@ -1,6 +1,7 @@
 'use client';
 
 interface RadioButtonProps {
+  handleChange?: () => void;
   id: string;
   label: string;
   name: string;
@@ -15,7 +16,7 @@ interface RadioButtonProps {
  * @param value the individual radio button's value attribute
  * @returns
  */
-export const RadioButton = ({ id, label, name, value }: RadioButtonProps) => {
+export const RadioButton = ({ handleChange, id, label, name, value }: RadioButtonProps) => {
   // Prevent the form from accidental submission on Enter
   const handleOnKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
     if (event.key === 'Enter') {
@@ -27,8 +28,10 @@ export const RadioButton = ({ id, label, name, value }: RadioButtonProps) => {
   return (
     <label htmlFor={id} className='flex items-baseline text-lg mb-3 cursor-pointer'>
       <input
+        data-testid='radioInput'
         type='radio'
         id={id}
+        onChange={handleChange}
         onKeyDown={handleOnKeyDown}
         value={value}
         name={name}

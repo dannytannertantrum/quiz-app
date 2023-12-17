@@ -7,6 +7,7 @@ import { AuthContext, AuthContextProps } from '../app/context/AuthContext';
 
 export const testAuthProviderProps = {
   createAccount: async () => ({ isSuccess: false }),
+  deleteAccount: async () => {},
   signIn: async () => ({ isSuccess: false }),
   signOut: async () => {},
   userState: {

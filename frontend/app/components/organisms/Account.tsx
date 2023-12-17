@@ -1,11 +1,12 @@
 'use client';
 
-import { Fragment, useContext, useEffect, useState } from 'react';
+import { Fragment, useContext, useState } from 'react';
 
 import { Accordion } from '../molecules/Accordion';
 import { AuthContext } from '../../context/AuthContext';
 import { Button } from '../atoms/Button';
 import { BaseQuizData } from '../../types/quizzes';
+import { DeleteUserAccount } from '../molecules/DeleteUserAccount';
 import { parseSubtopics, transformDate } from '../../utils/helperFunctions';
 import { QLink } from '../atoms/QLink';
 
@@ -133,7 +134,7 @@ export const Account = ({ quizzes }: { quizzes: BaseQuizData[] }) => {
         )}
       </Accordion>
       <Accordion title='Manage Account'>
-        <p>Will complete this later</p>
+        <DeleteUserAccount />
       </Accordion>
       <Button onClick={signOut} secondary>
         Sign out

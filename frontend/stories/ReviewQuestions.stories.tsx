@@ -16,7 +16,7 @@ const meta = {
     },
   },
   render: () => (
-    <div style={{ maxWidth: '500px', margin: '0 auto', paddingTop: '20px' }}>
+    <div style={{ maxWidth: '800px', margin: '0 auto', padding: '20px' }}>
       <ReviewQuestions questions={quizReviewTestData.questions_data} />
     </div>
   ),
