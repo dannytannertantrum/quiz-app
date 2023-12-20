@@ -82,6 +82,11 @@ def delete_user(
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND, detail="User not found"
         )
+    if current_user["email"] == "user@example.com":
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="You are not authorized to delete this account",
+        )
     user_id = current_user["id"]
     crud_users.delete_user_in_db(db, user_id, is_hard_delete)
     message = (

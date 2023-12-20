@@ -41,9 +41,12 @@ class Settings(BaseSettings):
     TEST_SUBTOPIC_SCIFI_UUID: UUID4 = uuid4()
     TEST_SUBTOPIC_TECHNO_UUID: UUID4 = uuid4()
     TEST_USER_UUID: UUID4 = uuid4()
-
-    TEST_USER_EMAIL: EmailStr = "user@example.com"
+    TEST_USER_EMAIL: EmailStr = "testuser@testexample.com"
     TEST_USER_PLAIN_TEXT_PASSWORD: str = "Welcome123"
+
+    TEST_USER_DO_NOT_DELETE_UUID: UUID4 = uuid4()
+    TEST_USER_DO_NOT_DELETE_EMAIL: EmailStr = "user@example.com"
+    TEST_USER_DO_NOT_DELETE_PLAIN_TEXT_PASSWORD: str = "yourface"
 
 
 @lru_cache

@@ -1,6 +1,6 @@
 import '@testing-library/jest-dom';
 
-import { render, renderWithUserEvent, screen, waitFor } from 'custom-rtl';
+import { render, renderWithUserEvent, renderWithAuth, screen, waitFor } from 'custom-rtl';
 import { DeleteUserAccount } from '../../../app/components/molecules/DeleteUserAccount';
 
 describe('DeleteUserAccount', () => {
@@ -72,5 +72,15 @@ describe('DeleteUserAccount', () => {
 
     // This means the page navigated away
     waitFor(() => expect(screen.queryByText('Delete account')).not.toBeInTheDocument());
+  });
+
+  test('rendering with shared test user displays a different message', () => {
+    renderWithAuth(<DeleteUserAccount />);
+
+    expect(
+      screen.getByText(
+        'Nothing to see here. You are not authorized to delete this shared test account.'
+      )
+    ).toBeInTheDocument();
   });
 });

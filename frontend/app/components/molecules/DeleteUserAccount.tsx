@@ -47,44 +47,56 @@ export const DeleteUserAccount = () => {
 
   return (
     <Fragment>
-      <Button onClick={() => handleToggleModal('open')} secondary styles={{ marginBottom: '1rem' }}>
-        Delete account
-      </Button>
-      <dialog
-        className={`w-full p-7 bg-thunder-200 border rounded-xl border-thunder-800 shadow-lg shadow-thunder-500
+      {userState?.data?.email === 'user@example.com' ? (
+        <p className='text-lg mb-4'>
+          Nothing to see here. You are not authorized to delete this shared test account.
+        </p>
+      ) : (
+        <Fragment>
+          <Button
+            onClick={() => handleToggleModal('open')}
+            secondary
+            styles={{ marginBottom: '1rem' }}
+          >
+            Delete account
+          </Button>
+          <dialog
+            className={`w-full p-7 bg-thunder-200 border rounded-xl border-thunder-800 shadow-lg shadow-thunder-500
       dark:bg-thunder-950 dark:border-thunder-300 dark:shadow-thunder-800 backdrop:bg-outer-space-500 backdrop:opacity-40
         md:w-[600px] md:border`}
-      >
-        <form method='dialog' onSubmit={handleSubmit}>
-          <Fieldset
-            legend='Please select account removal method'
-            legendSize='small'
-            disabled={userState?.isLoading}
           >
-            <RadioButton
-              handleChange={() => setError(false)}
-              id='hardDelete'
-              value='hard'
-              name='deletion'
-              label='Fully delete and destroy my records from your system'
-            />
-            <RadioButton
-              handleChange={() => setError(false)}
-              id='softDelete'
-              value='soft'
-              name='deletion'
-              label='Deactivate my account in case I want to return'
-            />
-            <div className='flex justify-between'>
-              <Button type='submit'>Submit</Button>
-              <Button onClick={() => handleToggleModal('close')} secondary>
-                Cancel
-              </Button>
-            </div>
-            {error && <p className='pt-5 text-rose-900 dark:text-rose-300'>{errorMessage}</p>}
-          </Fieldset>
-        </form>
-      </dialog>
+            <form method='dialog' onSubmit={handleSubmit}>
+              <Fieldset
+                legend='Please select account removal method'
+                legendSize='small'
+                disabled={userState?.isLoading}
+              >
+                <RadioButton
+                  handleChange={() => setError(false)}
+                  id='hardDelete'
+                  value='hard'
+                  name='deletion'
+                  label='Fully delete and destroy my records from your system'
+                />
+                <RadioButton
+                  handleChange={() => setError(false)}
+                  id='softDelete'
+                  value='soft'
+                  name='deletion'
+                  label='Deactivate my account in case I want to return'
+                />
+                <div className='flex justify-between'>
+                  <Button type='submit'>Submit</Button>
+                  <Button onClick={() => handleToggleModal('close')} secondary>
+                    Cancel
+                  </Button>
+                </div>
+                {error && <p className='pt-5 text-rose-900 dark:text-rose-300'>{errorMessage}</p>}
+              </Fieldset>
+            </form>
+          </dialog>
+        </Fragment>
+      )}
     </Fragment>
   );
 };

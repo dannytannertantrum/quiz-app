@@ -12,7 +12,7 @@ export const testAuthProviderProps = {
   signOut: async () => {},
   userState: {
     isLoading: false,
-    data: { id: 'user-id', email: 'fake@user.com', created_at: '2023-10-31T13:13:53.346099Z' },
+    data: { id: 'user-id', email: 'user@example.com', created_at: '2023-10-31T13:13:53.346099Z' },
   },
 } satisfies AuthContextProps;
 

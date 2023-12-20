@@ -108,6 +108,22 @@ class TestUserRoutesFailure:
             "detail": "There was a problem with the request. Please try again"
         }
 
+    def test_delete_user_with_shared_email_raises_exception(
+        self,
+        db: Session,
+        client: TestClient,
+        generate_do_not_delete_test_user: User,
+        access_token_for_do_not_delete_user: dict[str, str],
+    ):
+        response = client.delete(
+            "/users/me", headers=access_token_for_do_not_delete_user
+        )
+
+        assert response.status_code == 401
+        assert response.json() == {
+            "detail": "You are not authorized to delete this account"
+        }
+
     def test_user_routes_without_token_headers_raises_unauthorized_exception(
         self,
         client: TestClient,

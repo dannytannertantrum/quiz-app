@@ -77,6 +77,20 @@ def generate_test_user(db: Session, app_config: Settings) -> User:
 
 
 @pytest.fixture(scope="function")
+def generate_do_not_delete_test_user(db: Session, app_config: Settings) -> User:
+    user_do_not_delete = create_test_user(
+        db,
+        id=app_config.TEST_USER_DO_NOT_DELETE_UUID,
+        email=app_config.TEST_USER_DO_NOT_DELETE_EMAIL,
+        password=app_config.TEST_USER_DO_NOT_DELETE_PLAIN_TEXT_PASSWORD,
+    )
+
+    yield user_do_not_delete
+
+    delete_test_users(db)
+
+
+@pytest.fixture(scope="function")
 def access_token(
     client: TestClient, generate_test_user: User, app_config: Settings
 ) -> dict[str, str]:
@@ -84,6 +98,17 @@ def access_token(
         client=client,
         email=app_config.TEST_USER_EMAIL,
         password=app_config.TEST_USER_PLAIN_TEXT_PASSWORD,
+    )
+
+
+@pytest.fixture(scope="function")
+def access_token_for_do_not_delete_user(
+    client: TestClient, generate_do_not_delete_test_user: User, app_config: Settings
+) -> dict[str, str]:
+    return get_token_from_cookies(
+        client=client,
+        email=app_config.TEST_USER_DO_NOT_DELETE_EMAIL,
+        password=app_config.TEST_USER_DO_NOT_DELETE_PLAIN_TEXT_PASSWORD,
     )
 
 
