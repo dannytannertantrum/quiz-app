@@ -22,7 +22,7 @@ export const ThemeSwitcher = ({ size }: ColorSchemeToggleProps): JSX.Element | n
   return (
     <button
       aria-label='toggle light and dark mode'
-      className='text-xl md:text-3xl'
+      className='text-2xl md:text-3xl'
       onClick={() => setTheme(resolvedTheme === 'dark' ? 'light' : 'dark')}
       style={size ? { fontSize: `${size}px` } : {}}
       title='Toggle light and dark mode'

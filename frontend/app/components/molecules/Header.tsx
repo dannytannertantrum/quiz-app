@@ -14,7 +14,7 @@ import { QLink } from '../atoms/QLink';
 export const Header = () => {
   const { theme } = useTheme();
   const [image, setImage] = useState(logoDarkMode);
-  const { signOut, userState } = useContext(AuthContext);
+  const { userState } = useContext(AuthContext);
   const homeLink = userState?.data ? '/topics' : '/';
 
   useEffect(() => {
@@ -35,11 +35,12 @@ export const Header = () => {
           <Image
             alt='Home'
             src={image ?? logoDarkMode}
-            className='object-scale-down object-left max-md:w-8'
+            className='object-scale-down object-left max-md:w-10'
             width={64}
             height={42}
           />
         </Link>
+        <QLink href='/about'>About</QLink>
         {userState?.data && <QLink href='/account'>Account</QLink>}
         <ThemeSwitcher />
       </nav>
