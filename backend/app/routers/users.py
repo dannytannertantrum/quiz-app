@@ -1,7 +1,7 @@
 from typing import Annotated
 
 from fastapi import APIRouter, Depends, HTTPException, Query, status
-from pydantic import UUID4, EmailStr
+from pydantic import EmailStr
 from sqlalchemy.orm import Session
 
 from app.crud import crud_users

@@ -15,6 +15,15 @@ class TestAuthRouteFailure:
         }
         response = client.post("/auth/token", data=login_data)
         assert response.status_code == 401
+        assert response.json() == {"detail": "Incorrect username or password"}
+
+    def test_sign_in_with_shared_account_does_not_work_with_wrong_username_and_password(
+        self, client: TestClient, generate_test_user: User
+    ) -> None:
+        response = client.post("/auth/token/shared")
+
+        assert response.status_code == 401
+        assert response.json() == {"detail": "Incorrect username or password"}
 
 
 class TestAuthRoutesSuccess:
@@ -26,6 +35,15 @@ class TestAuthRoutesSuccess:
             "password": app_config.TEST_USER_PLAIN_TEXT_PASSWORD,
         }
         response = client.post("/auth/token", data=login_data)
+
+        assert response.status_code == 200
+        assert "isAuthorized" in response.json()
+        assert response.cookies["access_token"] is not None
+
+    def test_sign_in_with_shared_account(
+        self, client: TestClient, generate_do_not_delete_test_user: User
+    ) -> None:
+        response = client.post("/auth/token/shared")
 
         assert response.status_code == 200
         assert "isAuthorized" in response.json()

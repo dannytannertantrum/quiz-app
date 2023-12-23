@@ -6,14 +6,14 @@ from fastapi.responses import JSONResponse
 from fastapi.security import OAuth2PasswordRequestForm
 from sqlalchemy.orm import Session
 
-from app.config import get_settings
+from app.config import get_settings, Settings
 from app.crud import crud_users
 from app.database import get_db
 from app.schemas.token import Token, TokenSignIn
 from app.security import create_access_token
 
 
-settings = get_settings()
+settings: Settings = get_settings()
 db = get_db()
 
 router = APIRouter(
@@ -32,6 +32,38 @@ def login_for_access_token(
     db: Session = Depends(get_db),
 ):
     user = crud_users.authenticate_user(db, form_data.username, form_data.password)
+    if not user:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Incorrect username or password",
+            headers={"WWW-Authenticate": "Bearer"},
+        )
+    access_token_expires = timedelta(minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES)
+    access_token = create_access_token(
+        data={"sub": user.email}, expires_delta=access_token_expires
+    )
+    response = JSONResponse(
+        {"email": user.email, "id": str(user.id), "isAuthorized": True}
+    )
+    response.set_cookie(
+        key="access_token",
+        value=access_token,
+        secure=False,
+        httponly=True,
+        samesite="lax",
+    )
+
+    return response
+
+
+@router.post("/token/shared", response_model=TokenSignIn)
+def login_for_access_token(
+    response: Response,
+    db: Session = Depends(get_db),
+):
+    username = settings.TEST_USER_DO_NOT_DELETE_EMAIL
+    password = settings.TEST_USER_DO_NOT_DELETE_PLAIN_TEXT_PASSWORD
+    user = crud_users.authenticate_user(db, username, password)
     if not user:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
