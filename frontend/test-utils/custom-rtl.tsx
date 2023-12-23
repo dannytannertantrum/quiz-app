@@ -6,9 +6,10 @@ import { ThemeProvider } from '../app/context/Theme';
 import { AuthContext, AuthContextProps } from '../app/context/AuthContext';
 
 export const testAuthProviderProps = {
-  createAccount: async () => ({ isSuccess: false }),
+  createAccount: async () => {},
   deleteAccount: async () => {},
-  signIn: async () => ({ isSuccess: false }),
+  signIn: async () => {},
+  signInTest: async () => {},
   signOut: async () => {},
   userState: {
     isLoading: false,

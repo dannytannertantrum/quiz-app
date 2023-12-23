@@ -7,7 +7,7 @@ describe('WelcomeMessage', () => {
   test('does not load a message when there is no "welcome" search param', () => {
     render(<WelcomeMessage />);
 
-    expect(screen.queryByText(/Welcome/)).toBeNull();
+    expect(screen.queryByText(/Thank you/)).toBeNull();
   });
 
   test('loads a welcome message when "welcome" is in search params', () => {
@@ -20,6 +20,6 @@ describe('WelcomeMessage', () => {
 
     render(<WelcomeMessage />);
 
-    waitFor(() => expect(screen.queryAllByText('Welcome to QuizApp!')).toBeInTheDocument());
+    waitFor(() => expect(screen.getByText('Thank you for joining QuizApp!')).toBeInTheDocument());
   });
 });

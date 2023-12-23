@@ -1,10 +1,8 @@
 'use client';
 
-import { useRouter, useSearchParams } from 'next/navigation';
 import { useContext, useRef, useState } from 'react';
 
 import { AuthContext } from '../../context/AuthContext';
-import { BASE_CLIENT_URL } from '../../utils/constants';
 import { BaseUserData } from '../../types/users';
 import { Button } from '../atoms/Button';
 import { checkForDuplicateEmail } from '../../utils/helperFunctions';
@@ -22,18 +20,6 @@ export const AuthForm = ({ userEmails }: { userEmails: BaseUserData['email'][] }
   );
   const emailInputRef = useRef<HTMLInputElement>(null);
   const { createAccount, signIn, userState } = useContext(AuthContext);
-  const router = useRouter();
-  const redirectParam = useSearchParams().get('redirect');
-
-  const redirectToTopics = (isCreateAccount?: boolean) => {
-    if (isCreateAccount) {
-      return router.push(`${BASE_CLIENT_URL}/topics?welcome=true`);
-    }
-
-    return redirectParam
-      ? router.push(`${BASE_CLIENT_URL}/${redirectParam}`)
-      : router.push(`${BASE_CLIENT_URL}/topics`);
-  };
 
   // We want to erase data when toggling to make it clear what action someone is taking
   const toggleSignIn = () => {
@@ -57,25 +43,15 @@ export const AuthForm = ({ userEmails }: { userEmails: BaseUserData['email'][] }
     const formData = new FormData(form);
     const formJson = JSON.stringify(Object.fromEntries(formData.entries()));
 
-    const handleSignIn = async (
-      form: HTMLFormElement,
-      formData: FormData,
-      accountCreation = false
-    ): Promise<void> => {
-      const signInResult = await signIn(form, formData);
-      if (signInResult.isSuccess) redirectToTopics(accountCreation);
-    };
-
     if (isSignIn) {
-      handleSignIn(form, formData);
+      await signIn(form, formData);
     } else {
       const emailExists = checkForDuplicateEmail(userEmails, emailInput.value);
       if (emailExists) {
         emailInput.setError('A user with this email already exists; please use another email.');
         return;
       }
-      const createAccountResult = await createAccount(form, formJson);
-      if (createAccountResult.isSuccess) handleSignIn(form, formData, true);
+      await createAccount(form, formJson, formData);
     }
   };
 
@@ -86,7 +62,7 @@ export const AuthForm = ({ userEmails }: { userEmails: BaseUserData['email'][] }
       onSubmit={handleSubmit}
       className={`w-full bg-thunder-200 border-y border-thunder-800 p-7 shadow-lg shadow-thunder-500
       dark:bg-thunder-950 dark:border-thunder-300 dark:shadow-thunder-800
-      md:w-[500px] md:border md:rounded-xl`}
+      md:border md:rounded-xl`}
       noValidate
     >
       <Fieldset

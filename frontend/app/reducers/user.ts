@@ -5,6 +5,7 @@ import {
   FETCH_IN_PROGRESS,
   FETCH_UNKNOWN_ERROR,
   GET_USER,
+  TEST_USER_SIGN_IN,
   USER_SIGN_IN,
   USER_SIGN_OUT,
 } from '../utils/constants';
@@ -28,7 +29,7 @@ interface GetUserAction extends ActionData<CurrentUser> {
   type: 'GET_USER';
 }
 interface UserSignInAction extends ActionData<UserSignIn> {
-  type: 'USER_SIGN_IN';
+  type: 'USER_SIGN_IN' | 'TEST_USER_SIGN_IN';
 }
 interface UserSignOutAction extends ActionData<UserSignOut> {
   type: 'USER_SIGN_OUT';
@@ -56,6 +57,7 @@ export const userReducer = (
     case CREATE_USER:
     case DELETE_USER:
     case GET_USER:
+    case TEST_USER_SIGN_IN:
     case USER_SIGN_IN:
       return {
         ...state,

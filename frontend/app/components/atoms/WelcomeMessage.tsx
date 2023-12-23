@@ -8,7 +8,7 @@ export const WelcomeMessage = () => {
   if (welcomeParam) {
     return (
       <h1 className='mt-4 mx-4 [text-wrap:balance] text-center text-4xl text-outer-space-900 dark:text-outer-space-300'>
-        Welcome to QuizApp!
+        Thank you for joining QuizApp!
       </h1>
     );
   }

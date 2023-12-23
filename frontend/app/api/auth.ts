@@ -17,6 +17,16 @@ export const signInUser = async (
   return responseData;
 };
 
+export const signInTestAccount = async (): Promise<ResponseSuccess<UserSignIn> | Error> => {
+  const response = await fetch(`${BASE_URL}/auth/token/shared`, {
+    method: 'post',
+    credentials: 'include',
+  });
+
+  const responseData = await handleResponse<UserSignIn>(response);
+  return responseData;
+};
+
 export const signOutUser = async (): Promise<ResponseSuccess<UserSignOut> | Error> => {
   const response = await fetch(`${BASE_URL}/auth/sign-out`, {
     method: 'post',
