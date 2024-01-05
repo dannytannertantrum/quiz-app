@@ -41,6 +41,11 @@ export const QuizReview = ({ quizCompleteData }: { quizCompleteData: QuizComplet
       <h3 className='text-lg text-indigo-950 dark:text-cyan-300 mb-4'>Score: {safeScore}%</h3>
       <hr className='mb-4 border-thunder-900 dark:border-thunder-700' />
       <ReviewQuestions questions={quizCompleteData.questions_data} />
+      <hr />
+      <div className='pt-8 flex gap-8 justify-between'>
+        <QLink href={'/account'}>&lt; Back to Account</QLink>
+        <QLink href={'/topics'}>Return home</QLink>
+      </div>
     </div>
   );
 };

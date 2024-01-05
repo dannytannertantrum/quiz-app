@@ -85,7 +85,16 @@ export const AboutPage = () => {
           </p>
         </Fragment>
       </Accordion>
-      <Accordion title='Where Can I See the Code?'>
+      <Accordion title='Who Chose The Questions For Each Quiz?'>
+        <Fragment>
+          <p className='text-xl leading-8 mb-6'>
+            ChatGPT! While the questions are not dynamically created with each quiz, I used ChatGPT
+            to populate the database with 10 different questions for each subtopic. It saved me a
+            LOT of time.
+          </p>
+        </Fragment>
+      </Accordion>
+      <Accordion title='Where Can I See The Code?'>
         <p className='text-xl leading-8 mb-6'>
           Code for QuizApp is hosted{' '}
           <QLink href='https://github.com/dannytannertantrum/quiz-app' newWindow>
@@ -140,9 +149,14 @@ export const AboutPage = () => {
           something like GitHub Actions would be nice, but if I learn it and end up using other tech
           for deployment pipelines at work or in another setting, I will eventually forget what I
           learned over time and/or the technology will update and I&apos;ll have to relearn it again
-          anyhow. There are lots of things I&apos;d like to learn and lots I&apos;d like to
-          refactor. If you&apos;re interested in learning more about what those things might be,
-          let&apos;s chat!
+          anyhow.
+        </p>
+        <p className='text-xl leading-8 mb-6'>
+          If this were a real-world application, I would also completely overhaul my auth strategy.
+          It was certainly worth my time to learn and implement my own solution, but there are
+          libraries out there that are far more robust than what I did for this project. There are
+          plenty of other things I&apos;d refactor, so let&apos;s chat if you&apos;re interested in
+          hearing about said things!
         </p>
       </Accordion>
     </Fragment>

@@ -75,7 +75,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   };
 
   useEffect(() => {
-    if (path !== '/') {
+    if (path !== '/' && path !== '/about') {
       // Make sure to cleanup after fetching
       // https://react.dev/learn/synchronizing-with-effects#fetching-data
       let ignore = false;

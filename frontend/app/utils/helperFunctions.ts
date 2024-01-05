@@ -1,3 +1,5 @@
+'use client';
+
 import { BaseUserData } from '../types/users';
 
 export const checkForDuplicateEmail = (
@@ -15,8 +17,14 @@ export const checkForDuplicateEmail = (
 };
 
 export const transformDate = (dateString?: string): string => {
+  const userTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
   const date = new Date(dateString ?? '');
-  return date.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
+  return date.toLocaleDateString('en-US', {
+    year: 'numeric',
+    month: 'short',
+    day: 'numeric',
+    timeZone: userTimezone,
+  });
 };
 
 export const parseSubtopics = (subtopics: string[]): string => {

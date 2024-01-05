@@ -27,6 +27,7 @@ export default async function AccountPage() {
   let quizzes: BaseQuizData[] = [];
   try {
     quizzes = await getQuizzes();
+    quizzes = quizzes.filter((quiz) => quiz.completed_at != null);
   } catch (error: any) {
     console.error('There was a problem getting quizzes: ', error);
   }

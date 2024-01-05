@@ -40,9 +40,11 @@ export const Accordion = ({ children, title }: AccordionProps) => {
   return (
     <Fragment>
       <button
-        className={`flex justify-between items-center outline-none w-full text-left p-3 border-b border-thunder-400 text-2xl sticky top-0
+        className={`flex justify-between items-center outline-none w-full text-left p-3 border-b border-thunder-400 text-2xl top-0
         bg-thunder-200 focus-visible:outline-2 focus-visible:outline-outer-space-900 dark:border-thunder-700 dark:bg-thunder-975
-        dark:outline-none dark:focus-visible:outline-2 dark:focus-visible:outline-outer-space-300`}
+        dark:outline-none dark:focus-visible:outline-2 dark:focus-visible:outline-outer-space-300${
+          showContent ? ' sticky' : ''
+        }`}
         onClick={toggleAccordion}
       >
         <span>{title}</span>
